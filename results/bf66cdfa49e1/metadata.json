@@ -1,0 +1,13 @@
+{
+  "model": "deepseek-v4.1-flash",
+  "effort": "max",
+  "provider": "deepseek-api",
+  "harness": "opencode",
+  "harness_version": null,
+  "prompt_id": "pelican-bicycle-v1",
+  "prompt_verified": true,
+  "created_at": "2026-09-11",
+  "contributor": "PZD-CHINA",
+  "generation": "single-turn",
+  "notes": "使用 prompt.txt 原文单轮生成；工作目录非空，但生成期间未读取其中其他文件。artwork.html 为模型原始输出，后续消息仅按仓库规则归档，未做任何修改。effort 与 provider 由投稿者补充，未在运行环境中直接确认；harness 版本未知。运行环境显示的 API 模型 ID 为 deepseek-v4-flash（DeepSeek API 仅有此端口），经投稿者确认实际模型为 v4.1，故 model 以实际模型记为 deepseek-v4.1-flash。"
+}

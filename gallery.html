@@ -5,43 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pelican Bicycle / 鹈鹕骑自行车</title>
   <style>
-:root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #232824; background: #f5f6f3; letter-spacing: 0; }
+:root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #242624; background: #fafbf9; letter-spacing: 0; font-synthesis: none; }
 * { box-sizing: border-box; }
 body { margin: 0; }
-a { color: #176354; text-underline-offset: 4px; }
-header, main, footer { max-width: 1440px; margin: auto; padding: 24px 32px; }
-header { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #d8ddd7; }
-.brand { font-size: 20px; font-weight: 750; text-decoration: none; color: #232824; }
-nav { display: flex; gap: 24px; align-items: center; }
-.heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
-.eyebrow { font-size: 11px; color: #626a63; }
-h1 { font-size: 36px; line-height: 1.25; margin: 12px 0 0; }
-blockquote { margin: 24px 0; padding: 4px 0 4px 16px; border-left: 3px solid #cf663e; line-height: 1.8; font-size: 14px; color: #535b54; }
-form { display: grid; grid-template-columns: 2fr 1fr 1.3fr 1.3fr auto; gap: 14px; align-items: end; padding-bottom: 24px; }
-label { display: grid; gap: 8px; min-width: 0; font-size: 12px; font-weight: 600; }
-select, button { min-width: 0; width: 100%; height: 40px; border: 1px solid #c8d0c8; border-radius: 4px; padding: 0 10px; font: inherit; background: #fff; color: #232824; }
-button { cursor: pointer; }
-:focus-visible { outline: 3px solid #bd5633; outline-offset: 3px; }
-.gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-article { overflow: hidden; border: 1px solid #d8ddd7; border-radius: 6px; background: white; min-width: 0; }
-iframe { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #edf0eb; }
-.info { padding: 20px; border-top: 1px solid #e1e5de; }
-h2 { font-size: 19px; margin: 0 0 16px; overflow-wrap: anywhere; }
-dl { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 7px 12px; margin: 0; font-size: 13px; }
-dt { color: #687167; } dd { margin: 0; overflow-wrap: anywhere; }
-.status { font-size: 12px; color: #865322; margin: 18px 0 12px; }
-details { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
-summary { cursor: pointer; color: #176354; }
-footer { border-top: 1px solid #d8ddd7; margin-top: 24px; font-size: 13px; color: #626a63; display: flex; justify-content: space-between; gap: 16px; }
+a { color: inherit; text-underline-offset: 4px; }
+header, main, footer { max-width: 1520px; margin: auto; padding: 0 48px; }
+header { height: 86px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #dedfd9; }
+.brand { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 750; text-decoration: none; }
+.brand-mark { display: grid; place-items: center; width: 32px; height: 32px; background: #dc4938; color: white; font: italic 24px Georgia, serif; border-radius: 50%; }
+nav { display: flex; gap: 28px; align-items: center; font-size: 13px; }
+nav a { text-decoration: none; }
+nav .contribute { color: #bc3527; }
+.heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 40px 0 28px; }
+.eyebrow { font: 11px ui-monospace, monospace; color: #b53d2e; margin: 0 0 14px; }
+h1 { font-size: 44px; font-weight: 650; line-height: 1.2; margin: 0; }
+.heading-aside { text-align: right; color: #737770; font-size: 12px; }
+.heading-aside strong { display: block; font: 32px Georgia, serif; color: #30392f; margin-bottom: 6px; }
+.prompt { display: flex; align-items: baseline; gap: 22px; padding: 20px 0; border-top: 1px solid #dedfd9; border-bottom: 1px solid #dedfd9; }
+.prompt-label { flex-shrink: 0; font: 11px ui-monospace, monospace; color: #9b4234; }
+blockquote { margin: 0; line-height: 1.8; font-size: 14px; color: #555d54; }
+form { display: grid; grid-template-columns: 2fr 1fr 1.4fr 1.4fr auto; gap: 16px; align-items: end; padding: 26px 0 30px; }
+label { display: grid; gap: 9px; min-width: 0; font-size: 11px; font-weight: 500; color: #72776e; }
+select, button { min-width: 0; height: 40px; border: 1px solid #d7dbd2; border-radius: 4px; padding: 0 12px; font: inherit; background: transparent; color: #292f28; }
+select { width: 100%; font-size: 13px; background: #fff; }
+button { cursor: pointer; font-size: 12px; }
+button:hover { background: #eef1ea; }
+:focus-visible { outline: 2px solid #c24432; outline-offset: 4px; }
+.collection-heading { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; }
+.collection-heading h2 { margin: 0; font-size: 13px; font-weight: 600; }
+#count { margin: 0; font: 11px ui-monospace, monospace; color: #777c73; }
+.gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 28px; align-items: start; }
+article { overflow: hidden; border: 1px solid #dcdfd6; border-radius: 6px; background: white; min-width: 0; transition: border-color .2s; }
+article:hover { border-color: #a9b6a3; }
+.preview { position: relative; background: #eff2eb; }
+iframe { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #eff2eb; }
+.info { padding: 22px 24px 0; border-top: 1px solid #e1e5de; }
+.work-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+.index { font: 11px ui-monospace, monospace; color: #a5aa9f; flex-shrink: 0; }
+h2 { font-size: 19px; font-weight: 600; margin: 0; overflow-wrap: anywhere; line-height: 1.4; }
+dl { display: grid; grid-template-columns: .7fr 1.3fr 1fr; gap: 12px; margin: 0 0 22px; }
+dl div { min-width: 0; }
+dt { font: 10px ui-monospace, monospace; color: #84897e; margin-bottom: 7px; text-transform: uppercase; }
+dd { margin: 0; font-size: 12px; color: #46533f; overflow-wrap: anywhere; }
+.work-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-top: 1px solid #edf0e8; }
+.expand { border: 0; height: 32px; padding: 0 9px; margin-right: -9px; color: #b24030; white-space: nowrap; }
+.status { font-size: 12px; color: #777e70; }
+details { font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+summary { cursor: pointer; color: #68735f; }
+article details { border-top: 1px solid #edf0e8; padding: 13px 24px; }
+article details p { color: #707769; }
+footer { border-top: 1px solid #dedfd9; margin-top: 48px; padding-top: 24px; padding-bottom: 32px; font-size: 11px; color: #81877b; display: flex; justify-content: space-between; gap: 16px; }
+#empty { padding: 72px 0; text-align: center; color: #777c73; }
+dialog { width: min(1200px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid #d7dbd2; border-radius: 6px; background: #fafbf9; }
+dialog::backdrop { background: #172014b3; }
+.dialog-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 20px; }
+.dialog-heading h2 { font-size: 15px; }
+dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
+body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
-@media (max-width: 680px) { header, main, footer { padding: 20px 16px; } header { flex-wrap: wrap; } nav { gap: 18px; font-size: 13px; } h1 { font-size: 28px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); } form button { width: auto; justify-self: start; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } }
+@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 18px 18px 0; } article details { padding: 12px 18px; } .gallery { gap: 24px 18px; } h2 { font-size: 17px; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } form button { justify-self: start; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
 <body>
-  <header><a class="brand" href="./">Pelican Bicycle</a><nav><a href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
+  <header><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">p</span>Pelican Bicycle</a><nav><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a class="contribute" href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
   <main>
-    <div class="heading"><div><p class="eyebrow">MODEL / EFFORT / PROVIDER / HARNESS</p><h1>鹈鹕骑自行车</h1></div><p id="count" aria-live="polite"></p></div>
-    <blockquote><!-- PROMPT --></blockquote>
+    <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
+    <div class="prompt"><span class="prompt-label">PROMPT / V1</span><blockquote><!-- PROMPT --></blockquote></div>
     <form aria-label="筛选作品">
       <label>Model<select name="model"><option value="">全部</option></select></label>
       <label>Effort<select name="effort"><option value="">全部</option></select></label>
@@ -49,12 +79,15 @@ footer { border-top: 1px solid #d8ddd7; margin-top: 24px; font-size: 13px; color
       <label>Harness<select name="harness"><option value="">全部</option></select></label>
       <button type="reset">重置</button>
     </form>
+    <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
     <p id="empty" hidden>没有匹配的作品。</p>
   </main>
-  <footer>一个 prompt，多种结果。<a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+  <footer><span>PELICAN BICYCLE · 一个 prompt，多种结果。</span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+  <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
 <script>
 const cards = [...document.querySelectorAll("article")];
+document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
 const form = document.querySelector("form");
 const selects = [...form.querySelectorAll("select")];
 for (const select of selects) {
@@ -74,6 +107,23 @@ form.addEventListener("change", filter);
 form.addEventListener("reset", () => setTimeout(filter, 0));
 form.addEventListener("submit", event => event.preventDefault());
 filter();
+const viewer = document.querySelector("dialog");
+const viewerFrame = viewer.querySelector("iframe");
+document.querySelector(".gallery").addEventListener("click", event => {
+  const button = event.target.closest(".expand");
+  if (!button) return;
+  const card = button.closest("article");
+  document.querySelector("#viewer-title").textContent = card.querySelector("h2").textContent;
+  viewerFrame.src = card.querySelector("iframe").src;
+  viewer.showModal();
+});
+document.querySelector("#close-viewer").addEventListener("click", () => viewer.close());
+viewer.addEventListener("close", () => viewerFrame.removeAttribute("src"));
+viewer.addEventListener("click", event => {
+  if (event.target !== viewer) return;
+  const rect = viewer.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) viewer.close();
+});
 </script>
 </body>
 </html>

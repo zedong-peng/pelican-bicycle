@@ -1,7 +1,7 @@
 {
   "model": "muse-spark-1.3-contributor",
   "effort": "xhigh",
-  "provider": "unknown",
+  "provider": "opencode-go",
   "harness": "opencode",
   "harness_version": null,
   "prompt_id": "pelican-bicycle-v1",
@@ -9,5 +9,5 @@
   "created_at": null,
   "contributor": "zedong-peng",
   "generation": "unknown",
-  "notes": "Imported original HTML without edits. Configuration inferred from original filename; exact prompt, generation date, harness version, retries and selection history are unverified."
+  "notes": "Imported original HTML without edits. Configuration inferred from original filename; exact prompt, generation date, harness version, retries and selection history are unverified. Provider confirmed by the contributor."
 }

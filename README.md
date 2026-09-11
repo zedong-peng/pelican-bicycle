@@ -26,7 +26,7 @@
 
 ```text
 results/
-  <model>--<effort>--<provider>--<harness>--<run-id>/
+  <id>/                   # HTML 的 SHA-256 前 12 位
     artwork.html          # 原始生成结果，单文件、资源内联
     metadata.json         # 运行信息
 prompt.txt                # 统一 prompt（pelican-bicycle-v1）
@@ -34,6 +34,8 @@ gallery.html              # 画廊模板，内含 CSS 和 JS
 build.py                  # 校验记录并生成静态画廊
 .github/                  # PR 模板、校验和 Pages 部署
 ```
+
+目录 ID 不包含运行配置；更正 metadata 无需重命名。命名命令与重复输出规则见 [投稿指南](CONTRIBUTING.md#目录-id)。画廊按 metadata 中的配置排序。
 
 ## 元数据约定
 

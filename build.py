@@ -1,6 +1,7 @@
 """Validate submissions and build a dependency-free, offline gallery."""
 
 import datetime
+import hashlib
 import html
 import json
 from pathlib import Path
@@ -21,7 +22,7 @@ def collect():
     for directory in sorted((ROOT / "results").iterdir()):
         if not directory.is_dir() or directory.is_symlink():
             raise ValueError(f"Unexpected result entry: {directory.name}")
-        if not re.fullmatch(r"[a-z0-9][a-z0-9.-]*", directory.name):
+        if not re.fullmatch(r"[0-9a-f]{12}(?:-[1-9][0-9]*)?", directory.name):
             raise ValueError(f"Invalid run ID: {directory.name}")
         if {p.name for p in directory.iterdir()} != {"metadata.json", "artwork.html"}:
             raise ValueError(f"{directory.name}: expected artwork.html and metadata.json")
@@ -49,14 +50,19 @@ def collect():
         source = directory / "artwork.html"
         if source.stat().st_size > 2 * 1024 * 1024:
             raise ValueError(f"{directory.name}: HTML exceeds 2 MiB")
-        markup = source.read_text(encoding="utf-8")
+        content = source.read_bytes()
+        expected_id = hashlib.sha256(content).hexdigest()[:12]
+        if directory.name.split("-")[0] != expected_id:
+            raise ValueError(f"{directory.name}: HTML hash mismatch; expected {expected_id}")
+        markup = content.decode("utf-8")
         if not all(re.search(pattern, markup, re.I) for pattern in
                    (r"<!doctype\s+html\s*>", r"<head\b[^>]*>", r"<svg\b")):
             raise ValueError(f"{directory.name}: expected HTML document with head and SVG")
         records.append((directory.name, meta, markup))
     if not records:
         raise ValueError("No results found")
-    return records
+    return sorted(records, key=lambda record: tuple(record[1][key] for key in
+                  ("model", "effort", "provider", "harness")) + (record[0],))
 
 
 def build():
@@ -68,7 +74,7 @@ def build():
         shutil.rmtree(output)
     output.mkdir(exist_ok=True)
     cards = []
-    for run_id, meta, markup in records:
+    for index, (run_id, meta, markup) in enumerate(records, start=1):
         target = output / "previews" / run_id
         target.mkdir(parents=True, exist_ok=True)
         # Apply CSP before any submitted element; original files remain untouched.
@@ -77,17 +83,17 @@ def build():
         (target / "index.html").write_text(preview, encoding="utf-8")
         attrs = " ".join(f'data-{key}="{html.escape(meta[key], quote=True)}"'
                          for key in ("model", "effort", "provider", "harness"))
-        labels = "".join(f'<dt>{key}</dt><dd>{html.escape(meta[key])}</dd>'
+        labels = "".join(f'<div><dt>{key}</dt><dd>{html.escape(meta[key])}</dd></div>'
                          for key in ("effort", "provider", "harness"))
         status = "Prompt 已确认" if meta["prompt_verified"] else "Prompt 未确认"
         cards.append(f'''<article {attrs}>
-<iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"
-src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True)} animation"></iframe>
-<div class="info"><h2>{html.escape(meta['model'])}</h2><dl>{labels}</dl>
-<p class="status">{status} · {html.escape(meta['generation'])}</p>
-<details><summary>运行记录</summary><p>{html.escape(meta['notes'])}</p>
+<div class="preview"><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"
+src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True)} animation"></iframe></div>
+<div class="info"><div class="work-heading"><span class="index">{index:02d}</span><h2>{html.escape(meta['model'])}</h2></div><dl>{labels}</dl>
+<div class="work-footer"><span class="status">{status}</span><button class="expand" type="button">放大作品 ↗</button></div></div>
+<details><summary>运行记录</summary><p>{html.escape(meta['generation'])}</p><p>{html.escape(meta['notes'])}</p>
 <p>Contributor: {html.escape(meta['contributor'])}<br>Version: {html.escape(meta['harness_version'] or 'unknown')}<br>Date: {html.escape(meta['created_at'] or 'unknown')}</p>
-<a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a></details></div></article>''')
+<a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a></details></article>''')
     template = (ROOT / "gallery.html").read_text(encoding="utf-8")
     prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
