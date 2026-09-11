@@ -85,13 +85,14 @@ def build():
         (target / "index.html").write_text(preview, encoding="utf-8")
         attrs = " ".join(f'data-{key}="{html.escape(meta[key], quote=True)}"'
                          for key in ("model", "effort", "provider", "harness"))
-        labels = "".join(f'<div><dt>{key}</dt><dd>{html.escape(meta[key])}</dd></div>'
-                         for key in ("effort", "provider", "harness"))
+        meta_top = f"{html.escape(meta['model'])} · {html.escape(meta['effort'])}"
+        meta_mid = html.escape(meta["provider"])
+        meta_bot = html.escape(meta["harness"])
         cards.append(f'''<article {attrs}>
 <div class="preview"><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"
 src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True)} animation"></iframe></div>
-<div class="info"><div class="work-heading"><span class="index">{index:02d}</span><h2>{html.escape(meta['model'])}</h2></div><dl>{labels}</dl>
-<div class="work-footer"><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a><button class="expand" type="button">放大作品 ↗</button></div></div></article>''')
+<div class="info"><p class="meta"><span class="index">{index:02d}</span><span class="meta-lines"><span class="meta-text">{meta_top}</span><span class="meta-text">{meta_mid}</span><span class="meta-text">{meta_bot}</span></span></p>
+<div class="work-footer"><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">源码 ↗</a><button class="expand" type="button">放大 ↗</button></div></div></article>''')
     template = (ROOT / "gallery.html").read_text(encoding="utf-8")
     prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))

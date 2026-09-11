@@ -51,17 +51,14 @@ article { overflow: hidden; border: 1px solid #dcdfd6; border-radius: 6px; backg
 article:hover { border-color: #a9b6a3; }
 .preview { position: relative; background: #eff2eb; }
 iframe { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #eff2eb; }
-.info { padding: 18px 20px 0; border-top: 1px solid #e1e5de; }
-.work-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.info { padding: 12px 14px 0; border-top: 1px solid #e1e5de; }
+.meta { display: flex; align-items: baseline; gap: 8px; margin: 0 0 8px; min-width: 0; font-size: 12px; line-height: 1.5; color: #51564f; }
 .index { font: 11px ui-monospace, monospace; color: #a5aa9f; flex-shrink: 0; }
-h2 { font-size: 19px; font-weight: 600; margin: 0; overflow-wrap: anywhere; line-height: 1.4; }
-dl { display: grid; grid-template-columns: .7fr 1.3fr 1fr; gap: 10px; margin: 0 0 18px; }
-dl div { min-width: 0; }
-dt { font: 10px ui-monospace, monospace; color: #84897e; margin-bottom: 7px; text-transform: uppercase; }
-dd { margin: 0; font-size: 12px; color: #46533f; overflow-wrap: anywhere; }
-.work-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-top: 1px solid #edf0e8; }
+.meta-lines { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.meta-text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.work-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #edf0e8; }
 .work-footer a { font-size: 12px; }
-.expand { border: 0; height: 32px; padding: 0 9px; margin-right: -9px; color: #b24030; white-space: nowrap; }
+.expand { border: 0; height: 28px; padding: 0 8px; margin-right: -8px; color: #b24030; white-space: nowrap; }
 footer { border-top: 1px solid #dedfd9; margin-top: 48px; padding-top: 24px; padding-bottom: 32px; font-size: 11px; color: #81877b; display: flex; justify-content: space-between; gap: 16px; }
 #empty { padding: 72px 0; text-align: center; color: #777c73; }
 dialog { width: min(1200px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid #d7dbd2; border-radius: 6px; background: #fafbf9; }
@@ -71,7 +68,7 @@ dialog::backdrop { background: #172014b3; }
 dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
-@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 18px 18px 0; } .gallery { gap: 24px 18px; } h2 { font-size: 17px; } }
+@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { gap: 24px 18px; } }
 @media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } select[multiple] { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
@@ -206,7 +203,7 @@ document.querySelector(".gallery").addEventListener("click", event => {
   const button = event.target.closest(".expand");
   if (!button) return;
   const card = button.closest("article");
-  document.querySelector("#viewer-title").textContent = card.querySelector("h2").textContent;
+  document.querySelector("#viewer-title").textContent = [...card.querySelectorAll(".meta-text")].map(el => el.textContent).join(" · ");
   viewerFrame.src = card.querySelector("iframe").src;
   viewer.showModal();
 });
