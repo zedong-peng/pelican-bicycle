@@ -3,18 +3,38 @@
 ## 生成作品
 
 1. 使用空目录和新会话，记录 model、effort、provider、harness 与可确认的版本。
-2. 原样提交 `prompts/pelican-bicycle-v1.txt` 中的 prompt；禁用网络工具，不允许读取目录外的文件。不添加额外的用户指令。
+2. 原样提交 `prompt.txt` 中的 prompt；禁用网络工具，不允许读取目录外的文件。不添加额外的用户指令。
 3. 保留模型输出的原始 HTML，不手动修复、重画或美化。输出有问题也可投稿；如有重试、后续修复指令或挑选，必须在 `notes` 中披露，修复后的记录用 `multi-turn`。
 
 ## 提交 Pull Request
 
 1. Fork 仓库并创建分支。
 2. 在 `results/` 新建目录：`<model>--<effort>--<provider>--<harness>--<run-id>`。只用小写英文字母、数字、点、短横线；`run-id` 可为日期加用户名和序号，避免覆盖现有结果。
-3. 将原始结果放入 `artwork.html`，复制 `templates/metadata.json` 为同目录下的 `metadata.json` 并填写。无法确认的信息使用 `unknown` 或 `null`，不要猜测。
-4. 执行 `python3 scripts/build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。
+3. 将原始结果放入 `artwork.html`，按下方模板创建同目录下的 `metadata.json` 并填写。无法确认的信息使用 `unknown` 或 `null`，不要猜测。
+4. 执行 `python3 build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。
 5. 提交 PR，填写模板并披露非标准运行条件。
 
 单个 HTML 上限 2 MiB，必须含 SVG，CSS、脚本及资源应内联。不要提交 API key、账号凭据、本地绝对路径、个人信息、跟踪代码、远程依赖或与作品无关的文件。不要修改已有投稿；同配置的重复运行用新的目录记录。截图或运行日志不是必需项，敏感信息不得提交。
+
+## 元数据模板
+
+```json
+{
+  "model": "exact-model-id",
+  "effort": "unknown",
+  "provider": "unknown",
+  "harness": "harness-name",
+  "harness_version": null,
+  "prompt_id": "pelican-bicycle-v1",
+  "prompt_verified": true,
+  "created_at": null,
+  "contributor": "your-github-handle",
+  "generation": "single-turn",
+  "notes": ""
+}
+```
+
+字段含义见 [README](README.md#元数据约定)。`prompt.txt` 对应 `pelican-bicycle-v1`。
 
 ## 维护者审阅
 

@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pelican Bicycle / 鹈鹕骑自行车</title>
+  <style>
 :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #232824; background: #f5f6f3; letter-spacing: 0; }
 * { box-sizing: border-box; }
 body { margin: 0; }
@@ -28,3 +35,45 @@ summary { cursor: pointer; color: #176354; }
 footer { border-top: 1px solid #d8ddd7; margin-top: 24px; font-size: 13px; color: #626a63; display: flex; justify-content: space-between; gap: 16px; }
 [hidden] { display: none !important; }
 @media (max-width: 680px) { header, main, footer { padding: 20px 16px; } header { flex-wrap: wrap; } nav { gap: 18px; font-size: 13px; } h1 { font-size: 28px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); } form button { width: auto; justify-self: start; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+  <header><a class="brand" href="./">Pelican Bicycle</a><nav><a href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
+  <main>
+    <div class="heading"><div><p class="eyebrow">MODEL / EFFORT / PROVIDER / HARNESS</p><h1>鹈鹕骑自行车</h1></div><p id="count" aria-live="polite"></p></div>
+    <blockquote><!-- PROMPT --></blockquote>
+    <form aria-label="筛选作品">
+      <label>Model<select name="model"><option value="">全部</option></select></label>
+      <label>Effort<select name="effort"><option value="">全部</option></select></label>
+      <label>Provider<select name="provider"><option value="">全部</option></select></label>
+      <label>Harness<select name="harness"><option value="">全部</option></select></label>
+      <button type="reset">重置</button>
+    </form>
+    <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
+    <p id="empty" hidden>没有匹配的作品。</p>
+  </main>
+  <footer>一个 prompt，多种结果。<a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+<script>
+const cards = [...document.querySelectorAll("article")];
+const form = document.querySelector("form");
+const selects = [...form.querySelectorAll("select")];
+for (const select of selects) {
+  const values = [...new Set(cards.map(card => card.dataset[select.name]))].sort();
+  for (const value of values) select.add(new Option(value, value));
+}
+function filter() {
+  let visible = 0;
+  for (const card of cards) {
+    card.hidden = !selects.every(select => !select.value || card.dataset[select.name] === select.value);
+    if (!card.hidden) visible++;
+  }
+  document.querySelector("#count").textContent = `${visible} / ${cards.length} 作品`;
+  document.querySelector("#empty").hidden = visible !== 0;
+}
+form.addEventListener("change", filter);
+form.addEventListener("reset", () => setTimeout(filter, 0));
+form.addEventListener("submit", event => event.preventDefault());
+filter();
+</script>
+</body>
+</html>

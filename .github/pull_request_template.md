@@ -17,4 +17,4 @@
 - [ ] 已说明是否使用统一 prompt、禁用联网及读取其他文件
 - [ ] 没有凭据、隐私数据、跟踪代码或外部依赖
 - [ ] 有权公开投稿并同意在仓库及 Pages 展示
-- [ ] `python3 scripts/build.py` 通过
+- [ ] `python3 build.py` 通过

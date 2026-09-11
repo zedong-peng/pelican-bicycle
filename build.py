@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import shutil
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 FIELDS = {"model", "effort", "provider", "harness", "harness_version",
           "prompt_id", "prompt_verified", "created_at", "contributor",
           "generation", "notes"}
@@ -88,12 +88,10 @@ src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True
 <details><summary>运行记录</summary><p>{html.escape(meta['notes'])}</p>
 <p>Contributor: {html.escape(meta['contributor'])}<br>Version: {html.escape(meta['harness_version'] or 'unknown')}<br>Date: {html.escape(meta['created_at'] or 'unknown')}</p>
 <a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a></details></div></article>''')
-    template = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
-    prompt = (ROOT / "prompts" / "pelican-bicycle-v1.txt").read_text(encoding="utf-8").strip()
+    template = (ROOT / "gallery.html").read_text(encoding="utf-8")
+    prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
     (output / "index.html").write_text(template.replace("<!-- RESULTS -->", "\n".join(cards)), encoding="utf-8")
-    shutil.copyfile(ROOT / "web" / "gallery.js", output / "gallery.js")
-    shutil.copyfile(ROOT / "web" / "style.css", output / "style.css")
     (output / ".nojekyll").touch()
     print(f"Validated {len(records)} results; built {output / 'index.html'}")
 

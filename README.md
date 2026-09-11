@@ -6,18 +6,18 @@
 
 ## 统一 Prompt
 
-原文保存在 [`prompts/pelican-bicycle-v1.txt`](prompts/pelican-bicycle-v1.txt)：
+原文保存在 [`prompt.txt`](prompt.txt)：
 
 ```text
 不要联网 不查看本地其他文件，创建一个 HTML，内容是 SVG 绘制一个鹈鹕骑自行车的 2D 动画
 ```
 
-新投稿请在空目录、新会话里原样输入，不追加修复轮次，不手动美化作品。这里的「不查看本地其他文件」约束生成模型的运行过程，不是对本仓库维护工作的限制。请保留失败结果；多次尝试各自作为独立记录提交，并说明是否经过挑选。
+生成与投稿要求见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 浏览作品
 
 - 在线：[作品画廊](https://zedongpeng.com/pelican-bicycle/)。合并新投稿后由 GitHub Actions 自动更新。
-- 本地：运行 `python3 scripts/build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
+- 本地：运行 `python3 build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
 - 原始 HTML 存在 `results/<run-id>/artwork.html`，也可单独打开。
 
 画廊可按四个维度筛选，每个预览在限制网络和浏览器权限的 iframe 内播放。
@@ -29,9 +29,9 @@ results/
   <model>--<effort>--<provider>--<harness>--<run-id>/
     artwork.html          # 原始生成结果，单文件、资源内联
     metadata.json         # 运行信息
-prompts/                  # 带版本的统一 prompt
-templates/metadata.json   # 投稿模板
-scripts/build.py          # 校验记录并生成静态画廊
+prompt.txt                # 统一 prompt（pelican-bicycle-v1）
+gallery.html              # 画廊模板，内含 CSS 和 JS
+build.py                  # 校验记录并生成静态画廊
 .github/                  # PR 模板、校验和 Pages 部署
 ```
 
@@ -55,7 +55,7 @@ scripts/build.py          # 校验记录并生成静态画廊
 
 ## 参与
 
-请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，从 [元数据模板](templates/metadata.json) 开始。PR 会自动检查目录、必填字段和 HTML 基本结构。校验不证明作品质量、prompt 遵循情况或代码安全，维护者仍需审阅原始 HTML。
+请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，其中包含元数据模板。PR 会自动检查目录、必填字段和 HTML 基本结构。校验不证明作品质量、prompt 遵循情况或代码安全，维护者仍需审阅原始 HTML。
 
 ## 使用与许可
 
