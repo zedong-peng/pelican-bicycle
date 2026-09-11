@@ -90,14 +90,20 @@ const cards = [...document.querySelectorAll("article")];
 document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
 const form = document.querySelector("form");
 const selects = [...form.querySelectorAll("select")];
-for (const select of selects) {
-  const values = [...new Set(cards.map(card => card.dataset[select.name]))].sort();
-  for (const value of values) select.add(new Option(value, value));
-}
 function filter() {
+  const selected = Object.fromEntries(selects.map(select => [select.name, select.value]));
+  const matches = (card, except) => selects.every(({ name }) =>
+    name === except || !selected[name] || card.dataset[name] === selected[name]);
+  // Each facet is constrained by the other facets, not by its own selection.
+  for (const select of selects) {
+    const values = [...new Set(cards.filter(card => matches(card, select.name))
+      .map(card => card.dataset[select.name]))].sort();
+    select.replaceChildren(new Option("全部", ""), ...values.map(value => new Option(value, value)));
+    select.value = selected[select.name];
+  }
   let visible = 0;
   for (const card of cards) {
-    card.hidden = !selects.every(select => !select.value || card.dataset[select.name] === select.value);
+    card.hidden = !matches(card);
     if (!card.hidden) visible++;
   }
   document.querySelector("#count").textContent = `${visible} / ${cards.length} 作品`;
