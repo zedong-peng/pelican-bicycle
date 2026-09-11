@@ -16,7 +16,7 @@
 
 ## 浏览作品
 
-- 在线：[作品画廊](https://zedong-peng.github.io/pelican-bicycle/)。首次部署需等待 GitHub Actions 完成。
+- 在线：[作品画廊](https://zedongpeng.com/pelican-bicycle/)。合并新投稿后由 GitHub Actions 自动更新。
 - 本地：运行 `python3 scripts/build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
 - 原始 HTML 存在 `results/<run-id>/artwork.html`，也可单独打开。
 
