@@ -1,0 +1,30 @@
+:root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #232824; background: #f5f6f3; letter-spacing: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: #176354; text-underline-offset: 4px; }
+header, main, footer { max-width: 1440px; margin: auto; padding: 24px 32px; }
+header { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #d8ddd7; }
+.brand { font-size: 20px; font-weight: 750; text-decoration: none; color: #232824; }
+nav { display: flex; gap: 24px; align-items: center; }
+.heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.eyebrow { font-size: 11px; color: #626a63; }
+h1 { font-size: 36px; line-height: 1.25; margin: 12px 0 0; }
+blockquote { margin: 24px 0; padding: 4px 0 4px 16px; border-left: 3px solid #cf663e; line-height: 1.8; font-size: 14px; color: #535b54; }
+form { display: grid; grid-template-columns: 2fr 1fr 1.3fr 1.3fr auto; gap: 14px; align-items: end; padding-bottom: 24px; }
+label { display: grid; gap: 8px; min-width: 0; font-size: 12px; font-weight: 600; }
+select, button { min-width: 0; width: 100%; height: 40px; border: 1px solid #c8d0c8; border-radius: 4px; padding: 0 10px; font: inherit; background: #fff; color: #232824; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid #bd5633; outline-offset: 3px; }
+.gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+article { overflow: hidden; border: 1px solid #d8ddd7; border-radius: 6px; background: white; min-width: 0; }
+iframe { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #edf0eb; }
+.info { padding: 20px; border-top: 1px solid #e1e5de; }
+h2 { font-size: 19px; margin: 0 0 16px; overflow-wrap: anywhere; }
+dl { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 7px 12px; margin: 0; font-size: 13px; }
+dt { color: #687167; } dd { margin: 0; overflow-wrap: anywhere; }
+.status { font-size: 12px; color: #865322; margin: 18px 0 12px; }
+details { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+summary { cursor: pointer; color: #176354; }
+footer { border-top: 1px solid #d8ddd7; margin-top: 24px; font-size: 13px; color: #626a63; display: flex; justify-content: space-between; gap: 16px; }
+[hidden] { display: none !important; }
+@media (max-width: 680px) { header, main, footer { padding: 20px 16px; } header { flex-wrap: wrap; } nav { gap: 18px; font-size: 13px; } h1 { font-size: 28px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); } form button { width: auto; justify-self: start; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } }
