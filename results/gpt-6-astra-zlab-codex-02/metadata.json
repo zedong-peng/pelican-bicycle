@@ -1,0 +1,6 @@
+{
+  "model": "gpt-6-astra",
+  "effort": "max",
+  "provider": "zlab",
+  "harness": "codex"
+}
