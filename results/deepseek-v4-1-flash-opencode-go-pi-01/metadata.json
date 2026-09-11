@@ -1,0 +1,6 @@
+{
+  "model": "deepseek-v4.1-flash",
+  "effort": "max",
+  "provider": "opencode-go",
+  "harness": "pi"
+}
