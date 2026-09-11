@@ -26,8 +26,11 @@ h1 { font-size: 44px; font-weight: 650; line-height: 1.2; margin: 0; }
 blockquote { margin: 0; line-height: 1.8; font-size: 14px; color: #555d54; }
 form { display: grid; grid-template-columns: 2fr 1fr 1.4fr 1.4fr auto; gap: 16px; align-items: end; padding: 26px 0 30px; }
 label { display: grid; gap: 9px; min-width: 0; font-size: 11px; font-weight: 500; color: #72776e; }
-select, button { min-width: 0; height: 40px; border: 1px solid #d7dbd2; border-radius: 4px; padding: 0 12px; font: inherit; background: transparent; color: #292f28; }
+select, button { min-width: 0; border: 1px solid #d7dbd2; border-radius: 4px; padding: 0 12px; font: inherit; background: transparent; color: #292f28; }
 select { width: 100%; font-size: 13px; background: #fff; }
+.filter-actions { display: grid; gap: 8px; }
+select[multiple] { height: 86px; padding: 6px; }
+select option { padding: 5px 6px; }
 button { cursor: pointer; font-size: 12px; }
 button:hover { background: #eef1ea; }
 :focus-visible { outline: 2px solid #c24432; outline-offset: 4px; }
@@ -64,7 +67,7 @@ dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 18px 18px 0; } article details { padding: 12px 18px; } .gallery { gap: 24px 18px; } h2 { font-size: 17px; } }
-@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } form button { justify-self: start; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
 <body>
@@ -73,11 +76,11 @@ body:has(dialog[open]) { overflow: hidden; }
     <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
     <div class="prompt"><span class="prompt-label">PROMPT / V1</span><blockquote><!-- PROMPT --></blockquote></div>
     <form aria-label="筛选作品">
-      <label>Model<select name="model"><option value="">全部</option></select></label>
-      <label>Effort<select name="effort"><option value="">全部</option></select></label>
-      <label>Provider<select name="provider"><option value="">全部</option></select></label>
-      <label>Harness<select name="harness"><option value="">全部</option></select></label>
-      <button type="reset">重置</button>
+      <label>Model<select name="model" multiple size="3"></select></label>
+      <label>Effort<select name="effort" multiple size="3"></select></label>
+      <label>Provider<select name="provider" multiple size="3"></select></label>
+      <label>Harness<select name="harness" multiple size="3"></select></label>
+      <div class="filter-actions"><button type="submit">应用筛选</button><button type="reset">清空</button></div>
     </form>
     <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
@@ -90,29 +93,36 @@ const cards = [...document.querySelectorAll("article")];
 document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
 const form = document.querySelector("form");
 const selects = [...form.querySelectorAll("select")];
-function filter() {
-  const selected = Object.fromEntries(selects.map(select => [select.name, select.value]));
-  const matches = (card, except) => selects.every(({ name }) =>
-    name === except || !selected[name] || card.dataset[name] === selected[name]);
-  // Each facet is constrained by the other facets, not by its own selection.
+const applied = Object.fromEntries(selects.map(select => [select.name, []]));
+const valuesFor = (select, state) => [...new Set(cards.filter(card => selects.every(other => {
+  const values = state[other.name] || [];
+  return other === select || !values.length || values.includes(card.dataset[other.name]);
+})).map(card => card.dataset[select.name]))].sort();
+function matches(card, state) { return selects.every(select => {
+  const values = state[select.name] || [];
+  return !values.length || values.includes(card.dataset[select.name]);
+}); }
+function updateOptions() {
+  const draft = Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)]));
   for (const select of selects) {
-    const values = [...new Set(cards.filter(card => matches(card, select.name))
-      .map(card => card.dataset[select.name]))].sort();
-    select.replaceChildren(new Option("全部", ""), ...values.map(value => new Option(value, value)));
-    select.value = selected[select.name];
+    const values = valuesFor(select, draft);
+    select.replaceChildren(...values.map(value => new Option(value, value)));
+    for (const value of draft[select.name]) { const option = [...select.options].find(item => item.value === value); if (option) option.selected = true; }
   }
+}
+function render() {
   let visible = 0;
   for (const card of cards) {
-    card.hidden = !matches(card);
+    card.hidden = !matches(card, applied);
     if (!card.hidden) visible++;
   }
   document.querySelector("#count").textContent = `${visible} / ${cards.length} 作品`;
   document.querySelector("#empty").hidden = visible !== 0;
 }
-form.addEventListener("change", filter);
-form.addEventListener("reset", () => setTimeout(filter, 0));
-form.addEventListener("submit", event => event.preventDefault());
-filter();
+form.addEventListener("change", updateOptions);
+form.addEventListener("submit", event => { event.preventDefault(); Object.assign(applied, Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)]))); render(); });
+form.addEventListener("reset", () => { setTimeout(() => { selects.forEach(select => [...select.options].forEach(option => option.selected = false)); Object.keys(applied).forEach(name => { applied[name] = []; }); updateOptions(); render(); }, 0); });
+updateOptions(); render();
 const viewer = document.querySelector("dialog");
 const viewerFrame = viewer.querySelector("iframe");
 document.querySelector(".gallery").addEventListener("click", event => {
