@@ -46,7 +46,7 @@ button:hover { background: #eef1ea; }
 .collection-heading { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; }
 .collection-heading h2 { margin: 0; font-size: 13px; font-weight: 600; }
 #count { margin: 0; font: 11px ui-monospace, monospace; color: #777c73; }
-.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 26px 20px; align-items: start; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px 20px; align-items: start; }
 article { overflow: hidden; border: 1px solid #dcdfd6; border-radius: 6px; background: white; min-width: 0; transition: border-color .2s; }
 article:hover { border-color: #a9b6a3; }
 .preview { position: relative; background: #eff2eb; }
@@ -68,7 +68,7 @@ dialog::backdrop { background: #172014b3; }
 dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
-@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { gap: 24px 18px; } }
+@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } }
 @media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } select[multiple] { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
