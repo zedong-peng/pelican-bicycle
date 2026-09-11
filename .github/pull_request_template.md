@@ -4,7 +4,7 @@
 - Effort:
 - Provider:
 - Harness / version:
-- 结果目录（`results/<HTML SHA-256 前 12 位>/`）:
+- 结果目录（`results/<slug>/`，如 `deepseek-v4-1-flash-opencode-go-opencode-01`）:
 
 ## 运行说明
 
@@ -14,10 +14,10 @@
 
 - [ ] 元数据真实填写，未知项明确标注
 - [ ] model 与已有同模型命名一致，服务商路由前缀单独记入 provider，原始标识保留在 notes
-- [ ] 目录 ID 与原始 HTML 哈希匹配，配置仅写入 metadata
-- [ ] 未覆盖已有运行；如需 ID 后缀，已在 notes 解释并同步 main
+- [ ] 目录 slug 可读且未占用，配置仅写入 metadata
+- [ ] 未覆盖已有运行；如输出与已有记录字节相同，已在 notes 解释并同步 main
 - [ ] 原始 HTML 未手动改动；如有后续生成轮次已披露
 - [ ] 已说明是否使用统一 prompt、禁用联网及读取其他文件
 - [ ] 没有凭据、隐私数据、跟踪代码或外部依赖
 - [ ] 有权公开投稿并同意在仓库及 Pages 展示
-- [ ] `python3 build.py` 通过
+- [ ] CI 校验通过（本地可选跑 `python3 build.py` 预览）

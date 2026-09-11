@@ -17,8 +17,8 @@
 ## 浏览作品
 
 - 在线：[作品画廊](https://zedongpeng.com/pelican-bicycle/)。合并新投稿后由 GitHub Actions 自动更新。
-- 本地：运行 `python3 build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
-- 原始 HTML 存在 `results/<run-id>/artwork.html`，也可单独打开。
+- 本地：可选运行 `python3 build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
+- 原始 HTML 存在 `results/<slug>/artwork.html`，也可单独打开。
 
 画廊可按四个维度筛选，每个预览在限制网络和浏览器权限的 iframe 内播放。
 
@@ -26,7 +26,7 @@
 
 ```text
 results/
-  <id>/                   # HTML 的 SHA-256 前 12 位
+  <slug>/                  # 自取的可读别名，如 deepseek-v4-1-flash-opencode-go-opencode-01
     artwork.html          # 原始生成结果，单文件、资源内联
     metadata.json         # 运行信息
 prompt.txt                # 统一 prompt（pelican-bicycle-v1）
@@ -35,7 +35,7 @@ build.py                  # 校验记录并生成静态画廊
 .github/                  # PR 模板、校验和 Pages 部署
 ```
 
-目录 ID 不包含运行配置；更正 metadata 无需重命名。命名命令与重复输出规则见 [投稿指南](CONTRIBUTING.md#目录-id)。画廊按 metadata 中的配置排序。
+目录 slug 只是方便 review 的别名，不包含校验语义；更正 metadata 无需重命名。命名规则与重复输出处理见 [投稿指南](CONTRIBUTING.md#目录-slug)。画廊按 metadata 中的配置排序。去重靠构建时内部计算的 SHA-256（重复只 warning，不阻塞），不再要求目录名等于 hash。
 
 ## 元数据约定
 

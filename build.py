@@ -12,6 +12,11 @@ ROOT = Path(__file__).resolve().parent
 FIELDS = {"model", "effort", "provider", "harness", "harness_version",
           "prompt_id", "prompt_verified", "created_at", "contributor",
           "generation", "notes"}
+# Human-readable run slug, ccfddl-style (e.g. conference/DB/sigmod.yml):
+# lowercase alphanumerics + hyphens, no leading/trailing hyphen. Pure
+# 12-hex strings are reserved for legacy content-hash directories.
+SLUG_RE = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?")
+LEGACY_RE = re.compile(r"[0-9a-f]{12}(?:-[1-9][0-9]*)?")
 CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
        "img-src data:; font-src data:; media-src data:; connect-src 'none'; "
        "form-action 'none'; base-uri 'none'")
@@ -19,11 +24,19 @@ CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline
 
 def collect():
     records = []
+    seen_hashes = {}
     for directory in sorted((ROOT / "results").iterdir()):
         if not directory.is_dir() or directory.is_symlink():
             raise ValueError(f"Unexpected result entry: {directory.name}")
-        if not re.fullmatch(r"[0-9a-f]{12}(?:-[1-9][0-9]*)?", directory.name):
-            raise ValueError(f"Invalid run ID: {directory.name}")
+        if not SLUG_RE.fullmatch(directory.name):
+            raise ValueError(
+                f"Invalid run slug: {directory.name!r}; use lowercase "
+                "letters, digits and hyphens, e.g. "
+                "deepseek-v4-1-flash-opencode-go-opencode-01")
+        if LEGACY_RE.fullmatch(directory.name):
+            raise ValueError(
+                f"{directory.name}: legacy content-hash directory; "
+                "rename it to a readable slug (see CONTRIBUTING.md)")
         if {p.name for p in directory.iterdir()} != {"metadata.json", "artwork.html"}:
             raise ValueError(f"{directory.name}: expected artwork.html and metadata.json")
         if any(p.is_symlink() for p in directory.iterdir()):
@@ -51,9 +64,12 @@ def collect():
         if source.stat().st_size > 2 * 1024 * 1024:
             raise ValueError(f"{directory.name}: HTML exceeds 2 MiB")
         content = source.read_bytes()
-        expected_id = hashlib.sha256(content).hexdigest()[:12]
-        if directory.name.split("-")[0] != expected_id:
-            raise ValueError(f"{directory.name}: HTML hash mismatch; expected {expected_id}")
+        digest = hashlib.sha256(content).hexdigest()
+        if digest in seen_hashes:
+            print(f"Warning: {directory.name} has identical HTML bytes to "
+                  f"{seen_hashes[digest]}; explain in notes if independent runs.")
+        else:
+            seen_hashes[digest] = directory.name
         markup = content.decode("utf-8")
         if not all(re.search(pattern, markup, re.I) for pattern in
                    (r"<!doctype\s+html\s*>", r"<head\b[^>]*>", r"<svg\b")):

@@ -9,27 +9,27 @@
 ## 提交 Pull Request
 
 1. Fork 仓库并创建分支。
-2. 计算原始 HTML 的 SHA-256，取前 12 位小写十六进制作为 ID，在 `results/<id>/` 新建目录；命令见下方。目录不包含模型或运行配置。
+2. 在 `results/<slug>/` 新建目录，`slug` 自取、可读，例如 `deepseek-v4-1-flash-opencode-go-opencode-01`。只能用小写字母、数字和连字符，1–64 字符，首尾必须是字母或数字；不要用纯 12 位十六进制（那是旧 hash 目录，已废弃）。目录名不包含运行配置以外的语义负担，冲突时加 `-02`、`-03` 后缀。
 3. 将原始结果放入 `artwork.html`，按下方模板创建同目录下的 `metadata.json` 并填写。无法确认的信息使用 `unknown` 或 `null`，不要猜测。
-4. 执行 `python3 build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。
+4. 本地可选执行 `python3 build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。PR 和合并后的画廊都由 GitHub Actions 自动校验与构建（参见 `.github/workflows/pages.yml`），本地不跑也不影响。
 5. 提交 PR，填写模板并披露非标准运行条件。
 
 单个 HTML 上限 2 MiB，必须含 SVG，CSS、脚本及资源应内联。不要提交 API key、账号凭据、本地绝对路径、个人信息、跟踪代码、远程依赖或与作品无关的文件。不要修改已有投稿；同配置的重复运行用新的目录记录。截图或运行日志不是必需项，敏感信息不得提交。
 
-## 目录 ID
+## 目录 slug
 
-在原始 HTML 所在目录运行（文件名不是 `artwork.html` 时替换最后一个参数）：
+参考 ccfddl 的 `conference/<类别>/<会议名>.yml`：路径应该是人类可读的，PR 里一眼看出改的是谁。
 
 ```sh
-python3 -c "import hashlib, pathlib, sys; print(hashlib.sha256(pathlib.Path(sys.argv[1]).read_bytes()).hexdigest()[:12])" artwork.html
+mkdir -p results/deepseek-v4-1-flash-opencode-go-opencode-01
+cp /path/to/output.html results/deepseek-v4-1-flash-opencode-go-opencode-01/artwork.html
+# 再按模板新建同目录下的 metadata.json
 ```
 
-例如输出 `ad3184984a90`，就提交 `results/ad3184984a90/artwork.html` 和 `metadata.json`。只需这两个文件，无需修改索引或画廊；CI 会校验 ID 与 HTML 内容是否匹配。
-
-- model、effort、provider、harness 只写在 metadata 中；更正元数据时保留目录 ID，并在 PR 说明依据。
-- 不重复提交同一次运行。如果独立运行恰好输出相同 HTML，或短哈希碰撞，使用 `<id>-2`、`<id>-3` 等未占用后缀，并在 `notes` 说明原因。不要覆盖或合并运行记录。
-- PR 合并前同步 `main`；如果 ID 已被另一份独立记录占用，按上述规则添加后缀。
-- 哈希基于原始文件字节。不要格式化 HTML 或转换换行；仓库通过 `.gitattributes` 禁用作品文件的自动换行转换。
+- 建议格式：`<model>-<provider>-<harness>-<序号>`，全部小写，非字母数字转连字符，例如 `muse-spark-1-3-opencode-go-opencode`。model、effort、provider、harness 只写在 metadata 中，目录名只是方便 review 的别名，更正元数据时保留目录名。
+- 不重复提交同一次运行。独立运行恰好输出相同 HTML 是允许的，用不同目录记录，并在 `notes` 说明原因；CI 只会打印 warning，不会因此失败。不要覆盖或合并运行记录。
+- PR 合并前同步 `main`；如果 slug 已被占用，换一个未占用的名字。
+- 不要格式化 HTML 或转换换行；仓库通过 `.gitattributes` 禁用作品文件的自动换行转换。
 
 ## 元数据模板
 
