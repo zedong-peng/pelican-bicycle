@@ -1,6 +1,5 @@
 """Validate submissions and build a dependency-free, offline gallery."""
 
-import datetime
 import hashlib
 import html
 import json
@@ -9,9 +8,9 @@ import re
 import shutil
 
 ROOT = Path(__file__).resolve().parent
-FIELDS = {"model", "effort", "provider", "harness", "harness_version",
-          "prompt_id", "prompt_verified", "created_at", "contributor",
-          "generation", "notes"}
+# Minimal metadata: exactly the four gallery dimensions. Authorship comes
+# from git history / PR author; run disclosures go into the PR description.
+FIELDS = {"model", "effort", "provider", "harness"}
 # Human-readable run slug, ccfddl-style (e.g. conference/DB/sigmod.yml):
 # lowercase alphanumerics + hyphens, no leading/trailing hyphen. Pure
 # 12-hex strings are reserved for legacy content-hash directories.
@@ -44,22 +43,9 @@ def collect():
         meta = json.loads((directory / "metadata.json").read_text())
         if not isinstance(meta, dict) or set(meta) != FIELDS:
             raise ValueError(f"{directory.name}: metadata fields must match template")
-        for key in FIELDS - {"harness_version", "created_at", "prompt_verified"}:
-            if not isinstance(meta[key], str) or (key != "notes" and not meta[key].strip()):
+        for key in FIELDS:
+            if not isinstance(meta[key], str) or not meta[key].strip():
                 raise ValueError(f"{directory.name}: invalid {key}")
-        for key in ("harness_version", "created_at"):
-            if meta[key] is not None and (not isinstance(meta[key], str) or not meta[key].strip()):
-                raise ValueError(f"{directory.name}: invalid {key}")
-        if meta["created_at"] is not None:
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", meta["created_at"]):
-                raise ValueError(f"{directory.name}: date must be YYYY-MM-DD")
-            datetime.date.fromisoformat(meta["created_at"])
-        if type(meta["prompt_verified"]) is not bool:
-            raise ValueError(f"{directory.name}: prompt_verified must be boolean")
-        if meta["prompt_id"] != "pelican-bicycle-v1":
-            raise ValueError(f"{directory.name}: unsupported prompt")
-        if meta["generation"] not in {"single-turn", "multi-turn", "unknown"}:
-            raise ValueError(f"{directory.name}: invalid generation")
         source = directory / "artwork.html"
         if source.stat().st_size > 2 * 1024 * 1024:
             raise ValueError(f"{directory.name}: HTML exceeds 2 MiB")
@@ -67,7 +53,7 @@ def collect():
         digest = hashlib.sha256(content).hexdigest()
         if digest in seen_hashes:
             print(f"Warning: {directory.name} has identical HTML bytes to "
-                  f"{seen_hashes[digest]}; explain in notes if independent runs.")
+                  f"{seen_hashes[digest]}; explain in the PR description if independent runs.")
         else:
             seen_hashes[digest] = directory.name
         markup = content.decode("utf-8")
@@ -101,15 +87,11 @@ def build():
                          for key in ("model", "effort", "provider", "harness"))
         labels = "".join(f'<div><dt>{key}</dt><dd>{html.escape(meta[key])}</dd></div>'
                          for key in ("effort", "provider", "harness"))
-        status = "Prompt 已确认" if meta["prompt_verified"] else "Prompt 未确认"
         cards.append(f'''<article {attrs}>
 <div class="preview"><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"
 src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True)} animation"></iframe></div>
 <div class="info"><div class="work-heading"><span class="index">{index:02d}</span><h2>{html.escape(meta['model'])}</h2></div><dl>{labels}</dl>
-<div class="work-footer"><span class="status">{status}</span><button class="expand" type="button">放大作品 ↗</button></div></div>
-<details><summary>运行记录</summary><p>{html.escape(meta['generation'])}</p><p>{html.escape(meta['notes'])}</p>
-<p>Contributor: {html.escape(meta['contributor'])}<br>Version: {html.escape(meta['harness_version'] or 'unknown')}<br>Date: {html.escape(meta['created_at'] or 'unknown')}</p>
-<a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a></details></article>''')
+<div class="work-footer"><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">GitHub 源文件 ↗</a><button class="expand" type="button">放大作品 ↗</button></div></div></article>''')
     template = (ROOT / "gallery.html").read_text(encoding="utf-8")
     prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))

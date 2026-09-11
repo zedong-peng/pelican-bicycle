@@ -41,19 +41,12 @@ build.py                  # 校验记录并生成静态画廊
 
 | 字段 | 含义 |
 | --- | --- |
-| `model` | 模型本身的标识，保留版本；不混入服务商路由前缀或 effort。例如 `opencode-go/deepseek-v4.1-flash` 记为 `deepseek-v4.1-flash`，原始路由标识保留在 `notes` |
+| `model` | 模型本身的标识，保留版本；不混入服务商路由前缀或 effort。例如 `opencode-go/deepseek-v4.1-flash` 记为 `deepseek-v4.1-flash` |
 | `effort` | 原始设置值，例如 `max`、`xhigh`；未知填 `unknown`，不适用填 `not-applicable` |
 | `provider` | 提供模型访问的服务，例如 `deepseek-api`、`opencode-go`；不是模型开发商的推测值 |
 | `harness` | 执行生成任务的应用/工具，例如 `codex`、`claude-code`、`opencode`、`dsh` |
-| `harness_version` | 可确认的版本字符串，未知填 `null` |
-| `prompt_id` | 当前为 `pelican-bicycle-v1` |
-| `prompt_verified` | 是否确认使用了该 prompt 原文 |
-| `created_at` | 生成日期 `YYYY-MM-DD`，未知填 `null` |
-| `contributor` | 投稿者 GitHub 用户名 |
-| `generation` | `single-turn`、`multi-turn` 或 `unknown` |
-| `notes` | 重试、挑选、系统提示、非默认配置、失败现象等补充说明 |
 
-初始 6 个作品直接从原有 HTML 导入，文件内容未修改。模型和环境信息仅由文件名提取；日期、版本、生成轮次及 prompt 是否完全一致未确认，已明确标注。`unknown` 不代表官方直连。不同 provider 的 effort 标签也不保证具有相同含义。
+投稿人信息以 git 提交和 PR 作者为准；重试、挑选、系统提示、非默认配置等补充说明写在 PR 描述的运行说明里，不单独存字段。初始 6 个作品直接从原有 HTML 导入，文件内容未修改，模型和环境信息仅由文件名提取。`unknown` 不代表官方直连。不同 provider 的 effort 标签也不保证具有相同含义。
 
 ## 参与
 

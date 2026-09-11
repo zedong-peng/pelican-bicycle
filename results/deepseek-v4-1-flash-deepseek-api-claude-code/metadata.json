@@ -2,12 +2,5 @@
   "model": "deepseek-v4.1-flash",
   "effort": "max",
   "provider": "deepseek-api",
-  "harness": "claude-code",
-  "harness_version": null,
-  "prompt_id": "pelican-bicycle-v1",
-  "prompt_verified": false,
-  "created_at": null,
-  "contributor": "zedong-peng",
-  "generation": "unknown",
-  "notes": "Imported original HTML without edits. Configuration inferred from original filename; exact prompt, generation date, harness version, retries and selection history are unverified."
+  "harness": "claude-code"
 }
