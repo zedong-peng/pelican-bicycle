@@ -82,7 +82,7 @@ body:has(dialog[open]) { overflow: hidden; }
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
     <p id="empty" hidden>没有匹配的作品。</p>
   </main>
-  <footer><span>PELICAN BICYCLE · 一个 prompt，多种结果。</span><span id="site-views" hidden></span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+  <footer><span>PELICAN BICYCLE · 一个 prompt，多种结果。</span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
   <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
 <script>
 const cards = [...document.querySelectorAll("article")];
@@ -198,30 +198,6 @@ viewer.addEventListener("click", event => {
   const rect = viewer.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) viewer.close();
 });
-</script>
-<script>
-// 浏览统计（GoatCounter）：把 GOATCOUNTER_CODE 换成你的站点代码后生效，
-// 未配置时不加载外部脚本、不显示计数，页面保持零外部请求。另需在
-// GoatCounter 站点设置里打开 “Allow adding visitor counts on your website”。
-(function () {
-  var code = "YOUR-GOATCOUNTER-CODE";
-  if (!code || code.indexOf("YOUR-") === 0) return;
-  var counter = document.createElement("script");
-  counter.async = true;
-  counter.setAttribute("data-goatcounter", "https://" + code + ".goatcounter.com/count");
-  counter.src = "https://gc.zgo.at/count.js";
-  document.head.appendChild(counter);
-  fetch("https://" + code + ".goatcounter.com/counter/TOTAL.json").then(function (response) {
-    if (!response.ok) throw new Error("counter unavailable");
-    return response.json();
-  }).then(function (data) {
-    var el = document.querySelector("#site-views");
-    if (el && data && data.count) {
-      el.textContent = "总浏览 " + data.count;
-      el.hidden = false;
-    }
-  }).catch(function () {});
-})();
 </script>
 </body>
 </html>
