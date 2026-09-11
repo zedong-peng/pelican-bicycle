@@ -1,6 +1,6 @@
 {
   "model": "deepseek-v4.1-flash",
-  "effort": "high",
+  "effort": "max",
   "provider": "deepseek-api",
   "harness": "pi"
 }
