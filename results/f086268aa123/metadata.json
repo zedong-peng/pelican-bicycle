@@ -1,5 +1,5 @@
 {
-  "model": "opencode-go/deepseek-v4.1-flash",
+  "model": "deepseek-v4.1-flash",
   "effort": "max",
   "provider": "opencode-go",
   "harness": "opencode",
@@ -9,5 +9,5 @@
   "created_at": "2026-09-11",
   "contributor": "PZD-CHINA",
   "generation": "single-turn",
-  "notes": "使用 prompt.txt 原文单轮生成；工作目录非空，但生成期间未读取其中其他文件。生成后仅对产物做过本地语法校验（JS 语法与 SVG 结构），未修改任何内容。artwork.html 为模型原始输出，后续消息仅按仓库规则归档，未做任何修改。effort 与 provider 由投稿者补充，未在运行环境中直接确认；harness 版本未知。model 字段为运行环境给出的完整标识。"
+  "notes": "使用 prompt.txt 原文单轮生成；工作目录非空，但生成期间未读取其中其他文件。生成后仅对产物做过本地语法校验（JS 语法与 SVG 结构），未修改任何内容。artwork.html 为模型原始输出，后续消息仅按仓库规则归档，未做任何修改。effort 与 provider 由投稿者补充，未在运行环境中直接确认；harness 版本未知。运行环境的完整路由标识为 opencode-go/deepseek-v4.1-flash；服务商前缀单独记入 provider，model 统一为 deepseek-v4.1-flash。"
 }

@@ -51,6 +51,8 @@ python3 -c "import hashlib, pathlib, sys; print(hashlib.sha256(pathlib.Path(sys.
 
 字段含义见 [README](README.md#元数据约定)。`prompt.txt` 对应 `pelican-bicycle-v1`。
 
+`model` 填模型标识，`provider` 单独填服务商。例如运行环境显示 `opencode-go/deepseek-v4.1-flash`，应填 `model: deepseek-v4.1-flash`、`provider: opencode-go`，完整路由标识写入 `notes`。优先使用仓库已有的同模型名称；不同版本不能合并，也不要盲目删除模型名称中的斜杠或开发商命名空间。
+
 ## 维护者审阅
 
 - 核对元数据与作者的运行说明，区分事实和未知信息。

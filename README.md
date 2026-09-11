@@ -41,7 +41,7 @@ build.py                  # 校验记录并生成静态画廊
 
 | 字段 | 含义 |
 | --- | --- |
-| `model` | 实际请求的完整模型标识，不把 effort 混入模型名 |
+| `model` | 模型本身的标识，保留版本；不混入服务商路由前缀或 effort。例如 `opencode-go/deepseek-v4.1-flash` 记为 `deepseek-v4.1-flash`，原始路由标识保留在 `notes` |
 | `effort` | 原始设置值，例如 `max`、`xhigh`；未知填 `unknown`，不适用填 `not-applicable` |
 | `provider` | 提供模型访问的服务，例如 `deepseek-api`、`opencode-go`；不是模型开发商的推测值 |
 | `harness` | 执行生成任务的应用/工具，例如 `codex`、`claude-code`、`opencode`、`dsh` |
