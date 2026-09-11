@@ -22,6 +22,14 @@
 
 画廊可按四个维度筛选，每个预览在限制网络和浏览器权限的 iframe 内播放。
 
+## 浏览统计（可选）
+
+画廊用 [GoatCounter](https://www.goatcounter.com/) 统计浏览量并在页脚显示总数，默认未配置（`gallery.html` 里是占位代码，不发任何外部请求）。启用步骤：
+
+1. 在 GoatCounter 注册站点，并在站点设置里打开 “Allow adding visitor counts on your website”。
+2. 把 `gallery.html` 里 `GOATCOUNTER_CODE` 的值换成你的站点代码。
+3. 运行 `python3 build.py` 验证后推送；看板在 `https://<你的代码>.goatcounter.com` 查看。计数接口有最长 4 小时缓存，新浏览不会立刻显示。
+
 ## 目录结构
 
 ```text
