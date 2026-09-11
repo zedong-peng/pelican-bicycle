@@ -63,7 +63,7 @@ dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 18px 18px 0; } .gallery { gap: 24px 18px; } h2 { font-size: 17px; } }
-@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
 <body>
@@ -76,7 +76,7 @@ body:has(dialog[open]) { overflow: hidden; }
       <label>Effort<select name="effort" multiple size="3"></select></label>
       <label>Provider<select name="provider" multiple size="3"></select></label>
       <label>Harness<select name="harness" multiple size="3"></select></label>
-      <div class="filter-actions"><button type="submit">应用筛选</button><button type="reset">清空</button></div>
+      <div class="filter-actions"><button type="reset">重置</button></div>
     </form>
     <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
@@ -115,8 +115,24 @@ function render() {
   document.querySelector("#count").textContent = `${visible} / ${cards.length} 作品`;
   document.querySelector("#empty").hidden = visible !== 0;
 }
-form.addEventListener("change", updateOptions);
-form.addEventListener("submit", event => { event.preventDefault(); Object.assign(applied, Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)]))); render(); });
+form.addEventListener("submit", event => event.preventDefault());
+function apply() {
+  Object.assign(applied, Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)])));
+  updateOptions(); render();
+}
+for (const select of selects) {
+  select.addEventListener("change", apply);
+  // Plain click on an already-selected option deselects it.
+  select.addEventListener("mousedown", event => {
+    const option = event.target.closest ? event.target.closest("option") : null;
+    if (!option || option.disabled) return;
+    if (option.selected) {
+      event.preventDefault();
+      option.selected = false;
+      apply();
+    }
+  });
+}
 form.addEventListener("reset", () => { setTimeout(() => { selects.forEach(select => [...select.options].forEach(option => option.selected = false)); Object.keys(applied).forEach(name => { applied[name] = []; }); updateOptions(); render(); }, 0); });
 updateOptions(); render();
 const viewer = document.querySelector("dialog");
