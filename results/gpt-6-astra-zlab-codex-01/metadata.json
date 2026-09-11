@@ -1,0 +1,13 @@
+{
+  "model": "gpt-6-astra",
+  "effort": "max",
+  "provider": "zlab",
+  "harness": "codex",
+  "harness_version": null,
+  "prompt_id": "pelican-bicycle-v1",
+  "prompt_verified": true,
+  "created_at": "2026-09-11",
+  "contributor": "zedong-peng",
+  "generation": "single-turn",
+  "notes": "使用 prompt.txt 原文单轮生成。经 zlab 内部接口访问模型；harness 版本未知。"
+}
