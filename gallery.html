@@ -76,7 +76,7 @@ body:has(dialog[open]) { overflow: hidden; }
       <label>Effort<select name="effort" multiple size="3"></select></label>
       <label>Provider<select name="provider" multiple size="3"></select></label>
       <label>Harness<select name="harness" multiple size="3"></select></label>
-      <div class="filter-actions"><button type="reset">重置</button></div>
+      <div class="filter-actions"><button type="button" id="copy-link">复制链接</button><button type="reset">重置</button></div>
     </form>
     <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
@@ -116,9 +116,34 @@ function render() {
   document.querySelector("#empty").hidden = visible !== 0;
 }
 form.addEventListener("submit", event => event.preventDefault());
+function writeURL() {
+  const params = new URLSearchParams();
+  for (const select of selects) for (const value of applied[select.name]) params.append(select.name, value);
+  const query = params.toString();
+  try {
+    history.replaceState(null, "", query ? `?${query}` : location.pathname);
+  } catch {
+    // file:// 本地预览不支持 replaceState，忽略即可。
+  }
+}
+function readURL() {
+  const params = new URLSearchParams(location.search);
+  for (const select of selects) {
+    const known = new Set(cards.map(card => card.dataset[select.name]));
+    const kept = [];
+    for (const raw of params.getAll(select.name)) {
+      if (known.has(raw)) { if (!kept.includes(raw)) kept.push(raw); continue; }
+      for (const part of raw.split(",")) {
+        const value = part.trim();
+        if (known.has(value) && !kept.includes(value)) kept.push(value);
+      }
+    }
+    applied[select.name] = kept;
+  }
+}
 function apply() {
   Object.assign(applied, Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)])));
-  updateOptions(); render();
+  updateOptions(); render(); writeURL();
 }
 for (const select of selects) {
   select.addEventListener("change", apply);
@@ -133,8 +158,29 @@ for (const select of selects) {
     }
   });
 }
-form.addEventListener("reset", () => { setTimeout(() => { selects.forEach(select => [...select.options].forEach(option => option.selected = false)); Object.keys(applied).forEach(name => { applied[name] = []; }); updateOptions(); render(); }, 0); });
-updateOptions(); render();
+form.addEventListener("reset", () => { setTimeout(() => { selects.forEach(select => [...select.options].forEach(option => option.selected = false)); Object.keys(applied).forEach(name => { applied[name] = []; }); updateOptions(); render(); writeURL(); }, 0); });
+const copyButton = document.querySelector("#copy-link");
+copyButton.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = location.href;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+  const original = copyButton.textContent;
+  copyButton.textContent = "已复制 ✓";
+  setTimeout(() => { copyButton.textContent = original; }, 1500);
+});
+readURL();
+updateOptions();
+for (const select of selects) {
+  for (const option of select.options) option.selected = applied[select.name].includes(option.value);
+}
+updateOptions(); render(); writeURL();
 const viewer = document.querySelector("dialog");
 const viewerFrame = viewer.querySelector("iframe");
 document.querySelector(".gallery").addEventListener("click", event => {
