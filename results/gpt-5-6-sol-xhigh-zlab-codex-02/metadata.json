@@ -1,0 +1,6 @@
+{
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "provider": "zlab",
+  "harness": "codex"
+}
