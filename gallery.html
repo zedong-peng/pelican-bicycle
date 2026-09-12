@@ -25,22 +25,23 @@ h1 { font-size: 44px; font-weight: 650; line-height: 1.2; margin: 0; }
 .prompt-label { flex-shrink: 0; font: 11px ui-monospace, monospace; color: #9b4234; }
 blockquote { margin: 0; line-height: 1.8; font-size: 14px; color: #555d54; }
 form { display: grid; grid-template-columns: 2fr 1fr 1.4fr 1.4fr auto; gap: 16px; align-items: end; padding: 26px 0 30px; }
-label { display: grid; gap: 9px; min-width: 0; font-size: 11px; font-weight: 500; color: #72776e; }
+fieldset[data-facet] { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 9px; }
+legend { padding: 0; font-size: 11px; font-weight: 500; color: #72776e; }
 .facet-name { display: flex; align-items: baseline; gap: 6px; }
 .facet-count { font: 10px ui-monospace, monospace; color: #a0a69a; }
-.facet-box { position: relative; display: block; min-width: 0; }
-select, button { min-width: 0; border: 1px solid #d7dbd2; border-radius: 4px; padding: 0 12px; font: inherit; background: transparent; color: #292f28; }
-select { width: 100%; font-size: 13px; background: #fff; }
+.check-list { position: relative; height: 144px; overflow-y: auto; background: #fff; border: 1px solid #d7dbd2; border-radius: 4px; padding: 4px; display: grid; gap: 2px; align-content: start; scrollbar-width: thin; scrollbar-color: #c3c9bd transparent; }
+.check-list::-webkit-scrollbar { width: 9px; }
+.check-list::-webkit-scrollbar-track { background: transparent; }
+.check-list::-webkit-scrollbar-thumb { background: #c3c9bd; border: 2px solid transparent; border-radius: 5px; background-clip: padding-box; }
+.check-list::-webkit-scrollbar-thumb:hover { background: #aab2a3; background-clip: padding-box; }
+.check-list.has-more::after { content: ""; position: sticky; left: 0; right: 0; bottom: -4px; display: block; height: 24px; margin-top: -24px; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,.96)); }
+.check-item { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 5px 6px; border-radius: 3px; font-size: 13px; font-weight: 400; color: #292f28; cursor: pointer; }
+.check-item:hover { background: #eef1ea; }
+.check-item input { flex-shrink: 0; width: 14px; height: 14px; margin: 0; accent-color: #b24030; cursor: pointer; }
+.check-text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.check-empty { padding: 5px 6px; font-size: 12px; color: #a0a69a; }
 .filter-actions { display: grid; gap: 8px; }
-select[multiple] { height: 144px; padding: 6px; scrollbar-width: thin; scrollbar-color: #c3c9bd transparent; }
-select[multiple]::-webkit-scrollbar { width: 9px; }
-select[multiple]::-webkit-scrollbar-track { background: transparent; }
-select[multiple]::-webkit-scrollbar-thumb { background: #c3c9bd; border: 2px solid transparent; border-radius: 5px; background-clip: padding-box; }
-select[multiple]::-webkit-scrollbar-thumb:hover { background: #aab2a3; background-clip: padding-box; }
-.facet-box::after { content: ""; position: absolute; left: 1px; right: 10px; bottom: 1px; height: 24px; pointer-events: none; opacity: 0; transition: opacity .15s; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,.96)); }
-.facet-box.has-more::after { opacity: 1; }
-select option { padding: 5px 6px; }
-button { cursor: pointer; font-size: 12px; }
+button { min-width: 0; border: 1px solid #d7dbd2; border-radius: 4px; padding: 7px 12px; font: inherit; background: transparent; color: #292f28; cursor: pointer; font-size: 12px; }
 button:hover { background: #eef1ea; }
 :focus-visible { outline: 2px solid #c24432; outline-offset: 4px; }
 .collection-heading { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; }
@@ -69,7 +70,7 @@ dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } }
-@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } select[multiple] { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
 <body>
@@ -78,10 +79,10 @@ body:has(dialog[open]) { overflow: hidden; }
     <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
     <div class="prompt"><span class="prompt-label">PROMPT / V1</span><blockquote><!-- PROMPT --></blockquote></div>
     <form aria-label="筛选作品">
-      <label><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span><span class="facet-box"><select name="model" multiple size="5"></select></span></label>
-      <label><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span><span class="facet-box"><select name="effort" multiple size="5"></select></span></label>
-      <label><span class="facet-name">Provider<span class="facet-count" data-count-for="provider"></span></span><span class="facet-box"><select name="provider" multiple size="5"></select></span></label>
-      <label><span class="facet-name">Harness<span class="facet-count" data-count-for="harness"></span></span><span class="facet-box"><select name="harness" multiple size="5"></select></span></label>
+      <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
+      <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
+      <fieldset data-facet="provider"><legend><span class="facet-name">Provider<span class="facet-count" data-count-for="provider"></span></span></legend><div class="check-list" data-options-for="provider" role="group" aria-label="Provider 多选"></div></fieldset>
+      <fieldset data-facet="harness"><legend><span class="facet-name">Harness<span class="facet-count" data-count-for="harness"></span></span></legend><div class="check-list" data-options-for="harness" role="group" aria-label="Harness 多选"></div></fieldset>
       <div class="filter-actions"><button type="button" id="copy-link">复制链接</button><button type="reset">重置</button></div>
     </form>
     <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
@@ -94,30 +95,64 @@ body:has(dialog[open]) { overflow: hidden; }
 const cards = [...document.querySelectorAll("article")];
 document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
 const form = document.querySelector("form");
-const selects = [...form.querySelectorAll("select")];
-const applied = Object.fromEntries(selects.map(select => [select.name, []]));
-const valuesFor = (select, state) => [...new Set(cards.filter(card => selects.every(other => {
-  const values = state[other.name] || [];
-  return other === select || !values.length || values.includes(card.dataset[other.name]);
-})).map(card => card.dataset[select.name]))].sort();
-function matches(card, state) { return selects.every(select => {
-  const values = state[select.name] || [];
-  return !values.length || values.includes(card.dataset[select.name]);
+const facets = [...form.querySelectorAll("[data-facet]")];
+const names = facets.map(facet => facet.dataset.facet);
+const lists = Object.fromEntries(facets.map(facet => [facet.dataset.facet, facet.querySelector("[data-options-for]")]));
+const applied = Object.fromEntries(names.map(name => [name, []]));
+const selectedIn = name => [...lists[name].querySelectorAll('input[type="checkbox"]:checked')].map(box => box.value);
+const draftState = () => Object.fromEntries(names.map(name => [name, selectedIn(name)]));
+const valuesFor = (name, state) => [...new Set(cards.filter(card => names.every(other => {
+  const values = state[other] || [];
+  return other === name || !values.length || values.includes(card.dataset[other]);
+})).map(card => card.dataset[name]))].sort();
+function matches(card, state) { return names.every(name => {
+  const values = state[name] || [];
+  return !values.length || values.includes(card.dataset[name]);
 }); }
-function updateOptions() {
-  const draft = Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)]));
-  for (const select of selects) {
-    const values = valuesFor(select, draft);
-    select.replaceChildren(...values.map(value => new Option(value, value)));
-    for (const value of draft[select.name]) { const option = [...select.options].find(item => item.value === value); if (option) option.selected = true; }
-    document.querySelector(`[data-count-for="${select.name}"]`).textContent = `· ${values.length}`;
+function buildList(name, values, checkedValues) {
+  const list = lists[name];
+  const scrollTop = list.scrollTop;
+  const checked = new Set(checkedValues);
+  list.replaceChildren(...values.map(value => {
+    const label = document.createElement("label");
+    label.className = "check-item";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.value = value;
+    box.checked = checked.has(value);
+    const text = document.createElement("span");
+    text.className = "check-text";
+    text.textContent = value;
+    text.title = value;
+    label.append(box, text);
+    return label;
+  }));
+  if (!values.length) {
+    const empty = document.createElement("div");
+    empty.className = "check-empty";
+    empty.textContent = "暂无";
+    list.append(empty);
   }
+  document.querySelector(`[data-count-for="${name}"]`).textContent = `· ${values.length}`;
+  list.scrollTop = scrollTop;
+}
+function updateAllOptions(state) {
+  for (const name of names) buildList(name, valuesFor(name, state), state[name] || []);
+  updateScrollHints();
+}
+function updateOtherOptions(changedName, state) {
+  for (const name of names) {
+    if (name === changedName) continue;
+    buildList(name, valuesFor(name, state), state[name] || []);
+  }
+  document.querySelector(`[data-count-for="${changedName}"]`).textContent = `· ${valuesFor(changedName, state).length}`;
   updateScrollHints();
 }
 function updateScrollHints() {
-  for (const select of selects) {
-    const overflow = select.scrollHeight - select.clientHeight;
-    select.parentElement.classList.toggle("has-more", overflow > 4 && overflow - select.scrollTop > 4);
+  for (const name of names) {
+    const list = lists[name];
+    const overflow = list.scrollHeight - list.clientHeight;
+    list.classList.toggle("has-more", overflow > 4 && overflow - list.scrollTop > 4);
   }
 }
 function render() {
@@ -132,7 +167,7 @@ function render() {
 form.addEventListener("submit", event => event.preventDefault());
 function writeURL() {
   const params = new URLSearchParams();
-  for (const select of selects) for (const value of applied[select.name]) params.append(select.name, value);
+  for (const name of names) for (const value of applied[name]) params.append(name, value);
   const query = params.toString();
   try {
     history.replaceState(null, "", query ? `?${query}` : location.pathname);
@@ -142,39 +177,36 @@ function writeURL() {
 }
 function readURL() {
   const params = new URLSearchParams(location.search);
-  for (const select of selects) {
-    const known = new Set(cards.map(card => card.dataset[select.name]));
+  for (const name of names) {
+    const known = new Set(cards.map(card => card.dataset[name]));
     const kept = [];
-    for (const raw of params.getAll(select.name)) {
+    for (const raw of params.getAll(name)) {
       if (known.has(raw)) { if (!kept.includes(raw)) kept.push(raw); continue; }
       for (const part of raw.split(",")) {
         const value = part.trim();
         if (known.has(value) && !kept.includes(value)) kept.push(value);
       }
     }
-    applied[select.name] = kept;
+    applied[name] = kept;
   }
 }
-function apply() {
-  Object.assign(applied, Object.fromEntries(selects.map(select => [select.name, [...select.selectedOptions].map(option => option.value)])));
-  updateOptions(); render(); writeURL();
+function apply(changedName) {
+  Object.assign(applied, draftState());
+  if (changedName) updateOtherOptions(changedName, applied);
+  else updateAllOptions(applied);
+  render(); writeURL();
 }
-for (const select of selects) {
-  select.addEventListener("change", apply);
-  select.addEventListener("scroll", updateScrollHints);
-  // Plain click on an already-selected option deselects it.
-  select.addEventListener("mousedown", event => {
-    const option = event.target.closest ? event.target.closest("option") : null;
-    if (!option || option.disabled) return;
-    if (option.selected) {
-      event.preventDefault();
-      option.selected = false;
-      apply();
-    }
-  });
+for (const facet of facets) {
+  const name = facet.dataset.facet;
+  lists[name].addEventListener("change", () => apply(name));
+  lists[name].addEventListener("scroll", updateScrollHints);
 }
 window.addEventListener("resize", updateScrollHints);
-form.addEventListener("reset", () => { setTimeout(() => { selects.forEach(select => [...select.options].forEach(option => option.selected = false)); Object.keys(applied).forEach(name => { applied[name] = []; }); updateOptions(); render(); writeURL(); }, 0); });
+form.addEventListener("reset", event => {
+  event.preventDefault();
+  for (const name of names) applied[name] = [];
+  updateAllOptions(applied); render(); writeURL();
+});
 const copyButton = document.querySelector("#copy-link");
 copyButton.addEventListener("click", async () => {
   try {
@@ -192,11 +224,7 @@ copyButton.addEventListener("click", async () => {
   setTimeout(() => { copyButton.textContent = original; }, 1500);
 });
 readURL();
-updateOptions();
-for (const select of selects) {
-  for (const option of select.options) option.selected = applied[select.name].includes(option.value);
-}
-updateOptions(); render(); writeURL();
+updateAllOptions(applied); render(); writeURL();
 const viewer = document.querySelector("dialog");
 const viewerFrame = viewer.querySelector("iframe");
 document.querySelector(".gallery").addEventListener("click", event => {
