@@ -21,8 +21,11 @@ nav .contribute { color: #bc3527; }
 h1 { font-size: 44px; font-weight: 650; line-height: 1.2; margin: 0; }
 .heading-aside { text-align: right; color: #737770; font-size: 12px; }
 .heading-aside strong { display: block; font: 32px Georgia, serif; color: #30392f; margin-bottom: 6px; }
-.prompt { display: flex; align-items: baseline; gap: 22px; padding: 20px 0; border-top: 1px solid #dedfd9; border-bottom: 1px solid #dedfd9; }
-.prompt-label { flex-shrink: 0; font: 11px ui-monospace, monospace; color: #9b4234; }
+.prompt { display: flex; align-items: flex-start; gap: 22px; padding: 20px 0; border-top: 1px solid #dedfd9; border-bottom: 1px solid #dedfd9; }
+.prompt-label { flex-shrink: 0; padding-top: 5px; font: 11px ui-monospace, monospace; color: #9b4234; }
+.prompt-body { flex: 1; min-width: 0; }
+.prompt-note { margin: 8px 0 0; font-size: 12px; line-height: 1.7; color: #81877b; }
+#copy-prompt { flex-shrink: 0; white-space: nowrap; }
 blockquote { margin: 0; line-height: 1.8; font-size: 14px; color: #555d54; }
 form { display: grid; grid-template-columns: 2fr 1fr 1.4fr 1.4fr auto; gap: 16px; align-items: end; padding: 26px 0 30px; }
 fieldset[data-facet] { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 9px; }
@@ -70,14 +73,14 @@ dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } }
-@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } blockquote { margin-top: 9px; font-size: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } .prompt-body { margin-top: 9px; } blockquote { font-size: 12px; } .prompt-note { font-size: 11px; } #copy-prompt { margin-top: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
   </style>
 </head>
 <body>
   <header><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">p</span>Pelican Bicycle</a><nav><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a class="contribute" href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
   <main>
     <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
-    <div class="prompt"><span class="prompt-label">PROMPT / V1</span><blockquote><!-- PROMPT --></blockquote></div>
+    <div class="prompt"><span class="prompt-label">PROMPT / V1</span><div class="prompt-body"><blockquote><!-- PROMPT --></blockquote><p class="prompt-note">小提示：如果模型回复里出现“内嵌 SVG 和 CSS 动画”这类套话，可以快速判断它画不出像样的鹈鹕——降智了。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
     <form aria-label="筛选作品">
       <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
       <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
@@ -222,6 +225,23 @@ copyButton.addEventListener("click", async () => {
   const original = copyButton.textContent;
   copyButton.textContent = "已复制 ✓";
   setTimeout(() => { copyButton.textContent = original; }, 1500);
+});
+const copyPromptButton = document.querySelector("#copy-prompt");
+copyPromptButton.addEventListener("click", async () => {
+  const text = document.querySelector(".prompt blockquote").textContent.trim();
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+  const original = copyPromptButton.textContent;
+  copyPromptButton.textContent = "已复制 ✓";
+  setTimeout(() => { copyPromptButton.textContent = original; }, 1500);
 });
 readURL();
 updateAllOptions(applied); render(); writeURL();
