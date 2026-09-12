@@ -1,0 +1,6 @@
+{
+  "model": "grok-4.6",
+  "effort": "xhigh",
+  "provider": "cursor",
+  "harness": "cursor"
+}
