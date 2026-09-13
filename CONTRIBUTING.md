@@ -9,7 +9,7 @@
 ## 提交 Pull Request
 
 1. Fork 仓库并创建分支。
-2. 在 `results/<slug>/` 新建目录，`slug` 自取、可读，例如 `deepseek-v4-1-flash-opencode-go-opencode-01`。只能用小写字母、数字和连字符，1–64 字符，首尾必须是字母或数字；不要用纯 12 位十六进制（那是旧 hash 目录，已废弃）。目录名不包含运行配置以外的语义负担，冲突时加 `-02`、`-03` 后缀。
+2. 在 `results/<slug>/` 新建目录，`slug` 必须严格由元数据四个字段推导：`<model>-<effort>-<provider>-<harness>`，全部小写，非字母数字的连续段合并为单个连字符（`.` 转 `-`，如 `gpt-5.6-sol` → `gpt-5-6-sol`；域名式 provider 只取主标签，如 `xmapi.site` → `xmapi`）。只能用小写字母、数字和连字符，1–64 字符，首尾必须是字母或数字；不要用纯 12 位十六进制（那是旧 hash 目录，已废弃）。同配置的重复运行在末尾加 `-01`、`-02`、`-03` 区分，例如 `gpt-5-6-sol-xhigh-xmapi-codex-01`。
 3. 将原始结果放入 `artwork.html`，按下方模板创建同目录下的 `metadata.json` 并填写，一共 4 个字段。无法确认的信息使用 `unknown`，不要猜测。
 4. 本地可选执行 `python3 build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。PR 和合并后的画廊都由 GitHub Actions 自动校验与构建（参见 `.github/workflows/pages.yml`），本地不跑也不影响。
 5. 提交 PR，填写模板并披露非标准运行条件。
@@ -26,9 +26,9 @@ cp /path/to/output.html results/deepseek-v4-1-flash-opencode-go-opencode-01/artw
 # 再按模板新建同目录下的 metadata.json
 ```
 
-- 建议格式：`<model>-<provider>-<harness>-<序号>`，全部小写，非字母数字转连字符，例如 `muse-spark-1-3-opencode-go-opencode`。model、effort、provider、harness 只写在 metadata 中，目录名只是方便 review 的别名，更正元数据时保留目录名。
+- 严格格式：`<model>-<effort>-<provider>-<harness>[-序号]`，例如 `muse-spark-1-3-contributor-xhigh-opencode-go-opencode`。目录名必须与 `metadata.json` 四字段对应，不能是自由取的别名，也不能掺入作者名等额外信息；更正元数据时必须用 `git mv` 在同一提交里同步重命名目录。
 - 不重复提交同一次运行。独立运行恰好输出相同 HTML 是允许的，用不同目录记录，并在 PR 描述里说明原因；CI 只会打印 warning，不会因此失败。不要覆盖或合并运行记录。
-- PR 合并前同步 `main`；如果 slug 已被占用，换一个未占用的名字。
+- PR 合并前同步 `main`；如果 slug 已被占用，在末尾加 `-02`、`-03` 顺延。
 - 不要格式化 HTML 或转换换行；仓库通过 `.gitattributes` 禁用作品文件的自动换行转换。
 
 ## 元数据模板

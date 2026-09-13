@@ -26,7 +26,7 @@
 
 ```text
 results/
-  <slug>/                  # 自取的可读别名，如 deepseek-v4-1-flash-opencode-go-opencode-01
+  <slug>/                  # 由元数据四字段推导，如 deepseek-v4-1-flash-max-opencode-go-opencode-02
     artwork.html          # 原始生成结果，单文件、资源内联
     metadata.json         # 运行信息
 prompt.txt                # 统一 prompt（pelican-bicycle-v1）
@@ -35,7 +35,7 @@ build.py                  # 校验记录并生成静态画廊
 .github/                  # PR 模板、校验和 Pages 部署
 ```
 
-目录 slug 只是方便 review 的别名，不包含校验语义；更正 metadata 无需重命名。命名规则与重复输出处理见 [投稿指南](CONTRIBUTING.md#目录-slug)。画廊按 metadata 中的配置排序。去重靠构建时内部计算的 SHA-256（重复只 warning，不阻塞），不再要求目录名等于 hash。
+目录 slug 必须与 metadata 四字段严格对应（推导规则见投稿指南），不包含其他语义；更正 metadata 时须用 `git mv` 同步重命名目录。命名规则与重复输出处理见 [投稿指南](CONTRIBUTING.md#目录-slug)。画廊按 metadata 中的配置排序。去重靠构建时内部计算的 SHA-256（重复只 warning，不阻塞），不再要求目录名等于 hash。
 
 ## 元数据约定
 

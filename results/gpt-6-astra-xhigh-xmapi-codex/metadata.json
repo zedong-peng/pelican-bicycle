@@ -1,6 +1,6 @@
 {
   "model": "gpt-6-astra",
-  "effort": "max",
-  "provider": "xbhuiz.com",
+  "effort": "xhigh",
+  "provider": "xmapi.site",
   "harness": "codex"
 }

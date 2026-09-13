@@ -9,9 +9,9 @@ Static archive of "pelican rides bicycle" SVG animations. No dependencies, no te
 
 ## Submissions (`results/<slug>/`)
 
-Each run is exactly 2 files, nothing else: `artwork.html` + `metadata.json`. Never touch existing run dirs; new/duplicate runs get a new dir.
+Each run is exactly 2 files, nothing else: `artwork.html` + `metadata.json`. Never edit an existing run's `artwork.html`; new/duplicate runs get a new dir. Renames are only allowed via `git mv` to keep the slug in sync with a metadata correction — never to reuse a slug for different content.
 
-- `slug`: `[a-z0-9-]{1,64}`, leading/trailing char must be alnum. Never pure 12-hex (`[0-9a-f]{12}...` is rejected as legacy hash dir). On conflict append `-02`, `-03`; renaming to fix metadata is forbidden.
+- `slug`: strictly derived from metadata as `<model>-<effort>-<provider>-<harness>`, all lowercase with every non-`[a-z0-9]` run collapsed to a single `-` (e.g. `gpt-5.6-sol` → `gpt-5-6-sol`; domain-style providers keep only the main label, e.g. `xmapi.site` → `xmapi`). Must match `[a-z0-9-]{1,64}` with alnum leading/trailing char. Never pure 12-hex (`[0-9a-f]{12}...` is rejected as legacy hash dir). Repeat runs under identical config append `-01`, `-02`, `-03`; fixing metadata requires renaming the dir in the same commit.
 - `metadata.json`: exactly these 4 non-empty string keys, no extras — `model`, `effort`, `provider`, `harness`. Unknown → `"unknown"`, n/a effort → `"not-applicable"`. Never guess.
 - `model` vs `provider`: strip routing prefix, e.g. `opencode-go/deepseek-v4.1-flash` → `model: deepseek-v4.1-flash`, `provider: opencode-go`. Reuse existing same-model spelling; versions never merge.
 - `artwork.html`: ≤2 MiB, must contain `<!doctype html>`, `<head>`, `<svg>` (case-insensitive). Single file, resources inline, no remote deps, no secrets/PII/tracking. Never reformat or change line endings — `results/**/artwork.html -text` via `.gitattributes`.
@@ -19,7 +19,7 @@ Each run is exactly 2 files, nothing else: `artwork.html` + `metadata.json`. Nev
 
 ## Build behavior (`build.py`, `gallery.html`)
 
-- Sort order is `model, effort, provider, harness, slug` from metadata — slugs carry no semantics.
+- Sort order is `model, effort, provider, harness, slug` from metadata — the slug must mirror those four fields, and is only a tiebreaker in sorting.
 - `site/` is gitignored build output — never commit. Build injects CSP `<meta>` + `sandbox="allow-scripts"` iframe wrappers; originals stay untouched.
 - Template placeholders: `gallery.html` `<!-- RESULTS -->` / `<!-- PROMPT -->` (from `prompt.txt`).
 
