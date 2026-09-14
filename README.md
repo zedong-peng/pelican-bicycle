@@ -35,7 +35,7 @@ build.py                  # 校验记录并生成静态画廊
 .github/                  # PR 模板、校验和 Pages 部署
 ```
 
-目录 slug 必须与 metadata 四字段严格对应（推导规则见投稿指南），不包含其他语义；更正 metadata 时须用 `git mv` 同步重命名目录。命名规则与重复输出处理见 [投稿指南](CONTRIBUTING.md#目录-slug)。画廊按 metadata 中的配置排序。去重靠构建时内部计算的 SHA-256（重复只 warning，不阻塞），不再要求目录名等于 hash。
+目录 slug 必须与 metadata 四字段严格对应（推导规则见投稿指南），不包含其他语义；走实验室网关再路由上游时 provider 记为 `网关(上游)`（如 `zlab(fengchao-api.com)`，slug 取 `zlab-fengchao-api`）；更正 metadata 时须用 `git mv` 同步重命名目录。命名规则与重复输出处理见 [投稿指南](CONTRIBUTING.md#目录-slug)。画廊按 metadata 中的配置排序。去重靠构建时内部计算的 SHA-256（重复只 warning，不阻塞），不再要求目录名等于 hash。
 
 ## 元数据约定
 
@@ -43,7 +43,7 @@ build.py                  # 校验记录并生成静态画廊
 | --- | --- |
 | `model` | 模型本身的标识，保留版本；不混入服务商路由前缀或 effort。例如 `opencode-go/deepseek-v4.1-flash` 记为 `deepseek-v4.1-flash` |
 | `effort` | 原始设置值，例如 `max`、`xhigh`；未知填 `unknown`，不适用填 `not-applicable` |
-| `provider` | 提供模型访问的服务，例如 `deepseek-api`、`opencode-go`；不是模型开发商的推测值 |
+| `provider` | 提供模型访问的服务，例如 `deepseek-api`、`opencode-go`；走实验室网关再路由上游时记为 `网关(上游)`，如 `zlab(fengchao-api.com)`；不是模型开发商的推测值 |
 | `harness` | 执行生成任务的应用/工具，例如 `codex`、`claude-code`、`opencode`、`dsh` |
 
 投稿人信息以 git 提交和 PR 作者为准；重试、挑选、系统提示、非默认配置等补充说明写在 PR 描述的运行说明里，不单独存字段。初始 6 个作品直接从原有 HTML 导入，文件内容未修改，模型和环境信息仅由文件名提取。`unknown` 不代表官方直连。不同 provider 的 effort 标签也不保证具有相同含义。

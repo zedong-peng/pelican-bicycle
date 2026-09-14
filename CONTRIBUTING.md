@@ -9,7 +9,7 @@
 ## 提交 Pull Request
 
 1. Fork 仓库并创建分支。
-2. 在 `results/<slug>/` 新建目录，`slug` 必须严格由元数据四个字段推导：`<model>-<effort>-<provider>-<harness>`，全部小写，非字母数字的连续段合并为单个连字符（`.` 转 `-`，如 `gpt-5.6-sol` → `gpt-5-6-sol`；域名式 provider 只取主标签，如 `xmapi.site` → `xmapi`）。只能用小写字母、数字和连字符，1–64 字符，首尾必须是字母或数字；不要用纯 12 位十六进制（那是旧 hash 目录，已废弃）。同配置的重复运行在末尾加 `-01`、`-02`、`-03` 区分，例如 `gpt-5-6-sol-xhigh-xmapi-codex-01`。
+2. 在 `results/<slug>/` 新建目录，`slug` 必须严格由元数据四个字段推导：`<model>-<effort>-<provider>-<harness>`，全部小写，非字母数字的连续段合并为单个连字符（`.` 转 `-`，如 `gpt-5.6-sol` → `gpt-5-6-sol`；域名式 provider 只取主标签，如 `xmapi.site` → `xmapi`；复合 `zlab(fengchao-api.com)` → `zlab-fengchao-api`，上游域名去 TLD）。只能用小写字母、数字和连字符，1–64 字符，首尾必须是字母或数字；不要用纯 12 位十六进制（那是旧 hash 目录，已废弃）。同配置的重复运行在末尾加 `-01`、`-02`、`-03` 区分，例如 `gpt-5-6-sol-xhigh-xmapi-codex-01`。
 3. 将原始结果放入 `artwork.html`，按下方模板创建同目录下的 `metadata.json` 并填写，一共 4 个字段。无法确认的信息使用 `unknown`，不要猜测。
 4. 本地可选执行 `python3 build.py`，打开 `site/index.html` 检查预览与标签；构建产物不提交。PR 和合并后的画廊都由 GitHub Actions 自动校验与构建（参见 `.github/workflows/pages.yml`），本地不跑也不影响。
 5. 提交 PR，填写模板并披露非标准运行条件。
@@ -44,7 +44,7 @@ cp /path/to/output.html results/deepseek-v4-1-flash-opencode-go-opencode-01/artw
 
 字段含义见 [README](README.md#元数据约定)。所有作品都使用当前 `prompt.txt` 生成；重试、挑选、系统提示、非默认配置、失败现象等补充说明写在 PR 描述的运行说明里。
 
-`model` 填模型标识，`provider` 单独填服务商。例如运行环境显示 `opencode-go/deepseek-v4.1-flash`，应填 `model: deepseek-v4.1-flash`、`provider: opencode-go`。优先使用仓库已有的同模型名称；不同版本不能合并，也不要盲目删除模型名称中的斜杠或开发商命名空间。
+`model` 填模型标识，`provider` 单独填服务商。例如运行环境显示 `opencode-go/deepseek-v4.1-flash`，应填 `model: deepseek-v4.1-flash`、`provider: opencode-go`。走实验室网关再路由上游时填复合形式 `网关(上游)`（用圆括号，不用 `-`，因为中转域名本身含 `-`），如 `zlab(fengchao-api.com)`；全小写、无空格。优先使用仓库已有的同模型名称；不同版本不能合并，也不要盲目删除模型名称中的斜杠或开发商命名空间。
 
 ## 维护者审阅
 
