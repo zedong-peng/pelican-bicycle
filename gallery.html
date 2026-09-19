@@ -74,16 +74,184 @@ dialog::backdrop { background: #172014b3; }
 dialog iframe { height: min(72dvh, 750px); aspect-ratio: auto; }
 body:has(dialog[open]) { overflow: hidden; }
 [hidden] { display: none !important; }
-@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } }
-@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } .prompt-body { margin-top: 9px; } blockquote { font-size: 12px; } .prompt-note { font-size: 11px; } #copy-prompt, #copy-candy { margin-top: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } }
+.cache-widget { scroll-margin-top: 16px; padding: 4px 0 18px; border-bottom: 1px solid #dedfd9; }
+.cache-widget-head { display: flex; align-items: flex-start; gap: 22px; padding: 18px 0 14px; }
+.cache-widget-copy { flex: 1; min-width: 0; }
+.cache-widget-copy h2 { margin: 0; font-size: 15px; font-weight: 650; }
+.cache-widget .lede { margin: 6px 0 0; font-size: 13px; line-height: 1.7; color: #555d54; max-width: 92ch; }
+.cache-widget .lede code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: #30392f; background: #eff2eb; padding: 2px 6px; border-radius: 4px; }
+.cache-verdict { padding: 14px 16px; background: #fff; border: 1px solid #d7dbd2; border-radius: 6px; margin-bottom: 12px; }
+.cache-verdict.win-pro { border-left: 3px solid #b24030; }
+.cache-verdict.win-a { border-left: 3px solid #348579; }
+.cache-verdict.win-b { border-left: 3px solid #6b5b95; }
+.cache-verdict.tie { border-left: 3px solid #c9a227; }
+.cache-verdict h3 { margin: 0 0 6px; font-size: 18px; font-weight: 650; }
+.cache-verdict p { margin: 0 0 8px; color: #737770; font-size: 13px; }
+.cache-verdict .big { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.cache-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.cache-card { background: #fff; border: 1px solid #d7dbd2; border-radius: 6px; padding: 14px 16px; }
+.cache-card.station-pro { border-top: 3px solid #b24030; }
+.cache-card.station-a { border-top: 3px solid #348579; }
+.cache-card.station-b { border-top: 3px solid #6b5b95; }
+.cache-card h3 { margin: 0 0 10px; font-size: 15px; font-weight: 650; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cache-widget label { display: block; font-size: 12px; color: #72776e; margin: 8px 0 4px; }
+.cache-widget input[type="number"] { width: 100%; background: #fafbf9; color: #242624; border: 1px solid #d7dbd2; border-radius: 4px; padding: 7px 10px; font: inherit; font-variant-numeric: tabular-nums; }
+.cache-widget input[type="range"] { width: 100%; accent-color: #348579; }
+.cache-card.station-pro input[type="range"] { accent-color: #b24030; }
+.cache-card.station-b input[type="range"] { accent-color: #6b5b95; }
+.cache-widget .val { font-variant-numeric: tabular-nums; color: #242624; font-weight: 650; float: right; }
+.cache-widget .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.cache-verdict .metrics { grid-template-columns: repeat(4, 1fr); margin-top: 8px; }
+.cache-widget .metric { background: #f3f5f0; border-radius: 6px; padding: 9px 11px; }
+.cache-widget .metric .k { font-size: 11px; color: #8a9084; }
+.cache-widget .metric .v { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.cache-widget .metric .u { font-size: 12px; color: #737770; font-weight: 500; }
+.cache-widget .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.cache-widget .badge-win { background: #e5f3ea; color: #2f6b4f; }
+.cache-widget .badge-lose { background: #f8e8e6; color: #b24030; }
+.cache-widget .badge-tie { background: #f4eedc; color: #8a7018; }
+.cache-widget .note { font-size: 13px; color: #737770; margin: 8px 0 0; }
+.cache-widget .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #30392f; background: #f3f5f0; border-radius: 6px; padding: 12px 14px; overflow-x: auto; margin-top: 8px; white-space: pre-wrap; }
+.cache-widget table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+.cache-widget th, .cache-widget td { text-align: right; padding: 7px 8px; border-bottom: 1px solid #e1e5de; }
+.cache-widget th:first-child, .cache-widget td:first-child { text-align: left; }
+.cache-widget th { color: #72776e; font-weight: 600; font-size: 12px; }
+.cache-widget tr.band-p td { background: rgba(178, 64, 48, 0.07); }
+.cache-widget tr.band-a td { background: rgba(52, 133, 121, 0.08); }
+.cache-widget tr.band-b td { background: rgba(107, 91, 149, 0.08); }
+.cache-widget td.best { color: #2f6b4f; font-weight: 650; }
+.cache-widget .chart-wrap { position: relative; height: 220px; margin-top: 6px; }
+.cache-widget canvas { width: 100%; height: 100%; display: block; }
+.cache-widget .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: #737770; margin-top: 8px; }
+.cache-widget .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 6px; vertical-align: -1px; }
+.cache-widget .checks { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.cache-widget .checks label { margin: 0; color: #242624; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+.cache-widget .checks input[type="checkbox"] { accent-color: #b24030; }
+.cache-widget .inline-num { width: 68px; flex-shrink: 0; }
+.cache-widget details { margin-top: 10px; }
+.cache-widget summary { cursor: pointer; color: #b24030; font-size: 13px; }
+.cache-widget .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cache-more { margin-top: 4px; }
+@media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } .cache-grid-3 { grid-template-columns: 1fr; } .cache-widget .pair, .cache-verdict .metrics { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } .prompt-body { margin-top: 9px; } blockquote { font-size: 12px; } .prompt-note { font-size: 11px; } #copy-prompt, #copy-candy { margin-top: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } .cache-widget-head { display: block; } .cache-widget .lede { font-size: 12px; } .cache-verdict h3 { font-size: 16px; } .cache-grid-3, .cache-widget .pair { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <header><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">p</span>Pelican Bicycle</a><nav><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a class="contribute" href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
+  <header><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">p</span>Pelican Bicycle</a><nav><a href="#cache-tool">缓存计算器</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a class="contribute" href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
   <main>
     <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
     <div class="prompt"><span class="prompt-label">PROMPT / V1</span><div class="prompt-body"><blockquote><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
     <div class="prompt"><span class="prompt-label">CANDY / TEST</span><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note">糖果题测试降智：一键下载并运行（示例为 gpt-6-astra / low / 5 次，可自行替换 -m / -r / -n 参数）。</p></div><button type="button" id="copy-candy">复制命令</button></div>
+    <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
+      <div class="cache-widget-head">
+        <span class="prompt-label">CACHE / $200</span>
+        <div class="cache-widget-copy">
+          <h2 id="cache-title">$200 token 购买力</h2>
+          <p class="lede">花同样 <code>$200</code>，能买多少 GPT-6 Astra token，方便直接对 Pro 20x。官方价：输入 <code>$10</code> / 缓存读 <code>$1</code> / 输出 <code>$50</code>（每百万 token）。Pro 20x 月费 <code>$200</code>、额度约 <code>$10,000</code> 官方价（等效 <code>0.02×</code>）。中转实付 = 官方混合价 × 倍率；缓存越高，同样 $200 买得越多。</p>
+        </div>
+      </div>
+      <div class="cache-verdict win-pro" id="cc-verdict">
+        <h3 id="cc-verdictTitle">计算中</h3>
+        <p id="cc-verdictSub"></p>
+        <div class="metrics" id="cc-buyMetrics"></div>
+        <div class="big" id="cc-verdictDelta"></div>
+        <p id="cc-verdictDeltaSub" class="note"></p>
+      </div>
+      <div class="cache-grid-3">
+        <section class="cache-card station-pro">
+          <h3><span>Pro 20x</span><span class="badge" id="cc-badgeP"></span></h3>
+          <p class="note" style="margin-top:0">$200 换 $10,000 官方额度</p>
+          <label>Pro 侧缓存率 <span class="val" id="cc-cachePLabel"></span></label>
+          <input id="cc-cacheP" type="range" min="50" max="99" step="0.5" value="90">
+          <div class="metrics" id="cc-metricsP"></div>
+        </section>
+        <section class="cache-card station-a">
+          <h3><span>站点 A · 高缓存</span><span class="badge" id="cc-badgeA"></span></h3>
+          <label>倍率 <span class="val" id="cc-multALabel"></span></label>
+          <input id="cc-multA" type="range" min="0.02" max="0.40" step="0.005" value="0.20">
+          <label>平均缓存率 <span class="val" id="cc-cacheALabel"></span></label>
+          <input id="cc-cacheA" type="range" min="50" max="99" step="0.5" value="92">
+          <div class="metrics" id="cc-metricsA"></div>
+        </section>
+        <section class="cache-card station-b">
+          <h3><span>站点 B · 低倍率</span><span class="badge" id="cc-badgeB"></span></h3>
+          <label>倍率 <span class="val" id="cc-multBLabel"></span></label>
+          <input id="cc-multB" type="range" min="0.02" max="0.40" step="0.005" value="0.15">
+          <label>平均缓存率 <span class="val" id="cc-cacheBLabel"></span></label>
+          <input id="cc-cacheB" type="range" min="50" max="99" step="0.5" value="75">
+          <div class="metrics" id="cc-metricsB"></div>
+        </section>
+      </div>
+      <section class="cache-card">
+        <div class="pair">
+          <div>
+            <label>输入占比 <span class="val" id="cc-inputShareLabel"></span></label>
+            <input id="cc-inputShare" type="range" min="80" max="99.9" step="0.1" value="99.0">
+          </div>
+          <div>
+            <label>对比预算 $</label>
+            <input id="cc-budget" type="number" min="1" step="1" value="200">
+          </div>
+        </div>
+        <div class="pair">
+          <div>
+            <label>Pro 月额度（官方等价 $）</label>
+            <input id="cc-proQuota" type="number" min="1" step="1" value="10000">
+          </div>
+          <div>
+            <p class="note">Codex / 长上下文 agent 输入常占 97%+。默认 99% 输入、Pro 90% 缓存，大约对应 $2.37/M 官方混合价。</p>
+          </div>
+        </div>
+        <details>
+          <summary>计价假设与公式</summary>
+          <div class="checks">
+            <label><input id="cc-cacheWrite" type="checkbox"> 未命中按官方 cache write $12.50 计（默认关）</label>
+            <label>write 占未命中 <input id="cc-writeShare" class="inline-num" type="number" min="0" max="100" step="5" value="80"> %</label>
+            <label><input id="cc-longCtx" type="checkbox"> 长上下文 &gt;272K（输入/缓存 ×2，输出 ×1.5）</label>
+          </div>
+          <div class="formula">官方混合价 $/M =
+  输入占比 × [(1 − 缓存率) × $10 + 缓存率 × $1]
++ 输出占比 × $50
+
+中转：$200 买到的 token(M) = 200 / (官方混合价 × 倍率)
+Pro：$200 买到的 token(M) = 10,000 / 官方混合价
+
+同缓存时，中转要打平 Pro，倍率必须 ≤ 0.02×。
+缓存只作用在输入上；输出永远按 $50 × 倍率。</div>
+        </details>
+      </section>
+      <details class="cache-more" id="cc-more">
+        <summary>$200 购买力曲线 · 同缓存对照</summary>
+        <section class="cache-card" style="margin-top:12px">
+          <h3>$200 能买的 token vs 缓存率</h3>
+          <div class="chart-wrap"><canvas id="cc-chart" width="1040" height="220"></canvas></div>
+          <div class="legend">
+            <span><i class="dot" style="background:#b24030"></i>Pro 20x · 圆点 = 当前缓存</span>
+            <span><i class="dot" style="background:#348579"></i>A 倍率 · 圆点 = 平均缓存</span>
+            <span><i class="dot" style="background:#6b5b95"></i>B 倍率 · 圆点 = 平均缓存</span>
+          </div>
+        </section>
+        <section class="cache-card" style="margin-top:12px">
+          <h3>同缓存率下 $200 各买多少</h3>
+          <p class="note" style="margin-top:0">同缓存时低倍率一定买得更多。真正该看的是两边各自的平均缓存率。</p>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>缓存率</th>
+                  <th>官方混合 $/M</th>
+                  <th id="cc-thP">Pro</th>
+                  <th id="cc-thA">A</th>
+                  <th id="cc-thB">B</th>
+                  <th>买得最多</th>
+                </tr>
+              </thead>
+              <tbody id="cc-tableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </details>
+    </section>
     <form aria-label="筛选作品">
       <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
       <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
@@ -282,6 +450,277 @@ viewer.addEventListener("click", event => {
   const rect = viewer.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) viewer.close();
 });
+</script>
+<script>
+(function () {
+  const PRICE = { in: 10, cache: 1, write: 12.5, out: 50 };
+  const $ = (id) => document.getElementById("cc-" + id);
+  if (!$("verdict")) return;
+
+  function prices() {
+    const long = $("longCtx").checked;
+    return {
+      in: long ? PRICE.in * 2 : PRICE.in,
+      cache: long ? PRICE.cache * 2 : PRICE.cache,
+      write: long ? PRICE.write * 2 : PRICE.write,
+      out: long ? PRICE.out * 1.5 : PRICE.out,
+    };
+  }
+
+  function blendedOfficial(cacheRate, inputShare) {
+    const p = prices();
+    const c = cacheRate / 100;
+    const a = inputShare / 100;
+    let uncachedUnit = p.in;
+    if ($("cacheWrite").checked) {
+      const w = Math.min(100, Math.max(0, Number($("writeShare").value) || 0)) / 100;
+      uncachedUnit = w * p.write + (1 - w) * p.in;
+    }
+    const inputUnit = (1 - c) * uncachedUnit + c * p.cache;
+    return a * inputUnit + (1 - a) * p.out;
+  }
+
+  function fmtMoney(n, digits = 2) {
+    if (!isFinite(n)) return "—";
+    const abs = Math.abs(n);
+    const d = digits === 0 || abs >= 1000 ? 0 : abs >= 100 ? Math.min(digits, 1) : digits;
+    return (n < 0 ? "-" : "") + "$" + abs.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function fmtNum(n, d = 2) { return Number(n).toFixed(d); }
+  function fmtTok(n) {
+    if (!isFinite(n)) return "—";
+    const abs = Math.abs(n);
+    const d = abs >= 1000 ? 0 : abs >= 20 ? 1 : 2;
+    return abs.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " M";
+  }
+  function pctOf(part, whole) {
+    if (!isFinite(part) || !isFinite(whole) || whole <= 0) return "—";
+    return fmtNum(part / whole * 100, 1) + "%";
+  }
+
+  function relayPower(mult, cache, budget) {
+    const inputShare = Number($("inputShare").value);
+    const officialPerM = blendedOfficial(cache, inputShare);
+    const payPerM = officialPerM * mult;
+    return {
+      mult, cache, inputShare, officialPerM, payPerM,
+      tokens: payPerM > 0 ? budget / payPerM : Infinity,
+    };
+  }
+
+  function proPower(cache, budget, quota) {
+    const inputShare = Number($("inputShare").value);
+    const officialPerM = blendedOfficial(cache, inputShare);
+    const effectiveMult = budget / quota;
+    return {
+      cache, inputShare, officialPerM, effectiveMult,
+      payPerM: officialPerM * effectiveMult,
+      tokens: officialPerM > 0 ? quota / officialPerM : Infinity,
+    };
+  }
+
+  function renderMetrics(el, s, vsPro, budget) {
+    el.innerHTML = `
+      <div class="metric"><div class="k">${fmtMoney(budget, 0)} 买到</div><div class="v">${fmtTok(s.tokens)}</div><div class="u">相对 Pro ${vsPro}</div></div>
+      <div class="metric"><div class="k">有效单价 / M</div><div class="v">${fmtMoney(s.payPerM, 3)}</div><div class="u">官方混合 ${fmtMoney(s.officialPerM, 3)}/M</div></div>
+    `;
+  }
+
+  function setBadge(el, kind, text) {
+    el.className = "badge badge-" + kind;
+    el.textContent = text;
+  }
+
+  function render() {
+    const budget = Number($("budget").value) || 200;
+    const quota = Number($("proQuota").value) || 10000;
+    const inputShare = Number($("inputShare").value);
+    const multA = Number($("multA").value);
+    const multB = Number($("multB").value);
+    const cacheA = Number($("cacheA").value);
+    const cacheB = Number($("cacheB").value);
+    const cacheP = Number($("cacheP").value);
+
+    $("multALabel").textContent = fmtNum(multA, 3) + "×";
+    $("multBLabel").textContent = fmtNum(multB, 3) + "×";
+    $("cacheALabel").textContent = fmtNum(cacheA, 1) + "%";
+    $("cacheBLabel").textContent = fmtNum(cacheB, 1) + "%";
+    $("cachePLabel").textContent = fmtNum(cacheP, 1) + "%";
+    $("inputShareLabel").textContent = fmtNum(inputShare, 1) + "%";
+
+    const p = proPower(cacheP, budget, quota);
+    const a = relayPower(multA, cacheA, budget);
+    const b = relayPower(multB, cacheB, budget);
+    renderMetrics($("metricsP"), p, "100%", budget);
+    renderMetrics($("metricsA"), a, pctOf(a.tokens, p.tokens), budget);
+    renderMetrics($("metricsB"), b, pctOf(b.tokens, p.tokens), budget);
+
+    const ranked = [
+      { key: "pro", label: "Pro 20x", tokens: p.tokens },
+      { key: "a", label: "A", tokens: a.tokens },
+      { key: "b", label: "B", tokens: b.tokens },
+    ].sort((x, y) => y.tokens - x.tokens);
+    const lead = ranked[0];
+    const second = ranked[1];
+    const clear = lead.tokens > second.tokens * 1.03;
+
+    function badgeFor(key, tokens) {
+      if (clear && key === lead.key) return ["win", "购买力最高"];
+      if (Math.abs(tokens - lead.tokens) / lead.tokens < 0.03) return ["tie", "接近最高"];
+      return ["lose", "更少"];
+    }
+    setBadge($("badgeP"), ...badgeFor("pro", p.tokens));
+    setBadge($("badgeA"), ...badgeFor("a", a.tokens));
+    setBadge($("badgeB"), ...badgeFor("b", b.tokens));
+
+    const v = $("verdict");
+    const proWins = p.tokens >= a.tokens && p.tokens >= b.tokens;
+    const relayBest = a.tokens >= b.tokens ? a : b;
+    const relayName = a.tokens >= b.tokens ? "A" : "B";
+    if (proWins && p.tokens > relayBest.tokens * 1.03) {
+      v.className = "cache-verdict win-pro";
+      $("verdictTitle").textContent = `同样 ${fmtMoney(budget, 0)}，Pro 20x 买到的 token 更多`;
+      $("verdictSub").textContent =
+        "Pro 约 " + fmtTok(p.tokens) + "，中转最好的一档（站点" + relayName + "）约 " + fmtTok(relayBest.tokens) +
+        "，相当于 Pro 的 " + pctOf(relayBest.tokens, p.tokens) + "。能搞到 Pro 就买 Pro。";
+    } else if (!proWins && clear) {
+      v.className = "cache-verdict " + (lead.key === "a" ? "win-a" : lead.key === "b" ? "win-b" : "win-pro");
+      $("verdictTitle").textContent = "中转购买力已经超过 Pro 20x";
+      $("verdictSub").textContent = lead.label + " 花 " + fmtMoney(budget, 0) + " 能买 " + fmtTok(lead.tokens) + "，Pro 只有 " + fmtTok(p.tokens) + "。";
+    } else {
+      v.className = "cache-verdict tie";
+      $("verdictTitle").textContent = "购买力接近，看缓存稳不稳";
+      $("verdictSub").textContent = "三档都在同一量级。选延迟更稳、缓存报表更高的。";
+    }
+
+    const sameCacheBeat = budget / quota;
+    $("buyMetrics").innerHTML = `
+      <div class="metric"><div class="k">Pro 20x · ${fmtMoney(budget, 0)}</div><div class="v">${fmtTok(p.tokens)}</div><div class="u">${fmtNum(cacheP, 0)}% 缓存 · 等效 ${fmtNum(p.effectiveMult, 3)}×</div></div>
+      <div class="metric"><div class="k">A ${fmtNum(a.mult, 2)}× @ ${fmtNum(cacheA, 0)}%</div><div class="v">${fmtTok(a.tokens)}</div><div class="u">Pro 的 ${pctOf(a.tokens, p.tokens)}</div></div>
+      <div class="metric"><div class="k">B ${fmtNum(b.mult, 2)}× @ ${fmtNum(cacheB, 0)}%</div><div class="v">${fmtTok(b.tokens)}</div><div class="u">Pro 的 ${pctOf(b.tokens, p.tokens)}</div></div>
+      <div class="metric"><div class="k">同缓存打平 Pro 的倍率</div><div class="v">≤ ${fmtNum(sameCacheBeat, 3)}×</div><div class="u">按当前预算 / Pro 额度</div></div>
+    `;
+
+    const save = Math.abs(a.tokens - b.tokens);
+    if (proWins) {
+      $("verdictDelta").textContent = "Pro 是中转最好一档的 " + fmtNum(p.tokens / relayBest.tokens, 1) + " 倍";
+      $("verdictDeltaSub").textContent = "中转里 " + (a.tokens >= b.tokens ? "A 比 B 多买 " : "B 比 A 多买 ") + fmtTok(save);
+    } else {
+      $("verdictDelta").textContent = (a.tokens >= b.tokens ? "A 比 B 多买 " : "B 比 A 多买 ") + fmtTok(save);
+      $("verdictDeltaSub").textContent = "相对更少的中转 +" + fmtNum(save / Math.max(a.tokens, b.tokens) * 100, 1) + "%";
+    }
+
+    $("thP").textContent = "Pro " + fmtNum(p.effectiveMult, 2) + "×";
+    $("thA").textContent = "A " + fmtNum(multA, 2) + "×";
+    $("thB").textContent = "B " + fmtNum(multB, 2) + "×";
+    const rows = [70, 75, 80, 85, 88, 90, 92, 95, 98];
+    $("tableBody").innerHTML = rows.map((c) => {
+      const o = blendedOfficial(c, inputShare);
+      const tp = quota / o;
+      const ta = budget / (o * multA);
+      const tb = budget / (o * multB);
+      const best = Math.max(tp, ta, tb);
+      const inP = Math.abs(c - cacheP) < 0.6;
+      const inA = Math.abs(c - cacheA) < 0.6;
+      const inB = Math.abs(c - cacheB) < 0.6;
+      const cls = inP ? "band-p" : inA ? "band-a" : inB ? "band-b" : "";
+      const winner = tp >= ta && tp >= tb ? "Pro" : ta >= tb ? "A 倍率" : "B 倍率";
+      return `<tr class="${cls}">
+        <td>${c}%${inP ? " · Pro" : ""}${inA ? " · A" : ""}${inB ? " · B" : ""}</td>
+        <td>${fmtMoney(o, 3)}</td>
+        <td class="${tp === best ? "best" : ""}">${fmtTok(tp)}</td>
+        <td class="${ta === best ? "best" : ""}">${fmtTok(ta)}</td>
+        <td class="${tb === best ? "best" : ""}">${fmtTok(tb)}</td>
+        <td>${winner}</td>
+      </tr>`;
+    }).join("");
+
+    drawChart(p, a, b, budget, quota, inputShare);
+  }
+
+  function drawChart(p, a, b, budget, quota, inputShare) {
+    const canvas = $("chart");
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth || 0, h = canvas.clientHeight || 220;
+    if (w < 40) return;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const pad = { l: 58, r: 12, t: 14, b: 28 };
+    const x0 = pad.l, x1 = w - pad.r, y0 = h - pad.b, y1 = pad.t;
+    const cMin = 50, cMax = 99;
+    const samples = [];
+    let yMax = 0;
+    for (let c = cMin; c <= cMax; c += 0.5) {
+      const o = blendedOfficial(c, inputShare);
+      const pro = quota / o;
+      const ra = budget / (o * a.mult);
+      const rb = budget / (o * b.mult);
+      samples.push({ c, p: pro, a: ra, b: rb });
+      yMax = Math.max(yMax, pro, ra, rb);
+    }
+    yMax *= 1.08;
+    const xOf = (c) => x0 + (c - cMin) / (cMax - cMin) * (x1 - x0);
+    const yOf = (v) => y0 - (v / yMax) * (y0 - y1);
+
+    ctx.strokeStyle = "#d7dbd2";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.stroke();
+
+    ctx.fillStyle = "#8a9084";
+    ctx.font = "11px ui-monospace, monospace";
+    ctx.textAlign = "center";
+    for (const c of [50, 60, 70, 80, 90, 99]) ctx.fillText(c + "%", xOf(c), y0 + 16);
+    ctx.textAlign = "right";
+    for (let i = 0; i <= 4; i++) {
+      const v = yMax * i / 4;
+      ctx.fillText(fmtTok(v).replace(" M", ""), x0 - 6, yOf(v) + 3);
+    }
+
+    function line(key, color) {
+      ctx.beginPath();
+      samples.forEach((s, i) => {
+        const x = xOf(s.c), y = yOf(s[key]);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    line("p", "#b24030");
+    line("a", "#348579");
+    line("b", "#6b5b95");
+
+    function mark(c, tokens, color) {
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.45;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(xOf(c), y0);
+      ctx.lineTo(xOf(c), y1);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(xOf(c), yOf(tokens), 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    mark(p.cache, p.tokens, "#b24030");
+    mark(a.cache, a.tokens, "#348579");
+    mark(b.cache, b.tokens, "#6b5b95");
+  }
+
+  ["multA","multB","cacheA","cacheB","cacheP","budget","proQuota","inputShare","cacheWrite","writeShare","longCtx"].forEach((id) => {
+    $(id).addEventListener("input", render);
+    $(id).addEventListener("change", render);
+  });
+  $("more").addEventListener("toggle", render);
+  window.addEventListener("resize", render);
+  render();
+})();
 </script>
 </body>
 </html>
