@@ -147,7 +147,7 @@ body:has(dialog[open]) { overflow: hidden; }
         <span class="prompt-label">CACHE / $200</span>
         <div class="cache-widget-copy">
           <h2 id="cache-title">$200 token 购买力</h2>
-          <p class="lede">花同样 <code>$200</code>，能买多少 GPT-6 Astra token，方便直接对 Pro 20x。官方价：输入 <code>$10</code> / 缓存读 <code>$1</code> / 输出 <code>$50</code>（每百万 token）。Pro 20x 月费 <code>$200</code>、额度约 <code>$10,000</code> 官方价（等效 <code>0.02×</code>）。中转实付 = 官方混合价 × 倍率；缓存越高，同样 $200 买得越多。</p>
+          <p class="lede">价格一律按 <strong>GPT-6 Astra 官方价</strong>计算：输入 <code>$10</code> / 缓存读 <code>$1</code> / 输出 <code>$50</code>（每百万 token）。花同样 <code>$200</code>，看能买多少 Astra token，方便直接对 Pro 20x。Pro 月费 <code>$200</code>、额度约 <code>$10,000</code> 官方价（等效 <code>0.02×</code>）。中转常见 <code>1 元充 1 刀</code>，所以 <code>0.2×</code> 就是未缓存输入 <code>¥2/M</code>。实付 = Astra 混合价 × 倍率；缓存越高，同样 $200 买得越多。</p>
         </div>
       </div>
       <div class="cache-verdict win-pro" id="cc-verdict">
@@ -162,13 +162,15 @@ body:has(dialog[open]) { overflow: hidden; }
           <h3><span>Pro 20x</span><span class="badge" id="cc-badgeP"></span></h3>
           <p class="note" style="margin-top:0">$200 换 $10,000 官方额度</p>
           <label>Pro 侧缓存率 <span class="val" id="cc-cachePLabel"></span></label>
-          <input id="cc-cacheP" type="range" min="50" max="99" step="0.5" value="90">
+          <input id="cc-cacheP" type="range" min="50" max="99" step="0.5" value="94">
           <div class="metrics" id="cc-metricsP"></div>
         </section>
         <section class="cache-card station-a">
           <h3><span>站点 A · 高缓存</span><span class="badge" id="cc-badgeA"></span></h3>
           <label>倍率 <span class="val" id="cc-multALabel"></span></label>
-          <input id="cc-multA" type="range" min="0.02" max="0.40" step="0.005" value="0.20">
+          <input id="cc-multA" type="range" min="0.05" max="0.50" step="0.005" value="0.20">
+          <label>人民币 / M token（1 元充 1 刀）</label>
+          <input id="cc-cnyA" type="number" min="0.5" max="5" step="0.05" value="2">
           <label>平均缓存率 <span class="val" id="cc-cacheALabel"></span></label>
           <input id="cc-cacheA" type="range" min="50" max="99" step="0.5" value="92">
           <div class="metrics" id="cc-metricsA"></div>
@@ -176,7 +178,9 @@ body:has(dialog[open]) { overflow: hidden; }
         <section class="cache-card station-b">
           <h3><span>站点 B · 低倍率</span><span class="badge" id="cc-badgeB"></span></h3>
           <label>倍率 <span class="val" id="cc-multBLabel"></span></label>
-          <input id="cc-multB" type="range" min="0.02" max="0.40" step="0.005" value="0.15">
+          <input id="cc-multB" type="range" min="0.05" max="0.50" step="0.005" value="0.15">
+          <label>人民币 / M token（1 元充 1 刀）</label>
+          <input id="cc-cnyB" type="number" min="0.5" max="5" step="0.05" value="1.5">
           <label>平均缓存率 <span class="val" id="cc-cacheBLabel"></span></label>
           <input id="cc-cacheB" type="range" min="50" max="99" step="0.5" value="75">
           <div class="metrics" id="cc-metricsB"></div>
@@ -199,7 +203,7 @@ body:has(dialog[open]) { overflow: hidden; }
             <input id="cc-proQuota" type="number" min="1" step="1" value="10000">
           </div>
           <div>
-            <p class="note">Codex / 长上下文 agent 输入常占 97%+。默认 99% 输入、Pro 90% 缓存，大约对应 $2.37/M 官方混合价。</p>
+            <p class="note">Codex / 长上下文 agent 输入常占 97%+。默认 99% 输入、Pro 94% 缓存，Astra 官方混合价大约 $2.02/M。</p>
           </div>
         </div>
         <details>
@@ -209,12 +213,17 @@ body:has(dialog[open]) { overflow: hidden; }
             <label>write 占未命中 <input id="cc-writeShare" class="inline-num" type="number" min="0" max="100" step="5" value="80"> %</label>
             <label><input id="cc-longCtx" type="checkbox"> 长上下文 &gt;272K（输入/缓存 ×2，输出 ×1.5）</label>
           </div>
-          <div class="formula">官方混合价 $/M =
+          <div class="formula">以下一律按 GPT-6 Astra 官方价：输入 $10 / 缓存读 $1 / 输出 $50（每百万 token）。
+
+官方混合价 $/M =
   输入占比 × [(1 − 缓存率) × $10 + 缓存率 × $1]
 + 输出占比 × $50
 
-中转：$200 买到的 token(M) = 200 / (官方混合价 × 倍率)
-Pro：$200 买到的 token(M) = 10,000 / 官方混合价
+中转标价：¥/M = 倍率 × 10
+（Astra 输入 $10/M，中转常见 1 元充 1 刀；0.2× = ¥2/M）
+
+中转：$200 买到的 token(M) = 200 / (Astra 混合价 × 倍率)
+Pro：$200 买到的 token(M) = 10,000 / Astra 混合价
 
 同缓存时，中转要打平 Pro，倍率必须 ≤ 0.02×。
 缓存只作用在输入上；输出永远按 $50 × 倍率。</div>
@@ -454,8 +463,20 @@ viewer.addEventListener("click", event => {
 <script>
 (function () {
   const PRICE = { in: 10, cache: 1, write: 12.5, out: 50 };
+  const MULT_MIN = 0.05, MULT_MAX = 0.5;
   const $ = (id) => document.getElementById("cc-" + id);
   if (!$("verdict")) return;
+
+  function rmbOf(mult) { return mult * PRICE.in; }
+  function multOf(rmb) {
+    if (!isFinite(rmb) || rmb <= 0) return null;
+    return Math.min(MULT_MAX, Math.max(MULT_MIN, rmb / PRICE.in));
+  }
+  function syncRmbField(id, mult) {
+    const el = $(id);
+    if (!el || document.activeElement === el) return;
+    el.value = fmtNum(rmbOf(mult), 2);
+  }
 
   function prices() {
     const long = $("longCtx").checked;
@@ -541,12 +562,14 @@ viewer.addEventListener("click", event => {
     const cacheB = Number($("cacheB").value);
     const cacheP = Number($("cacheP").value);
 
-    $("multALabel").textContent = fmtNum(multA, 3) + "×";
-    $("multBLabel").textContent = fmtNum(multB, 3) + "×";
+    $("multALabel").textContent = fmtNum(multA, 3) + "× · ¥" + fmtNum(rmbOf(multA), 2) + "/M";
+    $("multBLabel").textContent = fmtNum(multB, 3) + "× · ¥" + fmtNum(rmbOf(multB), 2) + "/M";
     $("cacheALabel").textContent = fmtNum(cacheA, 1) + "%";
     $("cacheBLabel").textContent = fmtNum(cacheB, 1) + "%";
     $("cachePLabel").textContent = fmtNum(cacheP, 1) + "%";
     $("inputShareLabel").textContent = fmtNum(inputShare, 1) + "%";
+    syncRmbField("cnyA", multA);
+    syncRmbField("cnyB", multB);
 
     const p = proPower(cacheP, budget, quota);
     const a = relayPower(multA, cacheA, budget);
@@ -613,7 +636,7 @@ viewer.addEventListener("click", event => {
     $("thP").textContent = "Pro " + fmtNum(p.effectiveMult, 2) + "×";
     $("thA").textContent = "A " + fmtNum(multA, 2) + "×";
     $("thB").textContent = "B " + fmtNum(multB, 2) + "×";
-    const rows = [70, 75, 80, 85, 88, 90, 92, 95, 98];
+    const rows = [70, 75, 80, 85, 88, 90, 92, 94, 95, 98];
     $("tableBody").innerHTML = rows.map((c) => {
       const o = blendedOfficial(c, inputShare);
       const tp = quota / o;
@@ -713,10 +736,27 @@ viewer.addEventListener("click", event => {
     mark(b.cache, b.tokens, "#6b5b95");
   }
 
+  function bindCny(multId, cnyId) {
+    $(cnyId).addEventListener("input", () => {
+      const next = multOf(Number($(cnyId).value));
+      if (next == null) return;
+      $(multId).value = String(next);
+      render();
+    });
+    $(cnyId).addEventListener("change", () => {
+      const next = multOf(Number($(cnyId).value));
+      if (next == null) return;
+      $(multId).value = String(next);
+      $(cnyId).value = fmtNum(rmbOf(next), 2);
+      render();
+    });
+  }
   ["multA","multB","cacheA","cacheB","cacheP","budget","proQuota","inputShare","cacheWrite","writeShare","longCtx"].forEach((id) => {
     $(id).addEventListener("input", render);
     $(id).addEventListener("change", render);
   });
+  bindCny("multA", "cnyA");
+  bindCny("multB", "cnyB");
   $("more").addEventListener("toggle", render);
   window.addEventListener("resize", render);
   render();
