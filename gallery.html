@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pelican Bicycle / 鹈鹕骑自行车</title>
+  <title>AI 渠道实测</title>
+  <meta name="description" content="对比 AI 渠道价格、缓存率与购买力，试算使用成本，查看糖果题测试与生成作品。">
   <style>
 :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #242624; background: #fafbf9; letter-spacing: 0; font-synthesis: none; }
 * { box-sizing: border-box; }
@@ -88,6 +89,9 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-card h3 { margin: 0 0 10px; font-size: 15px; font-weight: 650; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .cache-widget label { display: block; font-size: 12px; color: #72776e; margin: 8px 0 4px; }
 .cache-widget input[type="number"] { width: 100%; background: #fafbf9; color: #242624; border: 1px solid #d7dbd2; border-radius: 4px; padding: 7px 10px; font: inherit; font-variant-numeric: tabular-nums; }
+.recharge-input { display:flex; align-items:center; gap:8px; }
+.recharge-input input { flex:1; min-width:0; }
+.recharge-unit { font-size:12px; color:#72776e; white-space:nowrap; }
 .cache-widget input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
 .cache-widget input[type="number"]::-webkit-inner-spin-button,
 .cache-widget input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -116,13 +120,17 @@ body:has(dialog[open]) { overflow: hidden; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } .cache-grid-3 { grid-template-columns: 1fr; } .cache-widget .pair { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } .prompt-body { margin-top: 9px; } blockquote { font-size: 12px; } .prompt-note { font-size: 11px; } #copy-prompt, #copy-candy { margin-top: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } .cache-widget-head { display: block; } .cache-widget .lede { font-size: 12px; } .cache-grid-3, .cache-widget .pair { grid-template-columns: 1fr; } }
 /* Channel comparison */
-#relay-benchmark { margin-top:28px; }
+#relay-benchmark { margin-top:0; margin-bottom:32px; }
+.module-heading { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:32px 0 20px; }
+.module-heading h2 { margin:0; font-size:20px; font-weight:600; }
+@media(max-width:680px) { header { height:auto; min-height:72px; flex-wrap:wrap; padding-top:16px; padding-bottom:16px; gap:14px; } }
 .bm-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:16px; }
 .bm-head h2 { margin:0; font-size:20px; font-weight:600; }
 .bm-head a { font-size:12px; }
+.bm-table th select { display:inline-block; width:112px; margin-left:6px; padding:3px 4px; font:inherit; font-size:11px; font-weight:400; vertical-align:middle; }
 .bm-scroll { overflow-x:auto; }
-.bm-table { width:100%; border-collapse:collapse; border-top:2px solid #42473f; border-bottom:2px solid #42473f; white-space:nowrap; font-size:13px; font-variant-numeric:tabular-nums; }
-.bm-table th,.bm-table td { padding:12px 14px; text-align:right; }
+.bm-table { width:100%; border-collapse:collapse; table-layout:auto; border-top:2px solid #42473f; border-bottom:2px solid #42473f; white-space:nowrap; font-size:13px; font-variant-numeric:tabular-nums; }
+.bm-table th,.bm-table td { padding:11px 16px; text-align:right; vertical-align:middle; }
 .bm-table thead { border-bottom:1px solid #737770; }
 .bm-table th:nth-child(2),.bm-table td:nth-child(2),.bm-table th:nth-child(3),.bm-table td:nth-child(3) { text-align:center; }
 .bm-table th { font-weight:600; }
@@ -131,14 +139,28 @@ body:has(dialog[open]) { overflow: hidden; }
   </style>
 </head>
 <body>
-  <header><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">p</span>Pelican Bicycle</a><nav><a href="#cache-tool">缓存计算器</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a><a class="contribute" href="https://github.com/zedong-peng/pelican-bicycle/blob/main/CONTRIBUTING.md">提交作品 ↗</a></nav></header>
+  <header><a class="brand" href="./">AI 渠道实测</a><nav><a href="#relay-benchmark">渠道对比</a><a href="#cache-tool">成本计算</a><a href="#model-tests">糖果题测试</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
   <main>
-    <div class="heading"><div><p class="eyebrow">THE PELICAN COLLECTION / 001</p><h1>鹈鹕骑自行车</h1></div><div class="heading-aside"><strong id="total"></strong>份不同的想象</div></div>
-    <div class="prompt"><span class="prompt-label">PROMPT / V1</span><div class="prompt-body"><blockquote><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
-    <div class="prompt"><span class="prompt-label">CANDY / TEST</span><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note">糖果题测试降智：一键下载并运行（示例为 gpt-6-astra / low / 5 次，可自行替换 -m / -r / -n 参数）。</p></div><button type="button" id="copy-candy">复制命令</button></div>
+    <div class="heading"><h1>AI 渠道实测</h1></div>
+    <section id="relay-benchmark" aria-labelledby="bm-title">
+      <div class="bm-head"><h2 id="bm-title">GPT-6-ASTRA渠道对比</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
+      <div class="bm-scroll" role="region" aria-label="渠道对比表，可横向滚动" tabindex="0">
+        <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
+          <thead><tr><th scope="col">渠道</th><th scope="col">不降智</th><th scope="col">可用性 &gt;90%</th><th scope="col" id="bm-input-head"><label for="bm-unit-select">Input</label><select id="bm-unit-select"><option value="usd">$/M tokens</option><option value="cny">¥/M tokens</option><option value="mult">倍率</option></select></th><th scope="col">缓存率 ↑</th><th scope="col">购买力 ↑</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td class="bm-input" data-usd="0.19" data-cny="1.30" data-mult="0.13×">1.30</td><td title="站长一天使用汇总，仅一个数据点">88%（n=1）</td><td data-bm-mult="0.13" data-bm-cache="88" title="按缓存率 88%、¥1 = $1 额度估算">—</td></tr>
+            <tr><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td class="bm-input" data-usd="0.30" data-cny="2.00" data-mult="0.20×">2.00</td><td>89%（n=1）</td><td data-bm-mult="0.20" data-bm-cache="89" title="按缓存率 89%、¥1 = $1 额度估算">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bm-note" id="bm-note">
+        <div><strong>倍率</strong>：1¥ 充值 1$ 额度时的中转站倍率。</div>
+        <div><strong>购买力</strong>：相同 $200 预算下的可用量，以 Pro 20x 为 100%。</div>
+        <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算；数据更新于 2026-09-21。</div>
+      </div>
+    </section>
     <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
       <div class="cache-widget-head">
-        <span class="prompt-label">CACHE / $200</span>
         <div class="cache-widget-copy">
           <h2 id="cache-title">$200 GPT-6-ASTRA用量对比</h2>
         </div>
@@ -166,8 +188,8 @@ body:has(dialog[open]) { overflow: hidden; }
           <div class="metrics" id="cc-metricsA"></div>
           <label for="cc-multA">计费倍率 <span class="val" id="cc-multALabel"></span></label>
           <input id="cc-multA" type="range" min="0.05" max="0.50" step="0.005" value="0.20">
-          <label for="cc-rechargeA">充值 · $ 额度 / ¥1</label>
-          <input id="cc-rechargeA" type="number" min="0.01" step="0.01" value="1">
+          <label for="cc-rechargeA">充值倍率</label>
+          <div class="recharge-input"><input id="cc-rechargeA" type="number" min="0.01" step="0.01" value="1"><span class="recharge-unit">$ 额度 / ¥1</span></div>
           <label for="cc-cacheA">输入缓存率 <span class="val" id="cc-cacheALabel"></span></label>
           <input id="cc-cacheA" type="range" min="50" max="99" step="0.5" value="92">
         </section>
@@ -176,26 +198,19 @@ body:has(dialog[open]) { overflow: hidden; }
           <div class="metrics" id="cc-metricsB"></div>
           <label for="cc-multB">计费倍率 <span class="val" id="cc-multBLabel"></span></label>
           <input id="cc-multB" type="range" min="0.05" max="0.50" step="0.005" value="0.15">
-          <label for="cc-rechargeB">充值 · $ 额度 / ¥1</label>
-          <input id="cc-rechargeB" type="number" min="0.01" step="0.01" value="1">
+          <label for="cc-rechargeB">充值倍率</label>
+          <div class="recharge-input"><input id="cc-rechargeB" type="number" min="0.01" step="0.01" value="1"><span class="recharge-unit">$ 额度 / ¥1</span></div>
           <label for="cc-cacheB">输入缓存率 <span class="val" id="cc-cacheBLabel"></span></label>
           <input id="cc-cacheB" type="range" min="50" max="99" step="0.5" value="75">
         </section>
       </div>
     </section>
-    <section id="relay-benchmark" aria-labelledby="bm-title">
-      <div class="bm-head"><h2 id="bm-title">GPT-6-ASTRA渠道对比</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
-      <div class="bm-scroll" role="region" aria-label="渠道对比表，可横向滚动" tabindex="0">
-        <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
-          <thead><tr><th scope="col">渠道</th><th scope="col">不降智</th><th scope="col">可用性</th><th scope="col">单价 ↓</th><th scope="col">倍率 ↓</th><th scope="col">缓存率 ↑</th><th scope="col">购买力 ↑</th></tr></thead>
-          <tbody>
-            <tr><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td>1.30</td><td>0.13×</td><td title="站长一天使用汇总，仅一个数据点">88%（n=1）</td><td data-bm-mult="0.13" data-bm-cache="88" title="按缓存率 88%、¥1 = $1 额度估算">—</td></tr>
-            <tr><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td>2.00</td><td>0.20×</td><td>89%（n=1）</td><td data-bm-mult="0.20" data-bm-cache="89" title="按缓存率 89%、¥1 = $1 额度估算">—</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="bm-note" id="bm-note">注：不降智为商家承诺；可用性 ✓ 表示 &gt;90%。单价为未缓存输入 ¥/M（10 × sub2api 倍率）；缓存率为数据点均值，n 为点数。购买力按同样 $200 预算估算，以 Pro 20x 为 100%，沿用上方样本与汇率，按 ¥1 = $1 额度计算。↑ 越高越好，↓ 越低越好。数据由用户提供，更新于 2026-09-21。</p>
+    <section id="model-tests" aria-labelledby="tests-title">
+      <div class="module-heading"><h2 id="tests-title">糖果题测试</h2></div>
+    <div class="prompt"><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note">运行糖果题测试；`-m` 模型，`-r` 推理强度，`-n` 测试次数。</p></div><button type="button" id="copy-candy">复制命令</button></div>
     </section>
+    <div class="module-heading" id="works"><h2>鹈鹕骑自行车</h2><div class="heading-aside"><strong id="total"></strong>份作品</div></div>
+    <div class="prompt"><div class="prompt-body"><blockquote><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
     <form aria-label="筛选作品">
       <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
       <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
@@ -207,7 +222,7 @@ body:has(dialog[open]) { overflow: hidden; }
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
     <p id="empty" hidden>没有匹配的作品。</p>
   </main>
-  <footer><span>PELICAN BICYCLE · 一个 prompt，多种结果。</span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+  <footer><span>AI 渠道实测</span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
   <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
 <script>
 const cards = [...document.querySelectorAll("article")];
@@ -400,7 +415,7 @@ viewer.addEventListener("click", event => {
   const $ = (id) => document.getElementById("cc-" + id);
   const SAMPLE = { uncached: 16835563, cached: 584864000, output: 3374930, used: 0.75 };
   const budget = 200;
-  const exchange = 6.714087; // USD/CNY, ExchangeRate-API snapshot dated 2026-09-19.
+  const exchange = 6.7223; // USD/CNY, Frankfurter historical rate dated 2026-09-01.
   const PRICE = { input: 10, cache: 1, output: 50 };
   const total = SAMPLE.uncached + SAMPLE.cached + SAMPLE.output;
   const inputShare = (SAMPLE.uncached + SAMPLE.cached) / total;
@@ -421,6 +436,15 @@ viewer.addEventListener("click", event => {
   $("metricsP").innerHTML = metric("200$可用token", tok(monthTokens)) +
     metric("均价", num(proPerM, 3) + "¥/M") +
     metric("输入缓存率", num(cacheRate) + "%");
+
+  const unitSelect = document.getElementById("bm-unit-select");
+  const inputCells = [...document.querySelectorAll(".bm-input")];
+  function renderInputUnit() {
+    const unit = unitSelect.value;
+    for (const cell of inputCells) cell.textContent = cell.dataset[unit];
+  }
+  unitSelect.addEventListener("change", renderInputUnit);
+  renderInputUnit();
 
   const relayPerM = (paidMult, cache) => paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
   for (const cell of document.querySelectorAll("[data-bm-mult][data-bm-cache]")) {
