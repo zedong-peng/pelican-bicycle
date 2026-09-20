@@ -392,8 +392,8 @@ viewer.addEventListener("click", event => {
     ["非缓存输入", SAMPLE.uncached], ["缓存输入", SAMPLE.cached],
     ["输出（含推理）", SAMPLE.output], ["合计", total],
   ].map(([label, count]) => `<tr><th scope="row">${label}</th><td>${num(count * monthScale / 1e6, 3)}</td></tr>`).join("");
-  $("metricsP").innerHTML = metric("200$可用token", tok(monthTokens), "30 天 · 样本估算") +
-    metric("综合价格", num(proPerM, 3) + "¥/M", "样本折算") +
+  $("metricsP").innerHTML = metric("200$可用token", tok(monthTokens)) +
+    metric("均价", num(proPerM, 3) + "¥/M") +
     metric("输入缓存率", num(cacheRate) + "%");
 
   const previousRecharge = { A: 1, B: 1 };
@@ -423,7 +423,7 @@ viewer.addEventListener("click", event => {
       const perM = paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
       const tokens = budget * exchange / perM;
       powers[station] = tokens;
-      $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("综合价格", num(perM, 3) + "¥/M") + metric("Input 价格", num(PRICE.input * paidMult, 3) + "¥/M", "非缓存输入");
+      $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 20x的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("均价", num(perM, 3) + "¥/M") + metric("非缓存input", num(PRICE.input * paidMult, 3) + "¥/M");
     }
     const options = [
       { key: "P", name: "Pro 20X", tokens: monthTokens },
@@ -445,7 +445,7 @@ viewer.addEventListener("click", event => {
       if (cheapest) winners.push(option.name);
       badge.className = "badge " + (cheapest ? "badge-best" : "badge-muted");
       badge.textContent = cheapest ? "最便宜" : "+" + num(extra, 1) + "%";
-      badge.title = "每 token 综合价格，相对最低价";
+      badge.title = "每 token 均价，相对最低价";
     }
     if (winners.length > 1) {
       for (const option of options) {
