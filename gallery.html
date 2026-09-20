@@ -99,7 +99,7 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-widget .metric { min-height: 82px; min-width: 0; background: #f3f5f0; border-radius: 6px; padding: 9px 11px; }
 .cache-widget .metric .k { font-size: 11px; color: #8a9084; }
 .cache-widget .metric .v { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
-.cache-widget .metric .u { font-size: 12px; color: #737770; font-weight: 500; }
+.cache-widget .metric .u { font-size: 11px; color: #737770; font-weight: 500; line-height: 1.35; margin-top: 2px; }
 .cache-widget .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
 .cache-widget .badge-best { background: #e5f3ea; color: #2f6b4f; }
 .cache-widget .badge-muted { background: #f3f5f0; color: #737770; }
@@ -423,7 +423,7 @@ viewer.addEventListener("click", event => {
       const perM = paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
       const tokens = budget * exchange / perM;
       powers[station] = tokens;
-      $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 20x的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("均价", num(perM, 3) + "¥/M") + metric("非缓存input", num(PRICE.input * paidMult, 3) + "¥/M");
+      $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 20x的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("均价", num(perM, 3) + "¥/M") + metric("非缓存input", num(PRICE.input * paidMult, 3) + "¥/M", "=[astra原价" + PRICE.input + "$] * 倍率 * 充值比例");
     }
     const options = [
       { key: "P", name: "Pro 20X", tokens: monthTokens },
