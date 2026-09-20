@@ -115,6 +115,19 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-widget .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 @media (max-width: 900px) { header, main, footer { padding-left: 24px; padding-right: 24px; } .info { padding: 12px 14px 0; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; } .cache-grid-3 { grid-template-columns: 1fr; } .cache-widget .pair { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { header, main, footer { padding-left: 18px; padding-right: 18px; } header { height: 72px; } .brand { font-size: 14px; gap: 8px; } .brand-mark { width: 26px; height: 26px; font-size: 20px; } nav { gap: 16px; font-size: 12px; } nav .github { display: none; } .heading { padding: 30px 0 24px; align-items: center; } h1 { font-size: 30px; } .heading-aside strong { font-size: 24px; } .eyebrow { font-size: 9px; } .prompt { display: block; padding: 16px 0; } .prompt-body { margin-top: 9px; } blockquote { font-size: 12px; } .prompt-note { font-size: 11px; } #copy-prompt, #copy-candy { margin-top: 12px; } form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; padding: 22px 0; } .filter-actions { grid-column: 1 / -1; } .check-list { height: 118px; } .gallery { grid-template-columns: minmax(0, 1fr); } footer { flex-wrap: wrap; } dialog iframe { height: 60dvh; } .cache-widget-head { display: block; } .cache-widget .lede { font-size: 12px; } .cache-grid-3, .cache-widget .pair { grid-template-columns: 1fr; } }
+/* Channel comparison */
+#relay-benchmark { margin-top:28px; }
+.bm-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.bm-head h2 { margin:0; font-size:20px; font-weight:600; }
+.bm-head a { font-size:12px; }
+.bm-scroll { overflow-x:auto; }
+.bm-table { width:100%; border-collapse:collapse; border-top:2px solid #42473f; border-bottom:2px solid #42473f; white-space:nowrap; font-size:13px; font-variant-numeric:tabular-nums; }
+.bm-table th,.bm-table td { padding:12px 14px; text-align:right; }
+.bm-table thead { border-bottom:1px solid #737770; }
+.bm-table th:nth-child(2),.bm-table td:nth-child(2),.bm-table th:nth-child(3),.bm-table td:nth-child(3) { text-align:center; }
+.bm-table th { font-weight:600; }
+.bm-table th:first-child,.bm-table td:first-child { padding-left:0; text-align:left; }
+.bm-note { margin:10px 0 0; font-size:12px; line-height:1.8; color:#737770; }
   </style>
 </head>
 <body>
@@ -169,6 +182,19 @@ body:has(dialog[open]) { overflow: hidden; }
           <input id="cc-cacheB" type="range" min="50" max="99" step="0.5" value="75">
         </section>
       </div>
+    </section>
+    <section id="relay-benchmark" aria-labelledby="bm-title">
+      <div class="bm-head"><h2 id="bm-title">GPT-6-ASTRA渠道对比</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
+      <div class="bm-scroll" role="region" aria-label="渠道对比表，可横向滚动" tabindex="0">
+        <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
+          <thead><tr><th scope="col">渠道</th><th scope="col">不降智</th><th scope="col">可用性</th><th scope="col">单价 ↓</th><th scope="col">倍率 ↓</th><th scope="col">缓存率 ↑</th><th scope="col">购买力 ↑</th></tr></thead>
+          <tbody>
+            <tr><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td>1.30</td><td>0.13×</td><td title="站长一天使用汇总，仅一个数据点">88%（n=1）</td><td data-bm-mult="0.13" data-bm-cache="88" title="按缓存率 88%、¥1 = $1 额度估算">—</td></tr>
+            <tr><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td>2.00</td><td>0.20×</td><td>89%（n=1）</td><td data-bm-mult="0.20" data-bm-cache="89" title="按缓存率 89%、¥1 = $1 额度估算">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="bm-note" id="bm-note">注：不降智为商家承诺；可用性 ✓ 表示 &gt;90%。单价为未缓存输入 ¥/M（10 × sub2api 倍率）；缓存率为数据点均值，n 为点数。购买力按同样 $200 预算估算，以 Pro 20x 为 100%，沿用上方样本与汇率，按 ¥1 = $1 额度计算。↑ 越高越好，↓ 越低越好。数据由用户提供，更新于 2026-09-21。</p>
     </section>
     <form aria-label="筛选作品">
       <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
@@ -396,6 +422,12 @@ viewer.addEventListener("click", event => {
     metric("均价", num(proPerM, 3) + "¥/M") +
     metric("输入缓存率", num(cacheRate) + "%");
 
+  const relayPerM = (paidMult, cache) => paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
+  for (const cell of document.querySelectorAll("[data-bm-mult][data-bm-cache]")) {
+    const perM = relayPerM(Number(cell.dataset.bmMult), Number(cell.dataset.bmCache));
+    cell.textContent = num(proPerM / perM * 100, 1) + "%";
+  }
+
   const previousRecharge = { A: 1, B: 1 };
 
   function render() {
@@ -420,7 +452,7 @@ viewer.addEventListener("click", event => {
       const mult = Number(slider.value);
       const paidMult = mult / recharge;
       $("mult" + station + "Label").textContent = mult.toLocaleString("en-US", { maximumSignificantDigits: 4 }) + "×";
-      const perM = paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
+      const perM = relayPerM(paidMult, cache);
       const tokens = budget * exchange / perM;
       powers[station] = tokens;
       $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 20x的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("均价", num(perM, 3) + "¥/M") + metric("非缓存input", num(PRICE.input * paidMult, 3) + "¥/M", "=[astra原价" + PRICE.input + "$] * 倍率 * 充值比例");

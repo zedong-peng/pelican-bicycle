@@ -1,0 +1,39 @@
+name: 渠道实测
+description: 提交可复核的渠道测试记录，供人工审核收录。
+title: "[渠道实测] 渠道 / 模型 / 测试集"
+body:
+  - type: textarea
+    id: configuration
+    attributes:
+      label: 渠道与测试配置
+      description: 渠道、访问路径（直连或网关）、模型版本、推理强度、客户端版本、测试集版本、测试时间与地区、并发、超时和重试设置。
+    validations:
+      required: true
+  - type: textarea
+    id: quality
+    attributes:
+      label: 质量与原始结果
+      description: 公开题集与评分方法、正确 / 总题数、重复次数、全部输出与失败尝试的脱敏日志链接；如有官方基线，说明配置。
+    validations:
+      required: true
+  - type: textarea
+    id: performance
+    attributes:
+      label: 延迟与成功率
+      description: 逐请求首个内容 token 延迟、成功请求 P50 / P95、完整成功数 / 全部尝试数和时间窗口。每次重试计入尝试；缺失项填未测。
+    validations:
+      required: true
+  - type: textarea
+    id: cost
+    attributes:
+      label: 实付成本与计费依据
+      description: 全部尝试的人民币扣费、充值比例、输入 / 缓存输入 / 输出 token、缓存命中情况及脱敏账单依据。缺失项填未测。
+    validations:
+      required: true
+  - type: textarea
+    id: disclosure
+    attributes:
+      label: 提交者关系与资助
+      description: 说明自测或独立复测、与渠道的关系，以及赠送额度或赞助；无则填无。不要提交密钥或个人信息。
+    validations:
+      required: true
