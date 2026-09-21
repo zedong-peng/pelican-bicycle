@@ -83,11 +83,8 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-widget .lede code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: #30392f; background: #eff2eb; padding: 2px 6px; border-radius: 4px; }
 .cache-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .cache-card { background: #fff; border: 1px solid #d7dbd2; border-radius: 6px; padding: 14px 16px; }
-.cache-card.station-pro { border-top: 3px solid #b24030; }
-.cache-card.station-a { border-top: 3px solid #348579; }
-.cache-card.station-b { border-top: 3px solid #6b5b95; }
 .cache-card h3 { margin: 0 0 10px; font-size: 15px; font-weight: 650; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.cache-widget label { display: block; font-size: 12px; color: #72776e; margin: 8px 0 4px; }
+.cache-widget label, .cache-widget .fixed-value { display: block; font-size: 12px; color: #72776e; margin: 8px 0 4px; }
 .cache-widget input[type="number"] { width: 100%; background: #fafbf9; color: #242624; border: 1px solid #d7dbd2; border-radius: 4px; padding: 7px 10px; font: inherit; font-variant-numeric: tabular-nums; }
 .recharge-input { display:flex; align-items:center; gap:8px; }
 .recharge-input input { flex:1; min-width:0; }
@@ -95,8 +92,7 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-widget input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
 .cache-widget input[type="number"]::-webkit-inner-spin-button,
 .cache-widget input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-.cache-widget input[type="range"] { width: 100%; accent-color: #348579; }
-.cache-card.station-b input[type="range"] { accent-color: #6b5b95; }
+.cache-widget input[type="range"] { width: 100%; accent-color: #737770; }
 .cache-widget .val { font-variant-numeric: tabular-nums; color: #242624; font-weight: 650; float: right; }
 .cache-widget .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 16px; }
 .cache-widget .metric:first-child { grid-column: 1 / -1; }
@@ -106,8 +102,8 @@ body:has(dialog[open]) { overflow: hidden; }
 .cache-widget .metric .u { font-size: 11px; color: #737770; font-weight: 500; line-height: 1.35; margin-top: 2px; }
 .cache-widget .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
 .cache-widget .badge-best { background: #e5f3ea; color: #2f6b4f; }
-.cache-widget .badge-muted { background: #f3f5f0; color: #737770; }
-.cache-widget .badge-tie { background: #f4eedc; color: #8a7018; }
+.cache-widget .badge-worst { background: #fbe9e6; color: #a83226; }
+.cache-widget .badge-middle { background: #f4eedc; color: #8a7018; }
 .cache-widget .note { font-size: 13px; color: #737770; margin: 8px 0 0; }
 .cache-widget .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; color: #30392f; background: #f3f5f0; border-radius: 6px; padding: 12px 14px; overflow-x: auto; margin-top: 8px; white-space: pre-wrap; }
 .cache-widget table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
@@ -155,32 +151,43 @@ body:has(dialog[open]) { overflow: hidden; }
       </div>
       <div class="bm-note" id="bm-note">
         <div><strong>倍率</strong>：1¥ 充值 1$ 额度时的中转站倍率。</div>
-        <div><strong>购买力</strong>：相同 $200 预算下的可用量，以 Pro 20x 为 100%。</div>
+        <div><strong>购买力</strong>：相同 $200 预算下的 API 等价额度，以 Pro 20x 为 100%。</div>
         <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算；数据更新于 2026-09-21。</div>
       </div>
     </section>
     <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
       <div class="cache-widget-head">
         <div class="cache-widget-copy">
-          <h2 id="cache-title">$200 GPT-6-ASTRA用量对比</h2>
+          <h2 id="cache-title">$200 GPT-6-ASTRA API 等价额度对比</h2>
+          <details>
+            <summary>计算原理与公式</summary>
+            <p class="note">假设使用模式不变，总输入（非缓存输入 + 缓存输入）与总输出（含推理）的比例沿用 Pro 20x 样本。中转站切号后，部分原本可命中缓存的输入可能变成非缓存输入，总输入和输出不变。因此，只需根据中转缓存率重新拆分输入，就能结合单价、计费倍率和充值倍率算出相同用量的实际成本。再计算 $200 能购买多少份这样的用量，并按 Pro 20x 样本的标准 API 价格折算，即得到可比较的 API 等价额度。</p>
+            <p class="note">总输入、总输出取 Pro 20x 样本，单位为百万 token；缓存率取中转设置，充值倍率为每 ¥1 可充值的美元额度。</p>
+            <div class="formula">中转样本标准价费用 = 总输入 × [(1 − 缓存率) × $10 + 缓存率 × $1] + 总输出 × $50
+中转样本实付（元）= 中转样本标准价费用 × 计费倍率 ÷ 充值倍率
+可购买的样本份数 = ($200 × 6.7223) ÷ 中转样本实付（元）
+API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费用</div>
+          </details>
         </div>
       </div>
       <div class="cache-grid-3" style="margin-top:12px">
         <section class="cache-card station-pro">
-          <h3><span>Pro 20X</span><span class="badge" id="cc-badgeP"></span></h3>
+          <h3><span>Pro 20x</span><span class="badge" id="cc-badgeP"></span></h3>
           <div class="metrics" id="cc-metricsP"></div>
-          <details><summary>Astra 单价</summary><p class="note" id="cc-pricesP"></p></details>
+          <p class="fixed-value">输入缓存率 <span class="val" id="cc-cachePLabel"></span></p>
+          <p class="note"><strong>Astra API 单价</strong></p><p class="note" id="cc-pricesP"></p>
         <details>
           <summary>用量明细与来源</summary>
           <p class="note" id="cc-inputShare"></p>
         <div style="overflow-x:auto; margin-top:12px">
           <table>
-            <caption>Token 分布</caption>
-            <thead><tr><th scope="col">类型</th><th scope="col">M token</th></tr></thead>
+            <caption>原帖补充 1：后一周限统计（原始数据）</caption>
+            <thead><tr><th scope="col">类型</th><th scope="col">Tokens</th><th scope="col">标准价等值</th></tr></thead>
             <tbody id="cc-distribution"></tbody>
           </table>
         </div>
-        <p class="note">来源：<a href="https://www.v2ex.com/t/1241470">V2EX · msg7086 · 2026-09-11</a> · lightweight / medium，未开 fast。</p>
+        <p class="note">来源：<a href="https://www.v2ex.com/t/1241470">V2EX · msg7086 · 补充 1（2026-09-15）</a>，以 Tibo 重置时间戳为界。原帖说明所有会话均使用 GPT-6-Astra，以 lightweight / medium 为主，未开 fast。</p>
+        <p class="note">月用量按补充样本作为一整周、使用模式不变，乘以 30/7 估算，不计额外重置；这是个人样本推算，并非官方保证额度。</p>
         </details>
         </section>
         <section class="cache-card station-a">
@@ -413,29 +420,35 @@ viewer.addEventListener("click", event => {
 <script>
 (function () {
   const $ = (id) => document.getElementById("cc-" + id);
-  const SAMPLE = { uncached: 16835563, cached: 584864000, output: 3374930, used: 0.75 };
+  // V2EX topic 1241470, supplement 1 (2026-09-15). Treat this later sample as one week.
+  const SAMPLE = { uncached: 26789763, cached: 845564800, output: 4447678 };
   const budget = 200;
   const exchange = 6.7223; // USD/CNY, Frankfurter historical rate dated 2026-09-01.
   const PRICE = { input: 10, cache: 1, output: 50 };
   const total = SAMPLE.uncached + SAMPLE.cached + SAMPLE.output;
   const inputShare = (SAMPLE.uncached + SAMPLE.cached) / total;
   const cacheRate = SAMPLE.cached / (SAMPLE.uncached + SAMPLE.cached) * 100;
-  const monthScale = 30 / (7 * SAMPLE.used);
+  const monthScale = 30 / 7;
   const monthTokens = total * monthScale / 1e6;
   const proPerM = budget * exchange / monthTokens;
+  const sampleApiCost = (SAMPLE.uncached * PRICE.input + SAMPLE.cached * PRICE.cache + SAMPLE.output * PRICE.output) / 1e6;
+  const referenceApiPerM = sampleApiCost / (total / 1e6);
+  const proInputPrice = PRICE.input * proPerM / referenceApiPerM;
   const num = (n, digits = 2) => n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
-  const tok = (n) => num(n) + " M";
+  const apiDollars = (tokensM) => "$" + num(tokensM * referenceApiPerM);
   const metric = (label, value, detail = "") => `<div class="metric"><div class="k">${label}</div><div class="v">${value}</div>${detail ? `<div class="u">${detail}</div>` : ""}</div>`;
 
   $("pricesP").textContent = `每 M token：非缓存输入 $${PRICE.input} · 缓存输入 $${PRICE.cache} · 输出 $${PRICE.output}`;
-  $("inputShare").textContent = "输入占比 " + num(inputShare * 100) + "%";
+  $("inputShare").textContent = "总输入 / 输出（含推理）比例固定为 " + num((SAMPLE.uncached + SAMPLE.cached) / SAMPLE.output) + " : 1；Pro 20x 样本输入缓存率 " + num(cacheRate) + "%";
   $("distribution").innerHTML = [
-    ["非缓存输入", SAMPLE.uncached], ["缓存输入", SAMPLE.cached],
-    ["输出（含推理）", SAMPLE.output], ["合计", total],
-  ].map(([label, count]) => `<tr><th scope="row">${label}</th><td>${num(count * monthScale / 1e6, 3)}</td></tr>`).join("");
-  $("metricsP").innerHTML = metric("200$可用token", tok(monthTokens)) +
-    metric("均价", num(proPerM, 3) + "¥/M") +
-    metric("输入缓存率", num(cacheRate) + "%");
+    ["非缓存输入", SAMPLE.uncached, SAMPLE.uncached * PRICE.input],
+    ["缓存输入", SAMPLE.cached, SAMPLE.cached * PRICE.cache],
+    ["输出（含推理）", SAMPLE.output, SAMPLE.output * PRICE.output],
+    ["合计", total, sampleApiCost * 1e6],
+  ].map(([label, count, cost]) => `<tr><th scope="row">${label}</th><td>${num(count, 0)}</td><td>$${num(cost / 1e6)}</td></tr>`).join("");
+  $("metricsP").innerHTML = metric("$200 可购买的 API 等价额度", apiDollars(monthTokens)) +
+    metric("非缓存input/M tokens", num(proInputPrice, 3) + "¥", "=[astra原价10$] *汇率*200$/等价额度");
+  $("cachePLabel").textContent = num(cacheRate, 1) + "%";
 
   const unitSelect = document.getElementById("bm-unit-select");
   const inputCells = [...document.querySelectorAll(".bm-input")];
@@ -455,14 +468,14 @@ viewer.addEventListener("click", event => {
   const previousRecharge = { A: 1, B: 1 };
 
   function render() {
-    const powers = {};
+    const availableTokens = { P: monthTokens };
     for (const station of ["A", "B"]) {
       const slider = $("mult" + station);
       const recharge = Number($("recharge" + station).value);
       const cache = Number($("cache" + station).value);
       $("cache" + station + "Label").textContent = num(cache, 1) + "%";
       if (!Number.isFinite(recharge) || recharge < 0.01) {
-        $("metrics" + station).innerHTML = metric("200$可用token", "—", "充值比例须 ≥ 0.01");
+        $("metrics" + station).innerHTML = metric("$200 可购买的 API 等价额度", "—", "充值比例须 ≥ 0.01");
         continue;
       }
       if (recharge !== previousRecharge[station]) {
@@ -478,35 +491,22 @@ viewer.addEventListener("click", event => {
       $("mult" + station + "Label").textContent = mult.toLocaleString("en-US", { maximumSignificantDigits: 4 }) + "×";
       const perM = relayPerM(paidMult, cache);
       const tokens = budget * exchange / perM;
-      powers[station] = tokens;
-      $("metrics" + station).innerHTML = metric("200$可用token", tok(tokens), "Pro 20x的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("均价", num(perM, 3) + "¥/M") + metric("非缓存input", num(PRICE.input * paidMult, 3) + "¥/M", "=[astra原价" + PRICE.input + "$] * 倍率 * 充值比例");
+      const inputPrice = PRICE.input * paidMult;
+      availableTokens[station] = tokens;
+      const difference = Number(((inputPrice / proInputPrice - 1) * 100).toFixed(1));
+      const comparison = (difference > 0 ? "+" : "") + num(difference, 1) + "%（相对 Pro 20x）";
+      $("metrics" + station).innerHTML = metric("$200 可购买的 API 等价额度", apiDollars(tokens), "Pro 20x 的 " + num(tokens / monthTokens * 100, 1) + "%") + metric("非缓存input/M tokens", num(inputPrice, 3) + "¥", comparison + "<br>=[astra原价" + PRICE.input + "$] * 倍率 / 充值倍率");
     }
-    const options = [
-      { key: "P", name: "Pro 20X", tokens: monthTokens },
-      { key: "A", name: "A", tokens: powers.A },
-      { key: "B", name: "B", tokens: powers.B },
-    ];
-    const complete = options.every(option => Number.isFinite(option.tokens));
-    const best = complete ? Math.max(...options.map(option => option.tokens)) : 0;
-    const winners = [];
-    for (const option of options) {
-      const badge = $("badge" + option.key);
-      if (!complete) {
-        badge.className = "badge badge-muted";
-        badge.textContent = "待比较";
-        continue;
-      }
-      const extra = (best / option.tokens - 1) * 100;
-      const cheapest = extra < 0.05;
-      if (cheapest) winners.push(option.name);
-      badge.className = "badge " + (cheapest ? "badge-best" : "badge-muted");
-      badge.textContent = cheapest ? "最便宜" : "+" + num(extra, 1) + "%";
-      badge.title = "每 token 均价，相对最低价";
-    }
-    if (winners.length > 1) {
-      for (const option of options) {
-        if (winners.includes(option.name)) $("badge" + option.key).textContent = "并列最便宜";
-      }
+    const stations = ["P", "A", "B"];
+    const complete = stations.every(station => Number.isFinite(availableTokens[station]));
+    const ranked = complete ? [...stations].sort((a, b) => availableTokens[b] - availableTokens[a]) : [];
+    for (const station of stations) {
+      const badge = $("badge" + station);
+      const rank = complete ? ranked.indexOf(station) : -1;
+      badge.hidden = !complete;
+      badge.className = "badge " + (rank === 0 ? "badge-best" : rank === ranked.length - 1 ? "badge-worst" : "badge-middle");
+      badge.textContent = rank === 0 ? "最便宜" : rank === ranked.length - 1 ? "最贵" : "中等";
+      badge.title = "按相同预算下 API 等价额度排序";
     }
 
   }
