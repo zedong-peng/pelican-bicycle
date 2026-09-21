@@ -2,3 +2,16 @@
 __pycache__/
 *.pyc
 site/
+
+# Private runtime configuration and generated monitoring records
+.env
+.env.*
+!.env.example
+monitor/config.json
+monitor/credentials.json
+monitor/service.env
+monitor/admin-token
+monitor/stats.json
+monitor/latest-*.json
+monitor/history/
+monitor/state/
