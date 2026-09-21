@@ -20,7 +20,7 @@ VPS 部署与数据口径见 [monitor/README.md](monitor/README.md)。页面读�
 
 ## 浏览作品
 
-- 在线：[作品画廊](https://zedongpeng.com/pelican-bicycle/)。合并新投稿后由 GitHub Actions 自动更新。
+- 在线：[AI 渠道实测](https://sytoken.org/ai-recommend/)。旧网址 `https://zedongpeng.com/pelican-bicycle/` 自动跳转到此处；页面与数据统一由 VPS 提供。GitHub Actions 负责校验和发布跳转页，VPS 页面更新需部署 `site/`。
 - 本地：可选运行 `python3 build.py`，用浏览器打开 `site/index.html`，无需安装依赖或启动服务。
 - 原始 HTML 存在 `results/<slug>/artwork.html`，也可单独打开。
 
