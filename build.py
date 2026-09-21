@@ -97,6 +97,7 @@ src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True
     prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
     (output / "index.html").write_text(template.replace("<!-- RESULTS -->", "\n".join(cards)), encoding="utf-8")
+    shutil.copyfile(ROOT / "benchmark.js", output / "benchmark.js")
     (output / ".nojekyll").touch()
     print(f"Validated {len(records)} results; built {output / 'index.html'}")
 

@@ -1,0 +1,6 @@
+[Unit]
+Description=Read-only seven-day benchmark aggregation
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/ai-benchmark/monitor/collect.py /etc/ai-benchmark/config.json /var/lib/ai-benchmark/stats.json

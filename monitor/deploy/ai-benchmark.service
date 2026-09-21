@@ -1,0 +1,18 @@
+[Unit]
+Description=AI channel benchmark API and candy worker
+After=network-online.target
+[Service]
+User=ai-benchmark
+Group=ai-benchmark
+WorkingDirectory=/opt/ai-benchmark/monitor
+EnvironmentFile=/etc/ai-benchmark/service.env
+ExecStart=/usr/bin/python3 /opt/ai-benchmark/monitor/server.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ai-benchmark
+KillMode=control-group
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Refresh benchmark every five minutes
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=5min
+[Install]
+WantedBy=timers.target

@@ -125,6 +125,12 @@ body:has(dialog[open]) { overflow: hidden; }
 .bm-head a { font-size:12px; }
 .bm-table th select { display:inline-block; width:112px; margin-left:6px; padding:3px 4px; font:inherit; font-size:11px; font-weight:400; vertical-align:middle; }
 .bm-scroll { overflow-x:auto; }
+.test-details { display:inline; margin-left:8px; }
+.test-details > summary { display:inline; cursor:pointer; font-size:12px; text-decoration:underline; }
+.test-details > div { display:block; }
+.test-log { box-sizing:border-box; width:360px; max-width:70vw; max-height:260px; overflow:auto; white-space:pre; overflow-wrap:normal; word-break:normal; text-align:left; margin:10px 0 0; padding:12px; background:#f3f5f0; border:1px solid #d7dbd2; border-radius:6px; font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace; }
+.test-log code { font:inherit; white-space:inherit; }
+.test-log:focus-visible { outline:2px solid #737770; outline-offset:2px; }
 .bm-table { width:100%; border-collapse:collapse; table-layout:auto; border-top:2px solid #42473f; border-bottom:2px solid #42473f; white-space:nowrap; font-size:13px; font-variant-numeric:tabular-nums; }
 .bm-table th,.bm-table td { padding:11px 16px; text-align:right; vertical-align:middle; }
 .bm-table thead { border-bottom:1px solid #737770; }
@@ -132,7 +138,8 @@ body:has(dialog[open]) { overflow: hidden; }
 .bm-table th { font-weight:600; }
 .bm-table th:first-child,.bm-table td:first-child { padding-left:0; text-align:left; }
 .bm-note { margin:10px 0 0; font-size:12px; line-height:1.8; color:#737770; }
-  </style>
+  .bm-updated { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5; font-weight: 400; color: #737770; }
+</style>
 </head>
 <body>
   <header><a class="brand" href="./">AI 渠道实测</a><nav><a href="#relay-benchmark">渠道对比</a><a href="#cache-tool">成本计算</a><a href="#model-tests">糖果题测试</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
@@ -142,17 +149,21 @@ body:has(dialog[open]) { overflow: hidden; }
       <div class="bm-head"><h2 id="bm-title">GPT-6-ASTRA渠道对比</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
       <div class="bm-scroll" role="region" aria-label="渠道对比表，可横向滚动" tabindex="0">
         <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
-          <thead><tr><th scope="col">渠道</th><th scope="col">不降智</th><th scope="col">可用性 &gt;90%</th><th scope="col" id="bm-input-head"><label for="bm-unit-select">Input</label><select id="bm-unit-select"><option value="usd">$/M tokens</option><option value="cny">¥/M tokens</option><option value="mult">倍率</option></select></th><th scope="col">缓存率 ↑</th><th scope="col">购买力 ↑</th></tr></thead>
+          <thead><tr><th scope="col">渠道</th><th scope="col">糖果检测（最新）</th><th scope="col">过去一周可用性</th><th scope="col">Input 倍率</th><th scope="col">过去一周缓存率 ↑</th><th scope="col">购买力（周用量估算）↑</th></tr></thead>
           <tbody>
-            <tr><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td class="bm-input" data-usd="0.19" data-cny="1.30" data-mult="0.13×">1.30</td><td title="站长一天使用汇总，仅一个数据点">88%（n=1）</td><td data-bm-mult="0.13" data-bm-cache="88" title="按缓存率 88%、¥1 = $1 额度估算">—</td></tr>
-            <tr><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td aria-label="是">✓</td><td aria-label="是">✓</td><td class="bm-input" data-usd="0.30" data-cny="2.00" data-mult="0.20×">2.00</td><td>89%（n=1）</td><td data-bm-mult="0.20" data-bm-cache="89" title="按缓存率 89%、¥1 = $1 额度估算">—</td></tr>
+            <tr data-channel="tokenshop"><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="fengchao"><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="zlab"><td><a href="https://ttft.asia/">zlab</a><small class="bm-updated">上游：<a href="https://fengchao-api.com/">fengchao-api.com</a></small></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
           </tbody>
         </table>
       </div>
       <div class="bm-note" id="bm-note">
-        <div><strong>倍率</strong>：1¥ 充值 1$ 额度时的中转站倍率。</div>
-        <div><strong>购买力</strong>：相同 $200 预算下的 API 等价额度，以 Pro 20x 为 100%。</div>
-        <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算；数据更新于 2026-09-21。</div>
+        <div id="live-status" role="status">正在加载 VPS 实测数据…</div>
+        <div>仅统计站长经 VPS 调用 GPT-6-ASTRA 的记录；可用性为成功请求 / 该站点总请求（站内重试按最终结果，跨站切换分别计数）。缓存率为累计缓存读取 token / 累计总输入 token。</div>
+        <div>每天北京时间 08:00 检测，每次 5 题，全部通过才显示 ✓。沿用原脚本判分规则：回答包含独立数字 21；这是一项固定题测试，不代表完整模型能力。</div>
+        <div><strong>Input 倍率</strong>：主站定时探测到的上游声明生效倍率；时间为主站接收探测结果的北京时间。探测失败或过期会标注，数据每 5 分钟同步。</div>
+        <div><strong>购买力</strong>：使用各渠道过去一周实际非缓存输入、缓存输入、输出 token 占比，按当前上游倍率估算每百万总 token 成本。比较相同 $200 预算能购买的总 token 数，以 Pro 20x 样本月度总量为 100%；不再套用 Pro 的输入输出比例。仍假设 1¥ 充值 1$ 额度、输入缓存输出统一倍率，不是历史账单实付金额。</div>
+        <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算。</div>
       </div>
     </section>
     <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
@@ -450,20 +461,26 @@ viewer.addEventListener("click", event => {
     metric("非缓存input/M tokens", num(proInputPrice, 3) + "¥", "=[astra原价10$] *汇率*200$/等价额度");
   $("cachePLabel").textContent = num(cacheRate, 1) + "%";
 
-  const unitSelect = document.getElementById("bm-unit-select");
-  const inputCells = [...document.querySelectorAll(".bm-input")];
-  function renderInputUnit() {
-    const unit = unitSelect.value;
-    for (const cell of inputCells) cell.textContent = cell.dataset[unit];
-  }
-  unitSelect.addEventListener("change", renderInputUnit);
-  renderInputUnit();
-
   const relayPerM = (paidMult, cache) => paidMult * (inputShare * ((1 - cache / 100) * PRICE.input + cache / 100 * PRICE.cache) + (1 - inputShare) * PRICE.output);
-  for (const cell of document.querySelectorAll("[data-bm-mult][data-bm-cache]")) {
-    const perM = relayPerM(Number(cell.dataset.bmMult), Number(cell.dataset.bmCache));
-    cell.textContent = num(proPerM / perM * 100, 1) + "%";
+  function renderPurchasingPower() {
+    for (const cell of document.querySelectorAll(".bm-power")) {
+      const values = ["bmMult", "bmInput", "bmCached", "bmOutput"];
+      if (!values.every(key => cell.dataset[key] !== undefined)) {
+        cell.textContent = "—";
+        cell.removeAttribute("title");
+        continue;
+      }
+      const [mult, input, cached, output] = values.map(key => Number(cell.dataset[key]));
+      const tokens = input + output;
+      const standardCost = ((input - cached) * PRICE.input + cached * PRICE.cache + output * PRICE.output) / 1e6;
+      const estimatedCost = standardCost * mult;
+      const perM = estimatedCost / (tokens / 1e6);
+      cell.textContent = perM > 0 ? num(proPerM / perM * 100, 1) + "%" : "—";
+      cell.title = `近一周总输入 ${num(input, 0)}、缓存读取 ${num(cached, 0)}、输出 ${num(output, 0)} token；按当前倍率估算 ¥${num(estimatedCost)}，每百万总 token ¥${num(perM)}。相同预算可购买总 token 数 / Pro 20x 样本月度总 token 数。`;
+    }
   }
+  window.addEventListener("benchmark-updated", renderPurchasingPower);
+  renderPurchasingPower();
 
   const previousRecharge = { A: 1, B: 1 };
 
@@ -514,5 +531,6 @@ viewer.addEventListener("click", event => {
   render();
 })();
 </script>
+<script src="benchmark.js" defer></script>
 </body>
 </html>

@@ -1,11 +1,17 @@
 # AGENTS.md
 
-Static archive of "pelican rides bicycle" SVG animations. No dependencies, no tests, no lint. Single script owns validation + build.
+Static archive of "pelican rides bicycle" SVG animations. Static gallery has no dependencies or lint. VPS monitor uses Python standard library and an external Codex CLI. Single script owns validation + build.
 
 ## Commands
 
 - `python3 build.py` — only check/build (CI runs same on Python 3.12). Validates `results/`, regenerates `site/`; prints `Validated N results`. No args, no install.
 - Preview locally: open `site/index.html` in browser directly, no server needed.
+
+## VPS monitor checks
+
+- `python3 -m unittest discover -s monitor -p 'test_*.py'` validates aggregation and detection lifecycle.
+- `node --check benchmark.js` validates the browser script.
+- Keep live credentials and owner-specific configuration outside this public repo. See `monitor/README.md`.
 
 ## Submissions (`results/<slug>/`)
 

@@ -14,6 +14,10 @@
 
 生成与投稿要求见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
+## 实时渠道统计
+
+VPS 部署与数据口径见 [monitor/README.md](monitor/README.md)。页面读取最近七天个人调用统计，糖果检测按北京时间每天 08:00 运行，手动检测仅通过 SSH 执行。
+
 ## 浏览作品
 
 - 在线：[作品画廊](https://zedongpeng.com/pelican-bicycle/)。合并新投稿后由 GitHub Actions 自动更新。

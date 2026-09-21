@@ -1,0 +1,9 @@
+[Unit]
+Description=Run five candy tests per channel
+After=ai-benchmark.service
+[Service]
+Type=oneshot
+TimeoutStartSec=70min
+User=ai-benchmark
+EnvironmentFile=/etc/ai-benchmark/service.env
+ExecStart=/usr/bin/python3 /opt/ai-benchmark/monitor/server.py daily

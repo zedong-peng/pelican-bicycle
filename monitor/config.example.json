@@ -1,0 +1,32 @@
+{
+  "model": "gpt-6-astra",
+  "user_ids": [
+    1
+  ],
+  "error_logging_verified": false,
+  "channels": [
+    {
+      "id": "tokenshop",
+      "account_ids": [
+        101
+      ],
+      "eval_account_id": 101
+    },
+    {
+      "id": "fengchao",
+      "account_ids": [
+        102
+      ],
+      "eval_account_id": 102
+    },
+    {
+      "id": "zlab",
+      "account_ids": [
+        103,
+        104,
+        105
+      ],
+      "eval_account_id": 103
+    }
+  ]
+}
