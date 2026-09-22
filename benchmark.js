@@ -44,10 +44,16 @@
         const cell = row.querySelector(".bm-input");
         const hasRate = Number.isFinite(price?.multiplier);
         const fresh = price?.status === "ok" && Date.parse(price.fresh_until) > Date.now();
-        const label = fresh ? "" : price?.status === "error" ? " · 探测失败" : " · 已过期";
-        renderValue(cell, hasRate ? `${price.multiplier}×${label}` : "暂无上游倍率", price?.received_at);
-        if (hasRate && fresh && age <= 900000) power.dataset.bmMult = price.multiplier;
-        else delete power.dataset.bmMult;
+        const staleLabel = fresh ? "" : price?.status === "error" ? " · 探测失败，用上次有效倍率" : " · 已过期，用上次有效倍率";
+        renderValue(cell, hasRate ? `${price.multiplier}×${staleLabel}` : "暂无上游倍率", price?.received_at);
+        if (hasRate && age <= 900000) {
+          power.dataset.bmMult = price.multiplier;
+          if (fresh) delete power.dataset.bmStale;
+          else power.dataset.bmStale = price?.status || "stale";
+        } else {
+          delete power.dataset.bmMult;
+          delete power.dataset.bmStale;
+        }
         if (stats && Number.isFinite(stats.cache_rate)) power.dataset.bmCache = stats.cache_rate * 100;
         else delete power.dataset.bmCache;
         // Price the observed mix, including output; do not borrow Pro's mix.

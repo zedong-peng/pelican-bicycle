@@ -134,26 +134,52 @@ body:has(dialog[open]) { overflow: hidden; }
 .bm-table { width:100%; border-collapse:collapse; table-layout:auto; border-top:2px solid #42473f; border-bottom:2px solid #42473f; white-space:nowrap; font-size:13px; font-variant-numeric:tabular-nums; }
 .bm-table th,.bm-table td { padding:11px 16px; text-align:right; vertical-align:middle; }
 .bm-table thead { border-bottom:1px solid #737770; }
-.bm-table th:nth-child(2),.bm-table td:nth-child(2),.bm-table th:nth-child(3),.bm-table td:nth-child(3) { text-align:center; }
+.bm-table th:nth-child(3),.bm-table td:nth-child(3),.bm-table th:nth-child(4),.bm-table td:nth-child(4) { text-align:center; }
 .bm-table th { font-weight:600; }
 .bm-table th:first-child,.bm-table td:first-child { padding-left:0; text-align:left; }
 .bm-note { margin:10px 0 0; font-size:12px; line-height:1.8; color:#737770; }
   .bm-updated { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5; font-weight: 400; color: #737770; }
+
+/* Candy runner */
+#candy-form { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 0 14px; gap: 12px; }
+#candy-form label { display: grid; gap: 6px; min-width: 0; font-size: 12px; color: #72776e; }
+#candy-form .candy-wide { grid-column: span 2; }
+#candy-form input, #candy-form select { width: 100%; min-width: 0; border: 1px solid #d7dbd2; border-radius: 4px; padding: 9px 10px; background: white; color: #242624; font: inherit; }
+.candy-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+#candy-start { background: #30392f; color: white; }
+#model-tests button:disabled { opacity: .5; cursor: default; }
+#candy-status { font-size: 12px; color: #555d54; }
+#candy-history { margin: 16px 0; }
+#candy-sites table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+#candy-sites th, #candy-sites td { padding: 10px 12px; border-bottom: 1px solid #dedfd9; vertical-align: top; }
+#candy-sites th { color: #72776e; font-weight: 500; white-space: nowrap; }
+#candy-sites td { min-width: 100px; overflow-wrap: anywhere; }
+#candy-sites td:nth-child(2) { min-width: 180px; max-width: 300px; }
+#candy-sites-count { color: #72776e; }
+#model-tests details { border-top: 1px solid #dedfd9; padding: 12px 0; font-size: 12px; }
+#model-tests summary { cursor: pointer; line-height: 1.8; overflow-wrap: anywhere; }
+#model-tests pre { padding: 12px; background: #f3f5f0; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto; font: 12px/1.7 ui-monospace, monospace; }
+#candy-sites .candy-result { white-space: nowrap; }
+#candy-sites .test-details { border: 0; padding: 0; }
+#candy-sites .test-log { max-height: 260px; white-space: pre; overflow-wrap: normal; }
+@media(max-width:680px) { #candy-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 </head>
 <body>
-  <header><a class="brand" href="./">AI 渠道实测</a><nav><a href="#relay-benchmark">渠道对比</a><a href="#cache-tool">成本计算</a><a href="#model-tests">糖果题测试</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
+  <header><a class="brand" href="./">AI 渠道实测</a><nav><a href="#relay-benchmark">用量实况</a><a href="#cache-tool">成本计算</a><a href="#model-tests">糖果题测试</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
   <main>
     <div class="heading"><h1>AI 渠道实测</h1></div>
     <section id="relay-benchmark" aria-labelledby="bm-title">
-      <div class="bm-head"><h2 id="bm-title">GPT-6-ASTRA渠道对比</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
-      <div class="bm-scroll" role="region" aria-label="渠道对比表，可横向滚动" tabindex="0">
+      <div class="bm-head"><h2 id="bm-title">个人 GPT-6-ASTRA 用量实况</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
+      <div class="bm-scroll" role="region" aria-label="个人用量实况表，可横向滚动" tabindex="0">
         <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
-          <thead><tr><th scope="col">渠道</th><th scope="col">糖果检测（最新）</th><th scope="col">过去一周可用性</th><th scope="col">Input 倍率</th><th scope="col">过去一周缓存率 ↑</th><th scope="col">购买力（周用量估算）↑</th></tr></thead>
+          <thead><tr><th scope="col">渠道</th><th scope="col">Input 倍率</th><th scope="col">糖果检测（最新）</th><th scope="col">过去一周可用性</th><th scope="col">过去一周缓存率 ↑</th><th scope="col">购买力（周用量估算）↑</th></tr></thead>
           <tbody>
-            <tr data-channel="tokenshop"><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
-            <tr data-channel="fengchao"><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
-            <tr data-channel="zlab"><td><a href="https://ttft.asia/">zlab(不对外注册)</a><small class="bm-updated">上游：<a href="https://fengchao-api.com/">fengchao-api.com</a></small></td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="bm-input">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="tokenshop"><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td class="bm-input">等待数据</td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="fengchao"><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td class="bm-input">等待数据</td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="zlab"><td><a href="https://ttft.asia/">zlab(不对外注册)</a><small class="bm-updated">上游：<a href="https://fengchao-api.com/">fengchao-api.com</a></small></td><td class="bm-input">等待数据</td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr data-channel="lingsuan"><td><a href="https://edge.lingsuan.org">edge.lingsuan.org</a></td><td class="bm-input">等待数据</td><td><span class="test-result">等待数据</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">等待数据</td><td class="cache-rate">等待数据</td><td class="bm-power">—</td></tr>
+            <tr><td>OpenAI Pro20x 官方订阅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>100%</td></tr>
           </tbody>
         </table>
       </div>
@@ -161,8 +187,8 @@ body:has(dialog[open]) { overflow: hidden; }
         <div id="live-status" role="status">正在加载 VPS 实测数据…</div>
         <div>仅统计站长经 VPS 调用 GPT-6-ASTRA 的记录；可用性为成功请求 / 该站点总请求（站内重试按最终结果，跨站切换分别计数）。缓存率为累计缓存读取 token / 累计总输入 token。</div>
         <div>每天北京时间 08:00 检测，每次 5 题，全部通过才显示 ✓。沿用原脚本判分规则：回答包含独立数字 21；这是一项固定题测试，不代表完整模型能力。</div>
-        <div><strong>Input 倍率</strong>：主站定时探测到的上游声明生效倍率；时间为主站接收探测结果的北京时间。探测失败或过期会标注，数据每 5 分钟同步。</div>
-        <div><strong>购买力</strong>：使用各渠道过去一周实际非缓存输入、缓存输入、输出 token 占比，按当前上游倍率估算每百万总 token 成本。比较相同 $200 预算能购买的总 token 数，以 Pro 20x 样本月度总量为 100%；不再套用 Pro 的输入输出比例。仍假设 1¥ 充值 1$ 额度、输入缓存输出统一倍率，不是历史账单实付金额。</div>
+        <div><strong>Input 倍率</strong>：主站定时探测到的上游声明生效倍率；时间为主站接收探测结果的北京时间。探测失败或过期时沿用上次有效倍率并标注，数据每 5 分钟同步。</div>
+        <div><strong>购买力</strong>：使用各渠道过去一周实际非缓存输入、缓存输入、输出 token 占比，按上游倍率估算每百万总 token 成本（探测异常时沿用上次有效倍率，购买力标 <code>*</code>）。比较相同 $200 预算能购买的总 token 数，以 Pro 20x 样本月度总量为 100%；不再套用 Pro 的输入输出比例。仍假设 1¥ 充值 1$ 额度、输入缓存输出统一倍率，不是历史账单实付金额。</div>
         <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算。</div>
       </div>
     </section>
@@ -225,10 +251,38 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
     </section>
     <section id="model-tests" aria-labelledby="tests-title">
       <div class="module-heading"><h2 id="tests-title">糖果题测试</h2></div>
+      <form id="candy-form" autocomplete="off">
+        <label class="candy-wide">API URL<input id="candy-url" type="url" placeholder="https://api.example.com/v1" required autocomplete="off"></label>
+        <label class="candy-wide">API Key<input id="candy-key" type="password" placeholder="仅本次使用，不保存" required autocomplete="off" spellcheck="false"></label>
+        <label class="candy-wide">渠道备注<input id="candy-note" placeholder="例如：渠道 A · 按量套餐" maxlength="120"></label>
+        <label class="candy-wide">模型<input id="candy-model" value="gpt-6-astra" required></label>
+        <label>接口<select id="candy-api"><option value="responses">Responses</option><option value="chat/completions">Chat Completions</option></select></label>
+        <label>推理强度<select id="candy-effort"><option value="">默认（不传）</option><option selected>low</option><option>medium</option><option>high</option><option>xhigh</option></select></label>
+        <label>次数<input id="candy-runs" type="number" min="1" max="20" value="5" required></label>
+        <label>单次超时（秒）<input id="candy-timeout" type="number" min="10" max="600" value="180" required></label>
+      </form>
+      <div class="candy-actions"><button id="candy-start" type="submit" form="candy-form">开始测试</button><button id="candy-stop" type="button" disabled>停止</button><span id="candy-status" role="status" aria-live="polite">尚未测试</span></div>
+      <p class="prompt-note" id="candy-connection">浏览器直连模式 · 渠道需支持 CORS。无需 CORS 的本地模式：运行 <code>python3 local_server.py</code>，打开终端显示的地址。</p>
+      <p class="prompt-note" id="candy-privacy">Key 不保存至文件或日志、测试后清空；记录仅保留在当前页面，刷新即清空。沿用原脚本：回复含独立数字 21 即命中，仅供参考，不代表模型身份验证。</p>
+      <details id="candy-sites">
+        <summary><span id="candy-sites-title">已测站点</span> <span id="candy-sites-count">（0）</span></summary>
+        <p class="prompt-note" id="candy-sites-note">同一地址、备注、模型与推理强度展示最近一次测试，最多 100 项；仅在本页保留，刷新清空。</p>
+        <p id="candy-sites-empty" class="prompt-note">还没有测试记录。</p>
+        <div id="candy-sites-scroll" class="bm-scroll" role="region" aria-label="已测站点表，可横向滚动" tabindex="0" hidden>
+          <table aria-label="已测站点最近测试结果">
+            <thead><tr><th scope="col">渠道备注</th><th scope="col">API 地址</th><th scope="col">Input 倍率</th><th scope="col">模型 / 强度</th><th scope="col">最近测试时间</th><th scope="col">最近结果</th></tr></thead>
+            <tbody id="candy-sites-body"></tbody>
+          </table>
+        </div>
+      </details>
+      <div id="candy-history" aria-label="本页测试记录"></div>
+      <details><summary>题目与命令行测试</summary><pre id="candy-question"></pre>
+
     <div class="prompt"><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note">运行糖果题测试；`-m` 模型，`-r` 推理强度，`-n` 测试次数。</p></div><button type="button" id="copy-candy">复制命令</button></div>
+      </details>
     </section>
     <div class="module-heading" id="works"><h2>鹈鹕骑自行车</h2><div class="heading-aside"><strong id="total"></strong>份作品</div></div>
-    <div class="prompt"><div class="prompt-body"><blockquote><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
+    <div class="prompt"><div class="prompt-body"><blockquote id="artwork-prompt"><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
     <form aria-label="筛选作品">
       <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
       <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
@@ -245,7 +299,7 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
 <script>
 const cards = [...document.querySelectorAll("article")];
 document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
-const form = document.querySelector("form");
+const form = document.querySelector('form[aria-label="筛选作品"]');
 const facets = [...form.querySelectorAll("[data-facet]")];
 const names = facets.map(facet => facet.dataset.facet);
 const lists = Object.fromEntries(facets.map(facet => [facet.dataset.facet, facet.querySelector("[data-options-for]")]));
@@ -376,7 +430,7 @@ copyButton.addEventListener("click", async () => {
 });
 const copyPromptButton = document.querySelector("#copy-prompt");
 copyPromptButton.addEventListener("click", async () => {
-  const text = document.querySelector(".prompt blockquote").textContent.trim();
+  const text = document.querySelector("#artwork-prompt").textContent.trim();
   try {
     await navigator.clipboard.writeText(text);
   } catch {
@@ -475,8 +529,9 @@ viewer.addEventListener("click", event => {
       const standardCost = ((input - cached) * PRICE.input + cached * PRICE.cache + output * PRICE.output) / 1e6;
       const estimatedCost = standardCost * mult;
       const perM = estimatedCost / (tokens / 1e6);
-      cell.textContent = perM > 0 ? num(proPerM / perM * 100, 1) + "%" : "—";
-      cell.title = `近一周总输入 ${num(input, 0)}、缓存读取 ${num(cached, 0)}、输出 ${num(output, 0)} token；按当前倍率估算 ¥${num(estimatedCost)}，每百万总 token ¥${num(perM)}。相同预算可购买总 token 数 / Pro 20x 样本月度总 token 数。`;
+      const stale = cell.dataset.bmStale;
+      cell.textContent = perM > 0 ? num(proPerM / perM * 100, 1) + "%" + (stale ? "*" : "") : "—";
+      cell.title = `近一周总输入 ${num(input, 0)}、缓存读取 ${num(cached, 0)}、输出 ${num(output, 0)} token；按${stale ? "上次有效" : "当前"}倍率估算 ¥${num(estimatedCost)}，每百万总 token ¥${num(perM)}${stale ? "（倍率探测异常，沿用旧值）" : ""}。相同预算可购买总 token 数 / Pro 20x 样本月度总 token 数。`;
     }
   }
   window.addEventListener("benchmark-updated", renderPurchasingPower);
@@ -532,5 +587,6 @@ viewer.addEventListener("click", event => {
 })();
 </script>
 <script src="benchmark.js" defer></script>
+<script src="candy.js"></script>
 </body>
 </html>

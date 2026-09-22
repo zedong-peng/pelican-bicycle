@@ -11,7 +11,7 @@
 - 没有数据返回 null。错误监控覆盖未经确认时关闭可用性百分比，不能以仅成功日志报告 100%。当前监控启用也不证明历史日志绝对无缺失，此数字描述留存日志中的可用性。
 - Input 倍率直接读取主站保存的 `accounts.extra.upstream_billing_probe.data.effective_rate_multiplier`，不读取内部计费倍率，也不额外请求上游。`received_at` 是主站接收探测结果的时间，页面按北京时间显示；`fresh_until` 和探测状态用于判断是否有效。
 - 价格来源账号默认复用该渠道的 `eval_account_id`，可用 `price_account_id` 明确指定，必须属于本渠道的 account_ids。仅公开白名单倍率/时间/状态，不公开完整 extra。
-- 购买力使用各渠道过去一周实际非缓存输入、缓存输入和输出 token 数，按有效上游声明倍率计算每百万总 token 成本；相同预算可买总 token 数与 Pro 20x 样本月度总量比较。不再借用 Pro 输入输出比例。仍假设输入/缓存/输出统一倍率、1¥ 充值 1$ 额度，非历史账单实付金额。过期、失败或缺失倍率时暂停显示购买力。
+- 购买力使用各渠道过去一周实际非缓存输入、缓存输入和输出 token 数，按上游声明倍率计算每百万总 token 成本；相同预算可买总 token 数与 Pro 20x 样本月度总量比较。不再借用 Pro 输入输出比例。仍假设输入/缓存/输出统一倍率、1¥ 充值 1$ 额度，非历史账单实付金额。探测失败或过期时沿用上次有效倍率并标注，不暂停显示购买力。
 
 ## 糖果检测
 
@@ -19,7 +19,7 @@
 
 `evaluate.py` 调用原脚本 `run_codex('gpt-6-astra', 'low')` 和原 `ANSWER_PATTERN`，串行运行五次，只有五次全部成功判勾才通过。原脚本只检查独立数字 21，不是完整模型能力鉴定。每次请求独立临时 CODEX_HOME、禁用记忆，保留 Codex 默认网络重试配置，使用渠道独立凭据；VPS 直接测该上游，避免 Sub2API 自动故障转移污染结果。这些探测请求不进入个人网关用量统计。
 
-每天北京时间 08:00 触发。一次最多一个检测任务（跨进程文件锁）；无任何启动检测的 HTTP 接口，手动检测仅通过 SSH 执行。单次样本 240 秒超时，失败保存为异常；不将异常误称为模型降智。
+每天北京时间 08:00 触发。一次最多一个检测任务（跨进程文件锁）；上述每日监控无启动检测的 HTTP 接口，手动检测仅通过 SSH 执行；访客自带 Key 的公共测试使用下文独立服务。单次样本 240 秒超时，失败保存为异常；不将异常误称为模型降智。
 
 服务器 `/var/lib/ai-benchmark/history/` 保存每次完整记录（私有），`latest-*.json` 保存最新结果。公开接口仅返回汇总和最新检测答案，不暴露数据库、账号 ID、API key、原始用量或错误日志。
 
@@ -31,7 +31,7 @@
 - `/var/www/ai-benchmark/`：仅构建后的静态站点。
 - `deploy/`：systemd 服务、五分钟汇总 timer、北京时间每日 timer、Nginx 路由片段。
 
-统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只公开 `/ai-recommend/api/stats`。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
+统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。监控公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只公开 `/ai-recommend/api/stats`。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
 
 更新凭据或渠道后同步修改私有配置并重启服务。网页更新：`python3 build.py` 后复制 `site/` 内容到静态目录。不要复制私有配置到静态目录。
 
@@ -52,3 +52,20 @@ ssh syvps 'journalctl -u ai-benchmark-daily.service -n 30 --no-pager'
 ```
 
 第一条命令启动所有已配置渠道各五次检测，完成后网页自动显示最新结果。每日 timer 使用同一个本地 CLI，不经过 HTTP。HTTP POST `/tests` 已删除，旧公网路径返回 404；没有 Tailscale 私有网页或 8088 监听。旧管理口令已移除。
+
+
+## 公共糖果测试服务
+
+与每日渠道监控分开运行：`public_candy.py` 监听 `127.0.0.1:8767`，接受访客提供的 Key，服务端探测 Sub2API 倍率、发送固定题并保存结果。Key 仅在本批请求内存中使用；请求日志关闭。SQLite 存储白名单摘要与脱敏后的逐次答案、耗时、判分（每次最多 20,000 字符）；不保存 Key、原始响应对象和访客身份。详情在展开“检测记录”时按 URL、倍率和测试版本读取，列表不携带回复正文。
+
+部署步骤：
+
+1. 构建并检查：`python3 build.py`、`python3 -m unittest discover -s tests -v`、`python3 -m unittest discover -s monitor -p 'test_*.py'`、`node --check candy.js`。
+2. 将 `public_candy.py`、`local_server.py`、`build.py`、`candy_prompt.txt` 放入 `/opt/ai-benchmark/public/`；将构建后的 `site/` 内容复制到 `/var/www/ai-benchmark/`。
+3. 安装 `deploy/ai-candy-public.service` 至 `/etc/systemd/system/`。服务账户沿用 `ai-benchmark`；systemd 创建私有状态目录 `/var/lib/ai-candy-public/`，数据库为 `community.sqlite3`。
+4. 将 `deploy/candy-limits.conf` 放入 Nginx 的 http 配置上下文，合并 `deploy/nginx.conf` 的两个 `/api/community/` 路由至站点配置。`proxy_buffering off` 保留每五秒的流式心跳；不要缓存测试响应。Origin 必须与 `--origin` 一致，反向代理保留 Host。
+5. `systemctl daemon-reload`，`systemctl enable --now ai-candy-public`；`nginx -t` 通过后 reload。GET `/ai-recommend/api/community/sites` 应返回 JSON；不使用真实 Key 做部署冒烟测试。
+
+公网测试仅支持 HTTPS 443 上游；拒绝内网地址，DNS 解析有超时和并发上限，连接固定到验证后的 IP，TLS 仍验证原主机名，不跟随重定向。全局最多 3 个测试；Nginx 每来源地址最多一个并发、每分钟两次启动（短时允许额外两次）。若前置 Cloudflare，按服务器原有可信代理 real_ip 配置获取客户端 IP。
+
+回滚：恢复旧静态目录和 Nginx 路由，`nginx -t` 后 reload，并停止 `ai-candy-public`。保留数据库以便恢复，不影响原有统计和每日检测服务。
