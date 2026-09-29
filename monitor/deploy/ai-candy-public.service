@@ -1,0 +1,19 @@
+[Unit]
+Description=Public candy tests and shared Sub2API records
+After=network-online.target
+[Service]
+User=ai-benchmark
+Group=ai-benchmark
+WorkingDirectory=/opt/ai-benchmark/public
+ExecStart=/usr/bin/python3 /opt/ai-benchmark/public/public_candy.py --no-build --port 8767 --origin https://sytoken.org --prefix /ai-recommend/api/community --database /var/lib/ai-candy-public/community.sqlite3
+Restart=on-failure
+StateDirectory=ai-candy-public
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+[Install]
+WantedBy=multi-user.target

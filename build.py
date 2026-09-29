@@ -1,5 +1,6 @@
 """Validate submissions and build a dependency-free, offline gallery."""
 
+from datetime import date
 import hashlib
 import html
 import json
@@ -67,8 +68,37 @@ def collect():
                   ("model", "effort", "provider", "harness")) + (record[0],))
 
 
+def render_notes(notes):
+    if not isinstance(notes, list):
+        raise ValueError('usage-notes.json must contain a list')
+    for note in notes:
+        if (not isinstance(note, dict) or not {'date', 'title', 'body'} <= set(note)
+                or set(note) - {'date', 'title', 'body', 'tags'}):
+            raise ValueError('Usage notes require date, title, body and optional tags')
+        if any(not isinstance(note[key], str) or not note[key].strip()
+               for key in ('date', 'title', 'body')):
+            raise ValueError('Usage note fields must be non-empty strings')
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', note['date']):
+            raise ValueError('Usage note dates must use YYYY-MM-DD')
+        date.fromisoformat(note['date'])
+        tags = note.get('tags', [])
+        if not isinstance(tags, list) or any(not isinstance(tag, str) or not tag.strip() for tag in tags):
+            raise ValueError('Usage note tags must be non-empty strings')
+    if not notes:
+        return ('<li class="notes-empty"><h3>还没有公开手记</h3>'
+                '<p>用量先开始记录。具体任务、使用体验和配置取舍，会在这里逐步补充。</p></li>')
+    entries = []
+    for note in sorted(notes, key=lambda item: item['date'], reverse=True):
+        tags = ''.join(f'<span>{html.escape(tag)}</span>' for tag in note.get('tags', []))
+        entries.append(f'<li><time datetime="{note["date"]}">{note["date"]}</time>'
+                       f'<h3>{html.escape(note["title"])}</h3><p>{html.escape(note["body"])}</p>'
+                       + (f'<div class="note-tags">{tags}</div>' if tags else '') + '</li>')
+    return '\n'.join(entries)
+
+
 def build():
     records = collect()
+    notes = render_notes(json.loads((ROOT / 'usage-notes.json').read_text(encoding='utf-8')))
     output = ROOT / "site"
     if output.is_symlink():
         raise ValueError("site must not be a symlink")
@@ -96,8 +126,13 @@ src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True
     template = (ROOT / "gallery.html").read_text(encoding="utf-8")
     prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
+    template = template.replace("<!-- USAGE_NOTES -->", notes)
     (output / "index.html").write_text(template.replace("<!-- RESULTS -->", "\n".join(cards)), encoding="utf-8")
-    shutil.copyfile(ROOT / "benchmark.js", output / "benchmark.js")
+    for name in ('benchmark.js', 'usage.js', 'usage.css'):
+        shutil.copyfile(ROOT / name, output / name)
+    candy_script = (ROOT / "candy.js").read_text(encoding="utf-8")
+    candy_prompt = (ROOT / "candy_prompt.txt").read_text(encoding="utf-8")
+    (output / "candy.js").write_text(candy_script.replace('/* CANDY_PROMPT */ ""', json.dumps(candy_prompt, ensure_ascii=False)), encoding="utf-8")
     (output / ".nojekyll").touch()
     print(f"Validated {len(records)} results; built {output / 'index.html'}")
 

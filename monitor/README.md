@@ -31,7 +31,9 @@
 - `/var/www/ai-benchmark/`：仅构建后的静态站点。
 - `deploy/`：systemd 服务、五分钟汇总 timer、北京时间每日 timer、Nginx 路由片段。
 
-统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。监控公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只公开 `/ai-recommend/api/stats`。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
+统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。监控公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只读公开 `/ai-recommend/api/stats`（原渠道明细）和 `/ai-recommend/api/usage`（个人多来源用量）。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
+
+多来源用量契约和 Claude 接入说明见 [USAGE_API.md](USAGE_API.md)。当前不改变原采集器，不额外抓取个人会话；扩展采集器在状态目录原子发布 `usage-sources.json`。部署本次页面时同步更新 `monitor/server.py`、新增 `monitor/usage.py`，重启监控服务，并合并 `deploy/nginx.conf` 中新增的只读 `/api/usage` 路由。未部署新路由时，首页兼容旧 `/api/stats`，并提示扩展接口未上线；Claude 数据不会通过旧接口显示。
 
 更新凭据或渠道后同步修改私有配置并重启服务。网页更新：`python3 build.py` 后复制 `site/` 内容到静态目录。不要复制私有配置到静态目录。
 

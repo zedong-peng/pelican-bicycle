@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI 渠道实测</title>
-  <meta name="description" content="对比 AI 渠道价格、缓存率与购买力，试算使用成本，查看糖果题测试与生成作品。">
+  <title>我的 AI 使用实况</title>
+  <meta name="description" content="记录我实际使用的 AI 模型、工具与渠道：公开用量、使用手记和生成实验。各来源独立统计，不是模型排行榜，也不代表全部 AI 使用。">
   <style>
 :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #242624; background: #fafbf9; letter-spacing: 0; font-synthesis: none; }
 * { box-sizing: border-box; }
@@ -164,13 +164,39 @@ body:has(dialog[open]) { overflow: hidden; }
 #candy-sites .test-log { max-height: 260px; white-space: pre; overflow-wrap: normal; }
 @media(max-width:680px) { #candy-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
+  <link rel="stylesheet" href="usage.css">
 </head>
 <body>
-  <header><a class="brand" href="./">AI 渠道实测</a><nav><a href="#relay-benchmark">用量实况</a><a href="#cache-tool">成本计算</a><a href="#model-tests">糖果题测试</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
+  <a class="skip-link" href="#usage-overview">跳到使用实况</a>
+  <header><a class="brand" href="./">我的 AI 使用实况<span class="brand-caption">个人记录</span></a><nav aria-label="主导航"><a href="#usage-overview">使用实况</a><a href="#usage-notes">使用手记</a><a href="#tools-experiments">工具与实验</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
   <main>
-    <div class="heading"><h1>AI 渠道实测</h1></div>
+    <div class="heading usage-hero">
+      <div><p class="eyebrow">PERSONAL AI LOG</p><h1>我在怎样使用 AI。</h1><p class="hero-lede">用什么，做了什么，实际体验如何。<br>把真实使用留下来，而不只是给出一个推荐。</p></div>
+      <p class="hero-aside">个人样本，不是排行榜。<br>数据有边界，体验有上下文。<br>只展示已接入的记录。</p>
+    </div>
+    <section id="usage-overview" aria-labelledby="usage-title">
+      <div class="usage-section-head"><div><p class="section-index">01 / USAGE</p><h2 id="usage-title">正在使用与记录</h2></div><button id="usage-refresh" type="button">刷新用量</button></div>
+      <p class="section-lede">每个来源保留自己的统计区间与口径，不把不同来源的请求、Token 或费用直接相加。</p>
+      <p id="usage-status" class="usage-status" role="status">正在读取公开用量快照…</p>
+      <div id="usage-sources" class="usage-sources">
+        <section class="usage-source" aria-label="GPT 用量加载状态"><div class="source-heading"><h3>GPT · VPS</h3><span class="source-badge">◷ 正在读取</span></div><p class="source-empty-title">从真实调用开始记录</p><p class="source-scope">当前统计范围为经 VPS 调用的个人 GPT-6-ASTRA 记录，不涵盖全部 AI 使用。</p></section>
+        <section class="usage-source is-pending" aria-label="Claude 用量接入状态"><div class="source-heading"><h3>Claude</h3><span class="source-badge">○ 待接入</span></div><p class="source-empty-title">等待接入真实用量</p><p class="source-scope">后续会在这里独立展示 Claude 的模型、统计区间与用量。目前未计入统计，也不显示为零。</p></section>
+      </div>
+      <noscript><p class="usage-status">用量实况需要启用 JavaScript；使用手记和作品源码仍可直接浏览。</p></noscript>
+      <p class="usage-footnote">输入 Token 包含非缓存输入、缓存读取和缓存写入；缓存不重复累加。未采集的指标显示“未提供”，不当作零。实际支出与估算费用分开标注。</p>
+    </section>
+    <section id="usage-notes" aria-labelledby="notes-title">
+      <div class="usage-section-head"><div><p class="section-index">02 / FIELD NOTES</p><h2 id="notes-title">使用手记</h2></div><span class="section-aside">任务 · 结果 · 取舍</span></div>
+      <p class="section-lede">比用了多少更重要的，是实际做成了什么。记录有效的方法，也保留失败与改变看法的过程。</p>
+      <ol class="usage-notes"><!-- USAGE_NOTES --></ol>
+    </section>
+    <section id="tools-experiments" aria-labelledby="tools-title">
+      <div class="usage-section-head"><div><p class="section-index">03 / TOOLS & EXPERIMENTS</p><h2 id="tools-title">工具与实验</h2></div><span class="section-aside">展开查看</span></div>
+      <p class="section-lede">渠道明细、成本试算和固定题实验。公共测试与社区作品单独保留，不计入我的个人用量。</p>
+      <details class="support-panel">
+        <summary><span>渠道使用明细<small>我经 VPS 调用的渠道表现，不是全站可用性承诺</small></span></summary>
     <section id="relay-benchmark" aria-labelledby="bm-title">
-      <div class="bm-head"><h2 id="bm-title">个人 GPT-6-ASTRA 用量实况</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">提交数据 ↗</a></div>
+      <div class="bm-head"><h2 id="bm-title">个人 GPT-6-ASTRA 渠道记录</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">反馈统计问题 ↗</a></div>
       <div class="bm-scroll" role="region" aria-label="个人用量实况表，可横向滚动" tabindex="0">
         <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
           <thead><tr><th scope="col">渠道</th><th scope="col">Input 倍率</th><th scope="col">糖果检测（最新）</th><th scope="col">过去一周可用性</th><th scope="col">过去一周缓存率 ↑</th><th scope="col">购买力（周用量估算）↑</th></tr></thead>
@@ -192,6 +218,9 @@ body:has(dialog[open]) { overflow: hidden; }
         <div>美元按 2026-09-01 汇率（1 USD = 6.7223 CNY）换算。</div>
       </div>
     </section>
+      </details>
+      <details class="support-panel">
+        <summary><span>成本试算<small>基于公开样本的假设计算，不是我的实际账单</small></span></summary>
     <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
       <div class="cache-widget-head">
         <div class="cache-widget-copy">
@@ -249,6 +278,9 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
         </section>
       </div>
     </section>
+      </details>
+      <details class="support-panel">
+        <summary><span>糖果题测试<small>固定题实验与公共记录，不用于认证模型身份或综合能力</small></span></summary>
     <section id="model-tests" aria-labelledby="tests-title">
       <div class="module-heading"><h2 id="tests-title">糖果题测试</h2></div>
       <form id="candy-form" autocomplete="off">
@@ -281,6 +313,9 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
     <div class="prompt"><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note">运行糖果题测试；`-m` 模型，`-r` 推理强度，`-n` 测试次数。</p></div><button type="button" id="copy-candy">复制命令</button></div>
       </details>
     </section>
+      </details>
+      <details class="support-panel" id="artwork-panel">
+        <summary><span>生成作品档案<small>同一个“鹈鹕骑自行车”任务，不同模型、渠道和工具下的结果</small></span></summary>
     <div class="module-heading" id="works"><h2>鹈鹕骑自行车</h2><div class="heading-aside"><strong id="total"></strong>份作品</div></div>
     <div class="prompt"><div class="prompt-body"><blockquote id="artwork-prompt"><!-- PROMPT --></blockquote><p class="prompt-note">说明：回复里出现“内嵌 SVG 和 CSS 动画”这类套话，不能据此判断是否降智，请以实际渲染效果为准。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
     <form aria-label="筛选作品">
@@ -293,11 +328,14 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
     <div class="collection-heading"><h2>全部作品</h2><p id="count" aria-live="polite"></p></div>
     <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
     <p id="empty" hidden>没有匹配的作品。</p>
+      </details>
+      <p class="tool-links">外部工具：<a href="https://ip.net.coffee/claude/" target="_blank" rel="noopener noreferrer">Claude IP 检测 ↗</a><span>由第三方提供，与本站用量统计无关。</span></p>
+    </section>
   </main>
-  <footer><span>AI 渠道实测</span><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></footer>
+  <footer><span>我的 AI 使用实况 · 个人样本，持续记录</span><div><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/monitor/USAGE_API.md">数据口径与接入约定 ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle/blob/main/README.md">记录规范与来源 ↗</a></div></footer>
   <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
 <script>
-const cards = [...document.querySelectorAll("article")];
+const cards = [...document.querySelectorAll(".gallery > article")];
 document.querySelector("#total").textContent = String(cards.length).padStart(2, "0");
 const form = document.querySelector('form[aria-label="筛选作品"]');
 const facets = [...form.querySelectorAll("[data-facet]")];
@@ -375,7 +413,7 @@ function writeURL() {
   for (const name of names) for (const value of applied[name]) params.append(name, value);
   const query = params.toString();
   try {
-    history.replaceState(null, "", query ? `?${query}` : location.pathname);
+    history.replaceState(null, "", `${location.pathname}${query ? `?${query}` : ""}${location.hash}`);
   } catch {
     // file:// 本地预览不支持 replaceState，忽略即可。
   }
@@ -586,6 +624,7 @@ viewer.addEventListener("click", event => {
   render();
 })();
 </script>
+<script src="usage.js" defer></script>
 <script src="benchmark.js" defer></script>
 <script src="candy.js"></script>
 </body>

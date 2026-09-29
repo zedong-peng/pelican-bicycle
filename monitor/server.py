@@ -14,6 +14,7 @@ import tempfile
 import time
 
 from collect import atomic_json
+from usage import public_usage
 
 ROOT = Path(__file__).resolve().parent
 
@@ -83,6 +84,9 @@ class Monitor:
             stats['tests'][path.stem.removeprefix('latest-')] = json.loads(path.read_text())
         return stats
 
+    def usage(self):
+        return public_usage(self.state)
+
     def run(self, channels):
         if not channels or any(c not in self.credentials for c in channels):
             raise ValueError('Unknown channel')
@@ -122,7 +126,7 @@ class Monitor:
             atomic_json(self.state / 'running.json', [])
 
 
-def serve(monitor, port=8765):
+def make_server(monitor, port=8765):
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, body):
             data = json.dumps(body, ensure_ascii=False).encode()
@@ -135,9 +139,11 @@ def serve(monitor, port=8765):
             self.wfile.write(data)
 
         def do_GET(self):
-            if self.path != '/stats':
-                return self.reply(404, {'error': 'Not found'})
-            self.reply(200, monitor.public())
+            if self.path == '/stats':
+                return self.reply(200, monitor.public())
+            if self.path == '/usage':
+                return self.reply(200, monitor.usage())
+            self.reply(404, {'error': 'Not found'})
 
         def setup(self):
             super().setup()
@@ -146,8 +152,12 @@ def serve(monitor, port=8765):
         def log_message(self, *_):
             pass
 
-    server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
-    server.serve_forever()
+    return ThreadingHTTPServer(('127.0.0.1', port), Handler)
+
+
+def serve(monitor, port=8765):
+    with make_server(monitor, port) as server:
+        server.serve_forever()
 
 
 if __name__ == '__main__':

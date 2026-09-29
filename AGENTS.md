@@ -10,7 +10,10 @@ Static archive of "pelican rides bicycle" SVG animations. Static gallery has no 
 ## VPS monitor checks
 
 - `python3 -m unittest discover -s monitor -p 'test_*.py'` validates aggregation and detection lifecycle.
-- `node --check benchmark.js` validates the browser script.
+- `node --check benchmark.js` and `node --check candy.js` validate browser scripts.
+- `python3 -m unittest discover -s tests -v` validates local forwarding and public collection.
+- `python3 local_server.py` starts the local-only tool; `python3 public_candy.py` starts shared collection. Both bind loopback.
+- Public candy records use a SQLite database outside `site/` and the repo. Never persist keys or raw upstream response objects. Public records may retain redacted answer text (up to 20,000 characters per sample), timing and score details. Keep the fixed question in `candy_prompt.txt`; `build.py` injects it into the browser script.
 - Keep live credentials and owner-specific configuration outside this public repo. See `monitor/README.md`.
 
 ## Submissions (`results/<slug>/`)

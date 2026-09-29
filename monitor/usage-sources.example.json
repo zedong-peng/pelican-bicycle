@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "claude",
+      "label": "Claude",
+      "provider": "Anthropic",
+      "tool": null,
+      "models": [],
+      "scope": "Claude 用量尚未接入；不计入当前统计。",
+      "status": "pending",
+      "updated_at": null,
+      "period": null,
+      "freshness_seconds": 900,
+      "availability_verified": false,
+      "metrics": null
+    }
+  ]
+}
