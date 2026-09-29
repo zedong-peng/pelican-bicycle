@@ -9,6 +9,14 @@
   const addDays = (date, days) => iso(Date.parse(date + "T00:00:00Z") + days * DAY);
   const tokensOf = row => row.input + row.cache_read + row.cache_write + row.output;
 
+  // Past this many days the chart reads better one column per week than per day.
+  const WEEKLY_AFTER_DAYS = 120;
+  // Monday (calendar week) containing date, as YYYY-MM-DD.
+  function weekStart(date) {
+    const daysSinceEpoch = Math.round(Date.parse(date + "T00:00:00Z") / DAY);
+    return addDays(date, -((daysSinceEpoch + 3) % 7));
+  }
+
   function parse(data) {
     if (!data || data.schema_version !== 1 || !Array.isArray(data.rows) || !Array.isArray(data.columns)) {
       throw new Error("Unsupported token snapshot");
@@ -41,15 +49,27 @@
     const inRange = rows.filter(row => row.date >= start && row.date <= end);
     const dates = [];
     for (let date = start; date <= end; date = addDays(date, 1)) dates.push(date);
-    const series = Array.from({ length: SERIES + 1 }, () => new Map(dates.map(date => [date, 0])));
+    // Long ranges aggregate into Monday-to-Sunday calendar weeks; edge weeks may be partial.
+    const weekly = dates.length > WEEKLY_AFTER_DAYS;
+    const buckets = [];
+    const bucketOf = new Map();
+    for (const date of dates) {
+      const key = weekly ? weekStart(date) : date;
+      let bucket = bucketOf.get(key);
+      if (!bucket) { bucket = { key, start: date, end: date }; bucketOf.set(key, bucket); buckets.push(bucket); }
+      bucket.end = date;
+    }
+    const bucketKey = date => weekly ? weekStart(date) : date;
+    const series = Array.from({ length: SERIES + 1 }, () => new Map(buckets.map(bucket => [bucket.key, 0])));
     const models = new Map();
     const tools = new Map();
-    const byDay = new Map(dates.map(date => [date, new Map()]));
+    const byDay = new Map(buckets.map(bucket => [bucket.key, new Map()]));
     const total = { tokens: 0, unpriced: 0 };
     for (const row of inRange) {
       const tokens = tokensOf(row);
       const slot = slotMap.has(row.model) ? slotMap.get(row.model) : SERIES;
-      series[slot].set(row.date, series[slot].get(row.date) + tokens);
+      const day = bucketKey(row.date);
+      series[slot].set(day, series[slot].get(day) + tokens);
       const model = models.get(row.model) || { model: row.model, slot, tokens: 0, usd: 0, priced: true };
       model.tokens += tokens;
       if (row.api_usd === null) model.priced = false;
@@ -57,16 +77,17 @@
       models.set(row.model, model);
       tools.set(row.tool, (tools.get(row.tool) || 0) + tokens);
       const key = row.model + "|" + row.tool;
-      const entry = byDay.get(row.date).get(key) || { model: row.model, tool: row.tool, slot, tokens: 0, usd: 0 };
+      const entry = byDay.get(day).get(key) || { model: row.model, tool: row.tool, slot, tokens: 0, usd: 0 };
       entry.tokens += tokens;
       entry.usd = entry.usd === null || row.api_usd === null ? null : entry.usd + row.api_usd;
-      byDay.get(row.date).set(key, entry);
+      byDay.get(day).set(key, entry);
       total.tokens += tokens;
       if (row.api_usd === null) total.unpriced += tokens;
     }
     return {
-      start, end, dates, series, total,
-      // Per day, per model and tool, largest first (the bars stack the same way, from the bottom).
+      start, end, weekly, buckets,
+      dates: buckets.map(bucket => bucket.key), series, total,
+      // Per column, per model and tool, largest first (the bars stack the same way, from the bottom).
       byDay: new Map([...byDay].map(([date, entries]) => [date,
         [...entries.values()].sort((a, b) => b.tokens - a.tokens)])),
       models: [...models.values()].sort((a, b) => b.tokens - a.tokens),
@@ -86,36 +107,39 @@
     return [...entries.values()].sort((a, b) => a.slot - b.slot);
   }
 
-  // One column per calendar day: the x axis stays uniform.
+  // One column per bucket: a calendar day, or a Monday-to-Sunday week on long ranges.
   function columns(view) {
-    return view.dates.map(date => ({ date, total: view.series.reduce((sum, series) => sum + series.get(date), 0) }));
+    return view.buckets.map(bucket => ({ date: bucket.key, start: bucket.start, end: bucket.end,
+      total: view.series.reduce((sum, series) => sum + series.get(bucket.key), 0) }));
   }
 
-  // Linear y axis for ordinary days; only outliers above THRESHOLD are squeezed (log) into the top band.
+  // Linear y axis for ordinary columns; only outliers above the threshold are squeezed (log) into the top band.
   // 1B covers a heavy day of normal use; the automated sub-agent runs (3B–44B a day) sit above it.
-  const THRESHOLD = 1e9;
+  // Weekly columns hold ~7x a day, so the threshold scales with the column span.
+  const DAY_THRESHOLD = 1e9;
   const LINEAR_SHARE = 0.8;
   function niceCeil(value) {
     const step = 10 ** Math.floor(Math.log10(value));
     return [1, 2, 5, 10].map(n => n * step).find(n => n >= value * (1 - 1e-9));
   }
-  function yScale(values) {
+  function yScale(values, daysPerColumn = 1) {
+    const threshold = DAY_THRESHOLD * daysPerColumn;
     const positive = values.filter(value => value > 0).sort((a, b) => a - b);
     if (!positive.length) return { threshold: null, ticks: [], at: () => 0 };
     const max = positive[positive.length - 1];
-    if (max <= THRESHOLD * 1.2) {
+    if (max <= threshold * 1.2) {
       const top = niceCeil(max);
       return { threshold: null, ticks: [top / 2, top], at: value => Math.min(Math.max(value, 0) / top, 1) };
     }
-    const span = Math.log10(max) - Math.log10(THRESHOLD);
-    const at = value => value <= THRESHOLD ? Math.max(value, 0) / THRESHOLD * LINEAR_SHARE
-      : LINEAR_SHARE + (1 - LINEAR_SHARE) * Math.min((Math.log10(value) - Math.log10(THRESHOLD)) / span, 1);
-    const ticks = [THRESHOLD / 2, THRESHOLD];
+    const span = Math.log10(max) - Math.log10(threshold);
+    const at = value => value <= threshold ? Math.max(value, 0) / threshold * LINEAR_SHARE
+      : LINEAR_SHARE + (1 - LINEAR_SHARE) * Math.min((Math.log10(value) - Math.log10(threshold)) / span, 1);
+    const ticks = [threshold / 2, threshold];
     // One tick in the squeezed band: the first power of ten that has room above the threshold and below the max.
-    for (let decade = 10 ** Math.ceil(Math.log10(THRESHOLD * 1.0001)); decade < max; decade *= 10) {
+    for (let decade = 10 ** Math.ceil(Math.log10(threshold * 1.0001)); decade < max; decade *= 10) {
       if (at(decade) - LINEAR_SHARE > 0.06 && 1 - at(decade) > 0.04) { ticks.push(decade); break; }
     }
-    return { threshold: THRESHOLD, ticks, at };
+    return { threshold, ticks, at };
   }
 
   if (typeof module !== "undefined" && module.exports) {
@@ -155,7 +179,7 @@
     return `M${x},${y + height}V${y + r}Q${x},${y} ${x + r},${y}H${x + width - r}Q${x + width},${y} ${x + width},${y + r}V${y + height}Z`;
   }
 
-  // Hovering a legend entry lights that model up across every day.
+  // Hovering a legend entry lights that model up across every column.
   function focus(slot) {
     root.classList.toggle("has-focus", slot !== null);
     for (const element of root.querySelectorAll("[data-slot]")) {
@@ -171,13 +195,13 @@
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
     const cols = columns(view);
-    const y = yScale(cols.map(col => col.total));
+    const y = yScale(cols.map(col => col.total), view.weekly ? 7 : 1);
     const slotWidth = plotW / cols.length;
     const gap = slotWidth > 8 ? 2 : slotWidth > 3 ? 1 : 0;
     const barWidth = Math.max(slotWidth - gap, 1);
     const scale = value => y.at(value) * plotH;
     const svg = node("svg:svg", { viewBox: `0 0 ${width} ${height}`, width, height, role: "img",
-      "aria-label": `每日 token，${short(view.start)} 至 ${short(view.end)}` + (y.threshold ? `，超过 ${compact(y.threshold)} 的部分压缩显示` : "") });
+      "aria-label": `${view.weekly ? "每周" : "每日"} token，${short(view.start)} 至 ${short(view.end)}` + (y.threshold ? `，超过 ${compact(y.threshold)} 的部分压缩显示` : "") });
     svg.append(node("svg:line", { x1: pad.left, x2: width - pad.right, y1: pad.top + plotH, y2: pad.top + plotH, class: "axis" }));
     for (const tick of y.ticks) {
       const ty = pad.top + plotH - scale(tick);
@@ -185,7 +209,7 @@
       svg.append(node("svg:text", { x: pad.left - 8, y: ty + 4, class: "tick", "text-anchor": "end" }, compact(tick)));
     }
     const stacks = cols.map(() => []);
-    // One group per day, so hovering a day can fade all the others.
+    // One group per column, so hovering a column can fade all the others.
     const days = cols.map((col, index) => svg.appendChild(node("svg:g", { "data-day": index })));
     cols.forEach((col, index) => {
       const x = pad.left + index * slotWidth + gap / 2;
@@ -205,9 +229,10 @@
         base -= full;
       });
     });
-    // Weekly ticks counted back from the last day (SEP 29, SEP 22, …); colliding ones are dropped.
+    // Daily: weekly ticks counted back from the last day (SEP 29, SEP 22, …).
+    // Weekly: roughly monthly ticks. Colliding ones are dropped either way.
     const wanted = [];
-    for (let index = cols.length - 1; index >= 0; index -= 7) wanted.push(index);
+    for (let index = cols.length - 1; index >= 0; index -= view.weekly ? 4 : 7) wanted.push(index);
     const placed = [];
     for (const index of wanted) {
       if (placed.every(other => Math.abs(other - index) * slotWidth >= 76)) placed.push(index);
@@ -250,7 +275,9 @@
       const entries = view.byDay.get(col.date);
       const dayUsd = entries.every(entry => entry.usd !== null) ? entries.reduce((sum, entry) => sum + entry.usd, 0) : null;
       const head = node("div", { class: "tip-head" });
-      head.append(node("strong", {}, tickLabel(col.date, view.end)), node("span", {}, `${compact(col.total)} · ${price(dayUsd)}`));
+      const headDate = col.start === col.end ? tickLabel(col.date, view.end)
+        : `${tickLabel(col.start, view.end)}–${tickLabel(col.end, view.end)}`;
+      head.append(node("strong", {}, headDate), node("span", {}, `${compact(col.total)} · ${price(dayUsd)}`));
       const list = node("div", { class: "tip-list" });
       const listed = entries.slice(0, 8);
       for (const entry of listed) {

@@ -63,6 +63,7 @@ test("malformed snapshots are rejected", () => {
 
 test("x stays one column per day; y is linear up to 1B, outliers are squeezed above it", () => {
   const view = summarize(rows, "2026-09-29", 0, slots(rows));
+  assert.equal(view.weekly, false);
   assert.equal(columns(view).length, 60);
   const days = [0.3e9, 0.5e9, 0.6e9, 0.7e9, 0.8e9, 0.9e9, 0.4e9, 0.2e9, 0.83e9, 0.1e9, 3.3e9, 29.8e9];
   const y = yScale(days);
@@ -77,6 +78,17 @@ test("x stays one column per day; y is linear up to 1B, outliers are squeezed ab
   assert.equal(flat.at(2.5e8), 0.5);
 });
 
+test("weekly columns scale the y threshold by 7", () => {
+  const week = yScale([2e9, 6e9, 40e9], 7);
+  assert.equal(week.threshold, 7e9);
+  assert.equal(week.at(3.5e9), 0.4);            // linear: half the weekly threshold
+  assert.equal(week.at(7e9), 0.8);
+  assert.equal(week.at(40e9), 1);
+  assert.ok(week.at(2e9) < 0.4);                 // a 2B week stays in the linear band…
+  const day = yScale([2e9, 6e9, 40e9]);         // …whereas as days it would squeeze
+  assert.ok(day.at(2e9) > 0.8);
+});
+
 test("tooltips get per-model, per-tool rows with API price, largest first", () => {
   const view = summarize(rows, "2026-09-29", 1, slots(rows));
   const day = view.byDay.get("2026-09-29");
@@ -84,4 +96,33 @@ test("tooltips get per-model, per-tool rows with API price, largest first", () =
   const astra = day.find(entry => entry.model === "gpt-6-astra");
   assert.deepEqual([astra.tool, astra.tokens, astra.usd], ["codex", 100, 2]);
   assert.equal(day.find(entry => entry.model === "tiny-1").usd, null);
+});
+
+test("long ranges aggregate one column per Monday-to-Sunday week", () => {
+  // 150 days of one token a day, ending on a Tuesday.
+  const daily = [];
+  for (let time = Date.parse("2026-05-01T00:00:00Z"); time <= Date.parse("2026-09-28T00:00:00Z"); time += 86400000) {
+    const date = new Date(time).toISOString().slice(0, 10);
+    daily.push([date, "codex", "m", 1, 1, 0, 0, 0, null]);
+  }
+  const long = parse(snapshot(daily));
+  const view = summarize(long, "2026-09-29", 365, slots(long));
+  assert.equal(view.weekly, true);
+  assert.ok(view.buckets.length >= 52 && view.buckets.length <= 54);
+  const expectedStart = new Date(Date.parse("2026-09-29T00:00:00Z") - 364 * 86400000).toISOString().slice(0, 10);
+  assert.equal(view.buckets[0].start, expectedStart);
+  assert.equal(view.buckets[view.buckets.length - 1].end, "2026-09-29");
+  for (const bucket of view.buckets) {
+    // Every bucket key is a Monday.
+    assert.equal((Math.round(Date.parse(bucket.key + "T00:00:00Z") / 86400000) + 3) % 7, 0);
+    assert.ok(bucket.start >= view.start && bucket.end <= view.end && bucket.start <= bucket.end);
+  }
+  const cols = columns(view);
+  assert.equal(cols.reduce((sum, col) => sum + col.total, 0), view.total.tokens);
+  assert.equal(view.total.tokens, daily.length);
+  assert.ok(cols[0].start !== cols[0].end); // multi-day buckets carry their span
+  const short = summarize(long, "2026-09-29", 60, slots(long));
+  assert.equal(short.weekly, false);
+  assert.equal(columns(short).length, 60);
+  assert.ok(columns(short).every(col => col.start === col.end && col.start === col.date));
 });
