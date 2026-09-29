@@ -179,7 +179,7 @@
     return `M${x},${y + height}V${y + r}Q${x},${y} ${x + r},${y}H${x + width - r}Q${x + width},${y} ${x + width},${y + r}V${y + height}Z`;
   }
 
-  // Hovering a legend entry lights that model up across every column.
+  // Hovering a legend entry or a model block lights that model up across every column.
   function focus(slot) {
     root.classList.toggle("has-focus", slot !== null);
     for (const element of root.querySelectorAll("[data-slot]")) {
@@ -265,7 +265,9 @@
       const slot = hit ? hit.slot : null;
       if (shown !== `${index}|${slot}`) {
         shown = `${index}|${slot}`;
-        highlightDay(index);
+        // Blank space in a column keeps the day highlight; a model block lights that model up everywhere.
+        highlightDay(slot === null ? index : null);
+        focus(slot);
         fillTip(col, slot);
       }
       const left = (event.clientX - box.left) + 16;
@@ -294,7 +296,7 @@
       tip.classList.toggle("has-focus", slot !== null);
       tip.hidden = false;
     }
-    function hide() { shown = null; tip.hidden = true; highlightDay(null); }
+    function hide() { shown = null; tip.hidden = true; highlightDay(null); focus(null); }
     svg.addEventListener("pointermove", show);
     svg.addEventListener("pointerdown", show);
     svg.addEventListener("pointerleave", hide);
