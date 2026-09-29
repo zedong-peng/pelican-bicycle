@@ -1,6 +1,6 @@
 # VPS 实测数据
 
-生产站点：`https://sytoken.org/ai-recommend/`。静态模板仍由 `build.py` 构建，原作品保持不变。
+生产站点：`https://sytoken.org/ai-board/`。静态模板仍由 `build.py` 构建，原作品保持不变。
 
 ## 统计口径
 
@@ -31,7 +31,7 @@
 - `/var/www/ai-benchmark/`：仅构建后的静态站点。
 - `deploy/`：systemd 服务、五分钟汇总 timer、北京时间每日 timer、Nginx 路由片段。
 
-统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。监控公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只读公开 `/ai-recommend/api/stats`（原渠道明细）和 `/ai-recommend/api/usage`（个人多来源用量）。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
+统计器通过 VPS 本地 Docker 执行只读 SQL，有 statement timeout。监控公开服务使用独立非特权用户，只读取统计和已保存结果，不加载上游凭据；监听 127.0.0.1:8765，Nginx 只读公开 `/ai-board/api/stats`（原渠道明细）和 `/ai-board/api/usage`（个人多来源用量）。GitHub Pages 镜像允许从 `https://zedongpeng.com` 读取统计。
 
 多来源用量契约和 Claude 接入说明见 [USAGE_API.md](USAGE_API.md)。当前不改变原采集器，不额外抓取个人会话；扩展采集器在状态目录原子发布 `usage-sources.json`。部署本次页面时同步更新 `monitor/server.py`、新增 `monitor/usage.py`，重启监控服务，并合并 `deploy/nginx.conf` 中新增的只读 `/api/usage` 路由。未部署新路由时，首页兼容旧 `/api/stats`，并提示扩展接口未上线；Claude 数据不会通过旧接口显示。
 
@@ -39,7 +39,7 @@
 
 ```bash
 python3 build.py
-python3 -m unittest discover -s monitor -p 'test_*.py'
+python3 -m unittest discover -s tests -p 'test_monitor*.py'
 systemctl status ai-benchmark ai-benchmark-collect.timer ai-benchmark-daily.timer
 systemctl start ai-benchmark-collect.service
 ```
@@ -58,15 +58,15 @@ ssh syvps 'journalctl -u ai-benchmark-daily.service -n 30 --no-pager'
 
 ## 公共糖果测试服务
 
-与每日渠道监控分开运行：`public_candy.py` 监听 `127.0.0.1:8767`，接受访客提供的 Key，服务端探测 Sub2API 倍率、发送固定题并保存结果。Key 仅在本批请求内存中使用；请求日志关闭。SQLite 存储白名单摘要与脱敏后的逐次答案、耗时、判分（每次最多 20,000 字符）；不保存 Key、原始响应对象和访客身份。详情在展开“检测记录”时按 URL、倍率和测试版本读取，列表不携带回复正文。
+与每日渠道监控分开运行：`candy/public_candy.py` 监听 `127.0.0.1:8767`，接受访客提供的 Key，服务端探测 Sub2API 倍率、发送固定题并保存结果。Key 仅在本批请求内存中使用；请求日志关闭。SQLite 存储白名单摘要与脱敏后的逐次答案、耗时、判分（每次最多 20,000 字符）；不保存 Key、原始响应对象和访客身份。详情在展开“检测记录”时按 URL、倍率和测试版本读取，列表不携带回复正文。
 
 部署步骤：
 
-1. 构建并检查：`python3 build.py`、`python3 -m unittest discover -s tests -v`、`python3 -m unittest discover -s monitor -p 'test_*.py'`、`node --check candy.js`。
-2. 将 `public_candy.py`、`local_server.py`、`build.py`、`candy_prompt.txt` 放入 `/opt/ai-benchmark/public/`；将构建后的 `site/` 内容复制到 `/var/www/ai-benchmark/`。
+1. 构建并检查：`python3 build.py`、`python3 -m unittest discover -s tests`、`node --check web/candy.js`。
+2. 将 `build.py` 和 `candy/` 目录（`public_candy.py`、`local_server.py`、`prompt.txt`）按仓库结构放入 `/opt/ai-benchmark/public/`，构建后的 `site/` 也放一份在同一目录；将构建后的 `site/` 内容复制到 `/var/www/ai-benchmark/`。
 3. 安装 `deploy/ai-candy-public.service` 至 `/etc/systemd/system/`。服务账户沿用 `ai-benchmark`；systemd 创建私有状态目录 `/var/lib/ai-candy-public/`，数据库为 `community.sqlite3`。
 4. 将 `deploy/candy-limits.conf` 放入 Nginx 的 http 配置上下文，合并 `deploy/nginx.conf` 的两个 `/api/community/` 路由至站点配置。`proxy_buffering off` 保留每五秒的流式心跳；不要缓存测试响应。Origin 必须与 `--origin` 一致，反向代理保留 Host。
-5. `systemctl daemon-reload`，`systemctl enable --now ai-candy-public`；`nginx -t` 通过后 reload。GET `/ai-recommend/api/community/sites` 应返回 JSON；不使用真实 Key 做部署冒烟测试。
+5. `systemctl daemon-reload`，`systemctl enable --now ai-candy-public`；`nginx -t` 通过后 reload。GET `/ai-board/api/community/sites` 应返回 JSON；不使用真实 Key 做部署冒烟测试。
 
 公网测试仅支持 HTTPS 443 上游；拒绝内网地址，DNS 解析有超时和并发上限，连接固定到验证后的 IP，TLS 仍验证原主机名，不跟随重定向。全局最多 3 个测试；Nginx 每来源地址最多一个并发、每分钟两次启动（短时允许额外两次）。若前置 Cloudflare，按服务器原有可信代理 real_ip 配置获取客户端 IP。
 

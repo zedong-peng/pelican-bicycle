@@ -1,0 +1,7 @@
+[
+  {
+    "date": "2026-09-29",
+    "title": "Opus 5.5 跑分与价格都优于 Astra，改自订 Claude",
+    "body": "Opus 5.5 发布后，[Artificial Analysis](https://artificialanalysis.ai/) 跑分优于 Astra。OpenAI Pro 20x 订阅额度减半后，按 [real API price](https://real-api-pricing.vercel.app/) 折算，网站给出的 real model 价格 Opus 5.5 也优于 Astra，目前个人最优解是自己订阅 Claude。\n现在的订阅：Claude Max 5x，$100/月，主力；实验室中转，每周 $200 额度；[OpenCode Go](https://opencode.ai/zh/go)，$10/月，多数模型每月 $60 额度，跑简单任务；Cursor Pro，教育优惠免费一年。\n远程方案：海外 Mac mini 放同学家做落地，桌面远控直连；另一路是笔记本经 Tailscale ssh 到海外主机开 tmux 跑 Claude Code，再跳到实验室 GPU 服务器改代码做实验。"
+  }
+]

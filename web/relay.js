@@ -1,21 +1,16 @@
 (() => {
   "use strict";
-  // Absolute canonical endpoint also lets the GitHub Pages mirror show live data.
-  const api = location.pathname.startsWith("/ai-recommend/")
-    ? "/ai-recommend/api/" : "https://sytoken.org/ai-recommend/api/";
+  const api = "api/";
   const status = document.getElementById("live-status");
   const date = value => new Date(value).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
-  const percent = value => Number.isFinite(value) ? (value * 100).toFixed(1) + "%" : "暂无数据";
+  const percent = value => Number.isFinite(value) ? (value * 100).toFixed(1) + "%" : "—";
+  const short = value => new Date(value).toLocaleString("zh-CN", {
+    timeZone: "Asia/Shanghai", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+  // The update time sits in the tooltip, not under every cell.
   function renderValue(element, value, updatedAt) {
-    const label = document.createElement("span");
-    label.textContent = value;
-    element.replaceChildren(label);
-    if (updatedAt) {
-      const stamp = document.createElement("small");
-      stamp.className = "bm-updated";
-      stamp.textContent = `更新于 ${date(updatedAt)}`;
-      element.append(stamp);
-    }
+    element.textContent = value;
+    if (updatedAt) element.title = `更新于 ${date(updatedAt)}`;
+    else element.removeAttribute("title");
   }
   let busy = false;
 
@@ -28,24 +23,24 @@
       const data = await response.json();
       const age = Date.now() - Date.parse(data.updated_at);
       renderValue(status, data.updated_at
-        ? `统计区间：${date(data.start)} — ${date(data.end)}（北京时间）${age > 900000 ? " · 数据已过期，等待更新" : ""}`
-        : "用量统计尚未生成。", data.updated_at);
+        ? `${short(data.updated_at)} 更新${age > 900000 ? " · 已过期" : ""}`
+        : "还没有统计。", data.updated_at);
       for (const row of document.querySelectorAll("tr[data-channel]")) {
         const id = row.dataset.channel;
         const stats = data.channels[id];
         renderValue(row.querySelector(".availability"), stats
-          ? `${data.availability_verified ? percent(stats.availability) : "日志覆盖待确认"}（${stats.successes}/${stats.requests} 请求）`
-          : "暂无数据", stats ? data.updated_at : null);
+          ? `${data.availability_verified ? percent(stats.availability) : "日志待确认"}（${stats.successes}/${stats.requests}）`
+          : "—");
         renderValue(row.querySelector(".cache-rate"), stats
-          ? `${percent(stats.cache_rate)}（${stats.usage_requests} 次用量记录）` : "暂无数据", stats ? data.updated_at : null);
+          ? `${percent(stats.cache_rate)}（${stats.usage_requests} 次）` : "—");
         if (stats) row.querySelector(".cache-rate").title = `缓存读取 ${stats.cached_tokens.toLocaleString()} / 总输入 ${stats.input_tokens.toLocaleString()} token`;
         const power = row.querySelector(".bm-power");
         const price = stats?.upstream_price;
         const cell = row.querySelector(".bm-input");
         const hasRate = Number.isFinite(price?.multiplier);
         const fresh = price?.status === "ok" && Date.parse(price.fresh_until) > Date.now();
-        const staleLabel = fresh ? "" : price?.status === "error" ? " · 探测失败，用上次有效倍率" : " · 已过期，用上次有效倍率";
-        renderValue(cell, hasRate ? `${price.multiplier}×${staleLabel}` : "暂无上游倍率", price?.received_at);
+        const staleLabel = fresh ? "" : price?.status === "error" ? " · 探测失败，旧值" : " · 过期，旧值";
+        renderValue(cell, hasRate ? `${price.multiplier}×${staleLabel}` : "—", price?.received_at);
         if (hasRate && age <= 900000) {
           power.dataset.bmMult = price.multiplier;
           if (fresh) delete power.dataset.bmStale;
@@ -54,8 +49,6 @@
           delete power.dataset.bmMult;
           delete power.dataset.bmStale;
         }
-        if (stats && Number.isFinite(stats.cache_rate)) power.dataset.bmCache = stats.cache_rate * 100;
-        else delete power.dataset.bmCache;
         // Price the observed mix, including output; do not borrow Pro's mix.
         const input = stats?.input_tokens;
         const cached = stats?.cached_tokens;
@@ -75,11 +68,7 @@
         const details = row.querySelector(".test-details");
         renderValue(result, test
           ? `${test.passed ? "✓" : "✗"} ${test.samples.filter(s => s.ok === true).length}/5`
-          : running ? "检测中…" : "尚未检测", test?.finished_at);
-        if (test) {
-          // Put the disclosure after the score, before the timestamp.
-          result.insertBefore(details, result.querySelector(".bm-updated"));
-        }
+          : running ? "检测中…" : "—", test?.finished_at);
         if (test && details.dataset.finished !== test.finished_at) {
           details.hidden = false;
           details.dataset.finished = test.finished_at;
@@ -97,11 +86,8 @@
         }
       }
       window.dispatchEvent(new Event("benchmark-updated"));
-      for (const cell of document.querySelectorAll(".bm-power")) {
-        renderValue(cell, cell.textContent, cell.textContent === "—" ? null : data.updated_at);
-      }
     } catch (error) {
-      status.textContent = "暂时无法更新 VPS 数据，已显示的数据可能过期。";
+      status.textContent = "更新失败，下面可能是旧数据。";
     } finally {
       busy = false;
     }

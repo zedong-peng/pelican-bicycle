@@ -4,7 +4,7 @@
 - Effort:
 - Provider: <!-- 直连服务；走实验室网关再路由上游时填 网关(上游)，如 zlab(fengchao-api.com) -->
 - Harness / version:
-- 结果目录（`results/<slug>/`，如 `deepseek-v4-1-flash-opencode-go-opencode-01`）:
+- 结果目录（`pelican/results/<slug>/`，如 `deepseek-v4-1-flash-opencode-go-opencode-01`）:
 
 ## 运行说明
 

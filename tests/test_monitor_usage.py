@@ -2,11 +2,14 @@ import copy
 import http.client
 import json
 from pathlib import Path
+import sys
 import tempfile
 import threading
 import unittest
 
-from server import Monitor, make_server
+MONITOR = Path(__file__).resolve().parents[1] / 'monitor'
+sys.path.insert(0, str(MONITOR))
+from server import Monitor, make_server  # noqa: E402
 from usage import (MAX_BYTES, MAX_SAFE_INTEGER, MAX_SOURCES, extension_sources,
                    legacy_source, normalize_source, public_usage)
 
@@ -229,7 +232,7 @@ class UsageTests(unittest.TestCase):
             self.assertFalse((Path(root) / 'evaluation.lock').exists())
 
     def test_example_is_only_a_pending_placeholder(self):
-        example = json.loads((Path(__file__).parent / 'usage-sources.example.json').read_text())
+        example = json.loads((MONITOR / 'usage-sources.example.json').read_text())
         self.assertEqual(extension_sources(example)[0]['status'], 'pending')
         self.assertIsNone(extension_sources(example)[0]['metrics'])
 

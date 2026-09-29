@@ -4,8 +4,8 @@ After=network-online.target
 [Service]
 User=ai-benchmark
 Group=ai-benchmark
-WorkingDirectory=/opt/ai-benchmark/public
-ExecStart=/usr/bin/python3 /opt/ai-benchmark/public/public_candy.py --no-build --port 8767 --origin https://sytoken.org --prefix /ai-recommend/api/community --database /var/lib/ai-candy-public/community.sqlite3
+WorkingDirectory=/opt/ai-benchmark/public/candy
+ExecStart=/usr/bin/python3 /opt/ai-benchmark/public/candy/public_candy.py --no-build --port 8767 --origin https://sytoken.org --prefix /ai-board/api/community --database /var/lib/ai-candy-public/community.sqlite3
 Restart=on-failure
 StateDirectory=ai-candy-public
 StateDirectoryMode=0700

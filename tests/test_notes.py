@@ -6,7 +6,7 @@ from build import render_notes
 class UsageNotesTests(unittest.TestCase):
     def test_empty_notes_do_not_invent_personal_experiences(self):
         markup = render_notes([])
-        self.assertIn('还没有公开手记', markup)
+        self.assertIn('还没有手记', markup)
         self.assertNotIn('<time', markup)
 
     def test_notes_are_sorted_escaped_and_keep_context(self):
@@ -21,6 +21,14 @@ class UsageNotesTests(unittest.TestCase):
         self.assertIn('&lt;model&gt;', markup)
         self.assertIn('Task\nResult', markup)
         self.assertNotIn('<script>', markup)
+
+    def test_only_https_markdown_links_become_links(self):
+        markup = render_notes([{'date': '2026-09-29', 'title': 'T', 'body':
+                                '[AA](https://artificialanalysis.ai/) [x](javascript:alert(1)) <b>[y](https://e.com/"q)</b>'}])
+        self.assertIn('<a href="https://artificialanalysis.ai/">AA</a>', markup)
+        self.assertIn('[x](javascript:alert(1))', markup)
+        self.assertIn('&lt;b&gt;', markup)
+        self.assertIn('[y](https://e.com/&quot;q)', markup)
 
     def test_invalid_notes_fail_before_build_output_is_replaced(self):
         for value in [None, {}, [None], [{'date': '2026-09-29'}],

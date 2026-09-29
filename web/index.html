@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 使用实况</title>
+  <meta name="description" content="我日常用 AI 的用量和手记。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#usage-overview">跳到用量</a>
+  <header><a class="brand" href="./">AI 使用实况</a><nav aria-label="主导航"><a href="#usage-overview">用量</a><a href="#usage-notes">手记</a><a href="#tools-experiments">实验</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
+  <main>
+    <section id="usage-overview" aria-labelledby="usage-title">
+      <div class="usage-section-head"><h2 id="usage-title">用量</h2><div class="range" role="group" aria-label="时间范围"><button type="button" data-range="60" aria-pressed="true">60 天</button><button type="button" data-range="365" aria-pressed="false">一年</button><button type="button" data-range="0" aria-pressed="false">全部</button></div></div>
+      <div id="tokens" class="tokens is-loading">
+        <div class="tokens-chart" id="tk-chart"><div class="tokens-tip" id="tk-tip" hidden></div></div>
+        <ul class="tokens-legend" id="tk-legend"></ul>
+        <p class="tokens-tools" id="tk-tools"></p>
+      </div>
+      <p class="usage-footnote"><span id="tk-updated">读取中…</span><br>API 价按官方标价折算，不是实付。<span id="tk-unpriced" hidden></span></p>
+      <noscript><p class="usage-footnote">看板需要 JavaScript。</p></noscript>
+    </section>
+    <section id="usage-notes" aria-labelledby="notes-title">
+      <div class="usage-section-head"><h2 id="notes-title">手记</h2></div>
+      <ol class="usage-notes"><!-- USAGE_NOTES --></ol>
+    </section>
+    <section id="tools-experiments" aria-labelledby="tools-title">
+      <div class="usage-section-head"><h2 id="tools-title">实验</h2></div>
+      <details class="support-panel">
+        <summary><span>中转站<small>按站点分开记录 · 近 7 天</small></span></summary>
+    <section id="relay-benchmark" aria-labelledby="bm-title">
+      <div class="bm-head"><h2 id="bm-title" class="sr-only">中转站用量</h2><a href="https://github.com/zedong-peng/pelican-bicycle/issues/new?template=relay-benchmark.yml">反馈 ↗</a></div>
+      <div class="bm-scroll" role="region" aria-label="中转站用量，可横向滚动" tabindex="0">
+        <table class="bm-table" aria-labelledby="bm-title" aria-describedby="bm-note">
+          <thead><tr><th scope="col">渠道</th><th scope="col">Input 倍率</th><th scope="col">糖果检测</th><th scope="col">可用性</th><th scope="col">缓存率</th><th scope="col">购买力</th></tr></thead>
+          <tbody>
+            <tr data-channel="tokenshop"><td><a href="https://tokenshop.homes">tokenshop.homes</a></td><td class="bm-input">—</td><td><span class="test-result">—</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">—</td><td class="cache-rate">—</td><td class="bm-power">—</td></tr>
+            <tr data-channel="fengchao"><td><a href="https://fengchao-api.com/">fengchao-api.com</a></td><td class="bm-input">—</td><td><span class="test-result">—</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">—</td><td class="cache-rate">—</td><td class="bm-power">—</td></tr>
+            <tr data-channel="zlab"><td><a href="https://ttft.asia/">zlab(不对外注册)</a><small class="bm-sub">上游：<a href="https://fengchao-api.com/">fengchao-api.com</a></small></td><td class="bm-input">—</td><td><span class="test-result">—</span><details class="test-details" hidden><summary>检测记录</summary><div></div></details></td><td class="availability">—</td><td class="cache-rate">—</td><td class="bm-power">—</td></tr>
+            <tr><td>OpenAI Pro 20x 订阅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bm-note" id="bm-note">
+        <div id="live-status" role="status">读取中…</div>
+        <div>只含我经 VPS 调用 GPT-6-ASTRA 的请求。可用性 = 成功 / 总请求，跨站切换分别计数；缓存率 = 缓存读取 / 总输入。</div>
+        <div><strong>糖果检测</strong>：每天 08:00 跑 5 次，全对为 ✓。回复含独立数字 21 算对。只是一道固定题，不代表模型能力。</div>
+        <div><strong>Input 倍率</strong>：上游声明的生效倍率，每 5 分钟同步；探测失败时沿用上次值。</div>
+        <div><strong>购买力</strong>：按各渠道近 7 天的实际 token 结构和倍率，估算 $200 能买到的总 token，Pro 20x 样本记为 100%。<code>*</code> 表示倍率沿用旧值。假设 ¥1 充 $1 额度，不是实付账单。汇率 1 USD = 6.7223 CNY（2026-09-01）。</div>
+      </div>
+    </section>
+      </details>
+      <details class="support-panel">
+        <summary><span>成本试算<small>$200 在不同渠道能换多少 GPT-6-Astra API 额度</small></span></summary>
+    <section class="cache-widget" id="cache-tool" aria-labelledby="cache-title">
+      <div class="cache-widget-head">
+        <div class="cache-widget-copy">
+          <h2 id="cache-title" class="sr-only">$200 GPT-6-Astra API 等价额度对比</h2>
+          <details>
+            <summary>算法</summary>
+            <p class="note">输入输出比例沿用 Pro 20x 样本。中转切号会让部分缓存失效，所以只按中转缓存率重新拆分输入，再乘单价、计费倍率和充值倍率。token 单位为百万；充值倍率指 ¥1 能充多少美元额度。</p>
+            <div class="formula">中转样本标准价费用 = 总输入 × [(1 − 缓存率) × $10 + 缓存率 × $1] + 总输出 × $50
+中转样本实付（元）= 中转样本标准价费用 × 计费倍率 ÷ 充值倍率
+可购买的样本份数 = ($200 × 6.7223) ÷ 中转样本实付（元）
+API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费用</div>
+          </details>
+        </div>
+      </div>
+      <div class="cache-grid-3" style="margin-top:12px">
+        <section class="cache-card station-pro">
+          <h3><span>Pro 20x</span><span class="badge" id="cc-badgeP"></span></h3>
+          <div class="metrics" id="cc-metricsP"></div>
+          <p class="fixed-value">输入缓存率 <span class="val" id="cc-cachePLabel"></span></p>
+          <p class="note" id="cc-pricesP"></p>
+        <details>
+          <summary>样本来源</summary>
+          <p class="note" id="cc-inputShare"></p>
+        <div style="overflow-x:auto; margin-top:12px">
+          <table>
+            <caption>原帖补充 1，一周原始数据</caption>
+            <thead><tr><th scope="col">类型</th><th scope="col">Tokens</th><th scope="col">标准价等值</th></tr></thead>
+            <tbody id="cc-distribution"></tbody>
+          </table>
+        </div>
+        <p class="note"><a href="https://www.v2ex.com/t/1241470">V2EX · msg7086 · 补充 1（2026-09-15）</a>。全部为 GPT-6-Astra，多为 lightweight / medium，未开 fast。</p>
+        <p class="note">月用量 = 周样本 × 30/7。个人样本推算，不是官方额度。</p>
+        </details>
+        </section>
+        <section class="cache-card station-a">
+          <h3><span>中转 A</span><span class="badge" id="cc-badgeA"></span></h3>
+          <div class="metrics" id="cc-metricsA"></div>
+          <label for="cc-multA">计费倍率 <span class="val" id="cc-multALabel"></span></label>
+          <input id="cc-multA" type="range" min="0.05" max="0.50" step="0.005" value="0.20">
+          <label for="cc-rechargeA">充值倍率</label>
+          <div class="recharge-input"><input id="cc-rechargeA" type="number" min="0.01" step="0.01" value="1"><span class="recharge-unit">$ 额度 / ¥1</span></div>
+          <label for="cc-cacheA">输入缓存率 <span class="val" id="cc-cacheALabel"></span></label>
+          <input id="cc-cacheA" type="range" min="50" max="99" step="0.5" value="92">
+        </section>
+        <section class="cache-card station-b">
+          <h3><span>中转 B</span><span class="badge" id="cc-badgeB"></span></h3>
+          <div class="metrics" id="cc-metricsB"></div>
+          <label for="cc-multB">计费倍率 <span class="val" id="cc-multBLabel"></span></label>
+          <input id="cc-multB" type="range" min="0.05" max="0.50" step="0.005" value="0.15">
+          <label for="cc-rechargeB">充值倍率</label>
+          <div class="recharge-input"><input id="cc-rechargeB" type="number" min="0.01" step="0.01" value="1"><span class="recharge-unit">$ 额度 / ¥1</span></div>
+          <label for="cc-cacheB">输入缓存率 <span class="val" id="cc-cacheBLabel"></span></label>
+          <input id="cc-cacheB" type="range" min="50" max="99" step="0.5" value="75">
+        </section>
+      </div>
+    </section>
+      </details>
+      <details class="support-panel">
+        <summary><span>糖果题<small>固定题检测与公开记录</small></span></summary>
+    <section id="model-tests" aria-labelledby="tests-title">
+      <h2 id="tests-title" class="sr-only">糖果题</h2>
+      <form id="candy-form" autocomplete="off">
+        <label class="candy-wide">API URL<input id="candy-url" type="url" placeholder="https://api.example.com/v1" required autocomplete="off"></label>
+        <label class="candy-wide">API Key<input id="candy-key" type="password" placeholder="不保存" required autocomplete="off" spellcheck="false"></label>
+        <label class="candy-wide">渠道备注<input id="candy-note" placeholder="可选" maxlength="120"></label>
+        <label class="candy-wide">模型<input id="candy-model" value="gpt-6-astra" required></label>
+        <label>接口<select id="candy-api"><option value="responses">Responses</option><option value="chat/completions">Chat Completions</option></select></label>
+        <label>推理强度<select id="candy-effort"><option value="">默认（不传）</option><option selected>low</option><option>medium</option><option>high</option><option>xhigh</option></select></label>
+        <label>次数<input id="candy-runs" type="number" min="1" max="20" value="5" required></label>
+        <label>单次超时（秒）<input id="candy-timeout" type="number" min="10" max="600" value="180" required></label>
+      </form>
+      <div class="candy-actions"><button id="candy-start" type="submit" form="candy-form">开始测试</button><button id="candy-stop" type="button" disabled>停止</button><span id="candy-status" role="status" aria-live="polite"></span></div>
+      <p class="prompt-note" id="candy-connection">浏览器直连，渠道需支持 CORS。本地运行 <code>python3 candy/local_server.py</code> 可绕过。</p>
+      <p class="prompt-note" id="candy-privacy">Key 只用于本次请求，不保存。记录刷新即清空。回复含独立数字 21 算命中，不代表模型身份。</p>
+      <details id="candy-sites">
+        <summary><span id="candy-sites-title">已测站点</span> <span id="candy-sites-count">（0）</span></summary>
+        <p class="prompt-note" id="candy-sites-note">同一地址、备注、模型和强度只留最近一次，最多 100 项。</p>
+        <p id="candy-sites-empty" class="prompt-note">还没有记录。</p>
+        <div id="candy-sites-scroll" class="bm-scroll" role="region" aria-label="已测站点表，可横向滚动" tabindex="0" hidden>
+          <table aria-label="已测站点最近测试结果">
+            <thead><tr><th scope="col">渠道备注</th><th scope="col">API 地址</th><th scope="col">Input 倍率</th><th scope="col">模型 / 强度</th><th scope="col">最近测试时间</th><th scope="col">最近结果</th></tr></thead>
+            <tbody id="candy-sites-body"></tbody>
+          </table>
+        </div>
+      </details>
+      <div id="candy-history" aria-label="本页测试记录"></div>
+      <details><summary>题目与命令行</summary><pre id="candy-question"></pre>
+
+    <div class="prompt"><div class="prompt-body"><blockquote><code id="candy-cmd">echo &quot;Downloading...&quot; &amp;&amp; curl -fL --progress-bar &quot;https://raw.githubusercontent.com/haowang02/codex-candy-eval/main/codex_candy_eval.py&quot; -o /tmp/codex_candy_eval.py &amp;&amp; echo &quot;Download complete.&quot; &amp;&amp; python3 /tmp/codex_candy_eval.py -m gpt-6-astra -r low -n 5</code></blockquote><p class="prompt-note"><code>-m</code> 模型，<code>-r</code> 推理强度，<code>-n</code> 次数。</p></div><button type="button" id="copy-candy">复制命令</button></div>
+      </details>
+    </section>
+      </details>
+      <details class="support-panel" id="artwork-panel">
+        <summary><span>鹈鹕骑自行车<small>同一个 prompt，不同模型和工具画出来的样子</small></span></summary>
+    <div id="works" class="sr-only"><h2>鹈鹕骑自行车</h2><span id="total"></span> 份作品</div>
+    <div class="prompt"><div class="prompt-body"><blockquote id="artwork-prompt"><!-- PROMPT --></blockquote><p class="prompt-note">看渲染结果，不看回复里的套话。</p></div><button type="button" id="copy-prompt">复制 prompt</button></div>
+    <form aria-label="筛选作品">
+      <fieldset data-facet="model"><legend><span class="facet-name">Model<span class="facet-count" data-count-for="model"></span></span></legend><div class="check-list" data-options-for="model" role="group" aria-label="Model 多选"></div></fieldset>
+      <fieldset data-facet="effort"><legend><span class="facet-name">Effort<span class="facet-count" data-count-for="effort"></span></span></legend><div class="check-list" data-options-for="effort" role="group" aria-label="Effort 多选"></div></fieldset>
+      <fieldset data-facet="provider"><legend><span class="facet-name">Provider<span class="facet-count" data-count-for="provider"></span></span></legend><div class="check-list" data-options-for="provider" role="group" aria-label="Provider 多选"></div></fieldset>
+      <fieldset data-facet="harness"><legend><span class="facet-name">Harness<span class="facet-count" data-count-for="harness"></span></span></legend><div class="check-list" data-options-for="harness" role="group" aria-label="Harness 多选"></div></fieldset>
+      <div class="filter-actions"><button type="button" id="copy-link">复制链接</button><button type="reset">重置</button></div>
+    </form>
+    <div class="collection-heading"><h2>作品</h2><p id="count" aria-live="polite"></p></div>
+    <section class="gallery" aria-label="作品"><!-- RESULTS --></section>
+    <p id="empty" hidden>没有匹配的作品。</p>
+      </details>
+      <p class="tool-links"><a href="https://ip.net.coffee/claude/" target="_blank" rel="noopener noreferrer">Claude IP 检测 ↗</a><span>第三方</span></p>
+    </section>
+  </main>
+  <footer><span>个人样本</span><div><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/collector">统计脚本 ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle">源码 ↗</a></div></footer>
+  <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
+<script src="gallery.js"></script>
+<script src="cost.js"></script>
+<script src="tokens.js" defer></script>
+<script src="relay.js" defer></script>
+<script src="candy.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""Validate submissions and build a dependency-free, offline gallery."""
+"""Validate pelican submissions and build the static page into site/."""
 
 from datetime import date
 import hashlib
@@ -9,6 +9,8 @@ import re
 import shutil
 
 ROOT = Path(__file__).resolve().parent
+WEB = ROOT / "web"
+RESULTS = ROOT / "pelican" / "results"
 # Minimal metadata: exactly the four gallery dimensions. Authorship comes
 # from git history / PR author; run disclosures go into the PR description.
 FIELDS = {"model", "effort", "provider", "harness"}
@@ -25,7 +27,7 @@ CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline
 def collect():
     records = []
     seen_hashes = {}
-    for directory in sorted((ROOT / "results").iterdir()):
+    for directory in sorted(RESULTS.iterdir()):
         if not directory.is_dir() or directory.is_symlink():
             raise ValueError(f"Unexpected result entry: {directory.name}")
         if not SLUG_RE.fullmatch(directory.name):
@@ -36,7 +38,7 @@ def collect():
         if LEGACY_RE.fullmatch(directory.name):
             raise ValueError(
                 f"{directory.name}: legacy content-hash directory; "
-                "rename it to a readable slug (see CONTRIBUTING.md)")
+                "rename it to a readable slug (see .github/CONTRIBUTING.md)")
         if {p.name for p in directory.iterdir()} != {"metadata.json", "artwork.html"}:
             raise ValueError(f"{directory.name}: expected artwork.html and metadata.json")
         if any(p.is_symlink() for p in directory.iterdir()):
@@ -68,9 +70,23 @@ def collect():
                   ("model", "effort", "provider", "harness")) + (record[0],))
 
 
+NOTE_LINK = re.compile(r"\[([^\[\]\n]+)\]\((https://[^\s()<>\"']+)\)")
+
+
+def linkify(text):
+    """Escape note text; only [label](https://...) becomes a link."""
+    parts, last = [], 0
+    for match in NOTE_LINK.finditer(text):
+        parts.append(html.escape(text[last:match.start()]))
+        parts.append(f'<a href="{html.escape(match.group(2), quote=True)}">{html.escape(match.group(1))}</a>')
+        last = match.end()
+    parts.append(html.escape(text[last:]))
+    return "".join(parts)
+
+
 def render_notes(notes):
     if not isinstance(notes, list):
-        raise ValueError('usage-notes.json must contain a list')
+        raise ValueError('web/notes.json must contain a list')
     for note in notes:
         if (not isinstance(note, dict) or not {'date', 'title', 'body'} <= set(note)
                 or set(note) - {'date', 'title', 'body', 'tags'}):
@@ -85,20 +101,19 @@ def render_notes(notes):
         if not isinstance(tags, list) or any(not isinstance(tag, str) or not tag.strip() for tag in tags):
             raise ValueError('Usage note tags must be non-empty strings')
     if not notes:
-        return ('<li class="notes-empty"><h3>还没有公开手记</h3>'
-                '<p>用量先开始记录。具体任务、使用体验和配置取舍，会在这里逐步补充。</p></li>')
+        return '<li class="notes-empty"><h3>还没有手记。</h3></li>'
     entries = []
     for note in sorted(notes, key=lambda item: item['date'], reverse=True):
         tags = ''.join(f'<span>{html.escape(tag)}</span>' for tag in note.get('tags', []))
         entries.append(f'<li><time datetime="{note["date"]}">{note["date"]}</time>'
-                       f'<h3>{html.escape(note["title"])}</h3><p>{html.escape(note["body"])}</p>'
+                       f'<h3>{html.escape(note["title"])}</h3><p>{linkify(note["body"])}</p>'
                        + (f'<div class="note-tags">{tags}</div>' if tags else '') + '</li>')
     return '\n'.join(entries)
 
 
 def build():
     records = collect()
-    notes = render_notes(json.loads((ROOT / 'usage-notes.json').read_text(encoding='utf-8')))
+    notes = render_notes(json.loads((WEB / 'notes.json').read_text(encoding='utf-8')))
     output = ROOT / "site"
     if output.is_symlink():
         raise ValueError("site must not be a symlink")
@@ -122,16 +137,16 @@ def build():
 <div class="preview"><iframe sandbox="allow-scripts" loading="lazy" referrerpolicy="no-referrer"
 src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True)} animation"></iframe></div>
 <div class="info"><p class="meta"><span class="index">{index:02d}</span><span class="meta-lines"><span class="meta-text">{meta_top}</span><span class="meta-text">{meta_mid}</span><span class="meta-text">{meta_bot}</span></span></p>
-<div class="work-footer"><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/results/{run_id}" target="_blank" rel="noopener noreferrer">源码 ↗</a><button class="expand" type="button">放大 ↗</button></div></div></article>''')
-    template = (ROOT / "gallery.html").read_text(encoding="utf-8")
-    prompt = (ROOT / "prompt.txt").read_text(encoding="utf-8").strip()
+<div class="work-footer"><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/pelican/results/{run_id}" target="_blank" rel="noopener noreferrer">源码 ↗</a><button class="expand" type="button">放大 ↗</button></div></div></article>''')
+    template = (WEB / "index.html").read_text(encoding="utf-8")
+    prompt = (ROOT / "pelican" / "prompt.txt").read_text(encoding="utf-8").strip()
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
     template = template.replace("<!-- USAGE_NOTES -->", notes)
     (output / "index.html").write_text(template.replace("<!-- RESULTS -->", "\n".join(cards)), encoding="utf-8")
-    for name in ('benchmark.js', 'usage.js', 'usage.css'):
-        shutil.copyfile(ROOT / name, output / name)
-    candy_script = (ROOT / "candy.js").read_text(encoding="utf-8")
-    candy_prompt = (ROOT / "candy_prompt.txt").read_text(encoding="utf-8")
+    for name in ('style.css', 'gallery.js', 'cost.js', 'tokens.js', 'relay.js'):
+        shutil.copyfile(WEB / name, output / name)
+    candy_script = (WEB / "candy.js").read_text(encoding="utf-8")
+    candy_prompt = (ROOT / "candy" / "prompt.txt").read_text(encoding="utf-8")
     (output / "candy.js").write_text(candy_script.replace('/* CANDY_PROMPT */ ""', json.dumps(candy_prompt, ensure_ascii=False)), encoding="utf-8")
     (output / ".nojekyll").touch()
     print(f"Validated {len(records)} results; built {output / 'index.html'}")

@@ -1,6 +1,6 @@
 # 个人 AI 用量接口 v1
 
-`GET /ai-recommend/api/usage`（监控进程内部路径 `/usage`）是只读的多来源聚合接口。
+`GET /ai-board/api/usage`（监控进程内部路径 `/usage`）是只读的多来源聚合接口。
 原有 `/api/stats` 保持不变，继续提供渠道明细、倍率与糖果题结果。
 
 这不是模型调用接口，不需要 Claude API Key，也不会自动扫描 Claude Code 会话、读取
@@ -179,7 +179,7 @@ atomic_json(Path(state_directory) / "usage-sources.json", snapshot, mode=0o640)
 目录复制进 `site/`。
 
 服务每次读取 `/usage` 时加载快照，更新 JSON 不需要重启。只部署新版服务代码时需要
-按现有服务流程重启，并在 Nginx 中添加 `/ai-recommend/api/usage` 到内部 `/usage`
+按现有服务流程重启，并在 Nginx 中添加 `/ai-board/api/usage` 到内部 `/usage`
 的只读代理。没有 HTTP 写入/上传接口；HTTP 客户端不能选择本地文件路径。
 
 采集暂时失败时，可保留上次 ready 快照，让前端根据时间显示“数据已过期”；若发布
@@ -189,7 +189,7 @@ atomic_json(Path(state_directory) / "usage-sources.json", snapshot, mode=0o640)
 ## 测试
 
 ```bash
-python3 -m unittest discover -s monitor -p 'test_*.py' -v
+python3 -m unittest discover -s tests -p 'test_monitor*.py' -v
 ```
 
 测试使用临时目录中的合成数据及 loopback HTTP，不读取实际会话、不调用模型。

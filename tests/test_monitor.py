@@ -2,12 +2,14 @@ from datetime import datetime, timezone
 import fcntl
 import json
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from collect import collect, upstream_price
-from server import Monitor
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'monitor'))
+from collect import collect, upstream_price  # noqa: E402
+from server import Monitor  # noqa: E402
 
 
 class MonitorTests(unittest.TestCase):

@@ -6,9 +6,9 @@
   const status = get('status');
   const history = get('history');
   const sharedAPI = document.querySelector('meta[name="candy-shared-api"]')?.content ||
-    (location.pathname.startsWith('/ai-recommend/') ? '/ai-recommend/api/community' : null);
+    (location.pathname.startsWith('/ai-board/') ? '/ai-board/api/community' : null);
   const proxy = document.querySelector('meta[name="candy-local-proxy"]')?.content;
-  if (proxy) get('connection').textContent = '本地模式 · 请求由本机转发，无需渠道开启 CORS。';
+  if (proxy) get('connection').textContent = '本地模式：本机转发，不需要 CORS。';
   let active = null;
   const sites = new Map();
   let sharedSnapshot = null;
@@ -190,16 +190,16 @@
       controls.forEach(control => { control.disabled = false; });
       get('stop').disabled = true;
       renderSites();
-      await loadSharedSites().catch(() => { get('sites-note').textContent = '公共记录暂时无法刷新，请稍后刷新页面。'; });
+      await loadSharedSites().catch(() => { get('sites-note').textContent = '公开记录刷新失败，稍后再试。'; });
     }
   }
 
   if (sharedAPI) {
-    get('connection').textContent = '公共测试 · 自动探测 Sub2API 生效倍率，测试结果由服务器判分并收录。';
-    get('privacy').textContent = '开始测试即公开 URL、倍率、模型、推理强度、渠道备注和结果；Key 不保存；脱敏后的逐次回复和耗时会随结果公开。固定题命中不代表模型身份验证。';
-    get('sites-title').textContent = '公开收录站点';
-    get('sites-note').textContent = '同一 URL＋倍率保留最新发起且完成的测试（包括模型与备注的更新），显示最近 200 项。记录在服务器保存，刷新不会丢失；倍率未知、无有效回复或已停止的批次不收录。';
-    loadSharedSites().catch(() => { get('sites-empty').textContent = '公共记录服务暂不可用，请稍后刷新。'; });
+    get('connection').textContent = '公共测试：自动探测 Sub2API 倍率，服务器判分并收录。';
+    get('privacy').textContent = '开始即公开 URL、倍率、模型、强度、备注、结果，以及脱敏后的回复和耗时。Key 不保存。命中不代表模型身份。';
+    get('sites-title').textContent = '公开记录';
+    get('sites-note').textContent = '同一 URL + 倍率只留最新一次完成的测试，显示最近 200 项。倍率未知、没有有效回复或中途停止的不收录。';
+    loadSharedSites().catch(() => { get('sites-empty').textContent = '公开记录暂时读不到，稍后刷新。'; });
     setInterval(() => { if (!active) loadSharedSites().catch(() => {}); }, 60000);
   }
 

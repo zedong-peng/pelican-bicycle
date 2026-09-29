@@ -6,12 +6,15 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import socket
+import sys
 import threading
 from urllib.parse import urlsplit
 
-from build import build
+# Repo root: build.py lives there and the page is built into ROOT/site.
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from build import build  # noqa: E402
 
-ROOT = Path(__file__).resolve().parent
 MAX_REQUEST = 128 * 1024
 MAX_RESPONSE = 4 * 1024 * 1024
 

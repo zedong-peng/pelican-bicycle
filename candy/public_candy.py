@@ -1,5 +1,6 @@
 """Shared candy testing: server-scored results, automatic Sub2API billing lookup."""
 import argparse
+import contextlib
 from datetime import datetime, timezone
 from decimal import Decimal
 from functools import partial
@@ -18,10 +19,10 @@ import time
 import unicodedata
 from urllib.parse import parse_qs, urlsplit, urlunsplit
 
-from build import build
-from local_server import Handler, MAX_REQUEST, MAX_RESPONSE, ROOT
+from local_server import Handler, MAX_REQUEST, MAX_RESPONSE, ROOT  # also puts the repo root on sys.path
+from build import build  # noqa: E402
 
-PROMPT = (ROOT / 'candy_prompt.txt').read_text(encoding='utf-8')
+PROMPT = (ROOT / 'candy' / 'prompt.txt').read_text(encoding='utf-8')
 DNS_SLOTS = threading.BoundedSemaphore(8)
 
 
@@ -152,16 +153,27 @@ class Records:
     def __init__(self, path):
         self.path = str(path)
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self.path) as db:
+        with self.connect() as db:
             db.execute('CREATE TABLE IF NOT EXISTS sites (url TEXT, rate TEXT, started TEXT, record TEXT, PRIMARY KEY(url, rate))')
             db.execute('CREATE INDEX IF NOT EXISTS sites_started ON sites(started DESC)')
             db.execute('CREATE TABLE IF NOT EXISTS site_samples (url TEXT, rate TEXT, started TEXT, samples TEXT, PRIMARY KEY(url, rate))')
+
+    @contextlib.contextmanager
+    def connect(self):
+        """Commit on success, roll back on error, and always close (sqlite3's own
+        context manager only commits, leaving the connection to the garbage collector)."""
+        db = sqlite3.connect(self.path, timeout=10)
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
 
     def save(self, record, samples=None):
         # Caller provides an explicit whitelist, never a request/response object or key.
         samples = samples or []
         record = dict(record, has_samples=bool(samples))
-        with sqlite3.connect(self.path, timeout=10) as db:
+        with self.connect() as db:
             cursor = db.execute('''INSERT INTO sites VALUES (?, ?, ?, ?)
                 ON CONFLICT(url, rate) DO UPDATE SET started=excluded.started, record=excluded.record
                 WHERE excluded.started > sites.started''',
@@ -173,13 +185,13 @@ class Records:
             return changed
 
     def detail(self, url, rate, started):
-        with sqlite3.connect(self.path, timeout=10) as db:
+        with self.connect() as db:
             row = db.execute('SELECT samples FROM site_samples WHERE url=? AND rate=? AND started=?',
                              (url, rate, started)).fetchone()
             return json.loads(row[0]) if row else []
 
     def latest(self):
-        with sqlite3.connect(self.path, timeout=10) as db:
+        with self.connect() as db:
             return [json.loads(row[0]) for row in db.execute('SELECT record FROM sites ORDER BY started DESC LIMIT 200')]
 
 
