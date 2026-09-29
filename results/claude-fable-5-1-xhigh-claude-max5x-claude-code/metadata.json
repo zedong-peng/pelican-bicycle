@@ -1,0 +1,6 @@
+{
+  "model": "claude-fable-5.1",
+  "effort": "xhigh",
+  "provider": "claude-max5x",
+  "harness": "claude-code"
+}
