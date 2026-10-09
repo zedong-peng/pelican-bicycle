@@ -95,7 +95,7 @@
     };
   }
 
-  // One legend entry per colour slot, in slot order; "其他" sums everything past the coloured slots.
+  // One legend entry per colour slot, biggest in the visible range first; "其他" sums the uncoloured tail and stays last.
   function legendEntries(view) {
     const entries = new Map();
     for (const model of view.models) {
@@ -104,7 +104,7 @@
       entry.usd = entry.usd === null || !model.priced ? null : entry.usd + model.usd;
       entries.set(model.slot, entry);
     }
-    return [...entries.values()].sort((a, b) => a.slot - b.slot);
+    return [...entries.values()].sort((a, b) => (a.slot === SERIES) - (b.slot === SERIES) || b.tokens - a.tokens);
   }
 
   // One column per bucket: a calendar day, or a Monday-to-Sunday week on long ranges.

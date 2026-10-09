@@ -52,6 +52,18 @@ test("the legend carries each model's range total, with the tail folded into one
   assert.equal(other.usd, null); // unpriced models make the sum unknown, not smaller
 });
 
+test("the legend follows the visible range: the biggest model there comes first, 其他 last", () => {
+  const flipped = parse(snapshot([
+    ["2026-09-01", "claude-code", "old-big", 1, 1000, 0, 0, 0, null],
+    ["2026-09-29", "claude-code", "old-big", 1, 10, 0, 0, 0, null],
+    ["2026-09-29", "codex", "new-big", 1, 100, 0, 0, 0, null],
+  ]));
+  const map = slots(flipped);
+  assert.deepEqual(legendEntries(summarize(flipped, "2026-09-29", 1, map)).map(entry => entry.model), ["new-big", "old-big"]);
+  const entries = legendEntries(summarize(rows, "2026-09-29", 0, slots(rows)));
+  assert.equal(entries.at(-1).slot, SERIES);
+});
+
 test("malformed snapshots are rejected", () => {
   for (const bad of [
     { ...snapshot([]), schema_version: 2 },
