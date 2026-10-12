@@ -143,7 +143,7 @@ src="previews/{run_id}/index.html" title="{html.escape(meta['model'], quote=True
     template = template.replace("<!-- PROMPT -->", html.escape(prompt))
     template = template.replace("<!-- USAGE_NOTES -->", notes)
     (output / "index.html").write_text(template.replace("<!-- RESULTS -->", "\n".join(cards)), encoding="utf-8")
-    for name in ('style.css', 'gallery.js', 'cost.js', 'tokens.js', 'relay.js'):
+    for name in ('style.css', 'gallery.js', 'cost.js', 'tokens.js', 'relay.js', 'avatar.jpg'):
         shutil.copyfile(WEB / name, output / name)
     candy_script = (WEB / "candy.js").read_text(encoding="utf-8")
     candy_prompt = (ROOT / "candy" / "prompt.txt").read_text(encoding="utf-8")
