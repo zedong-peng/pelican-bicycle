@@ -3,14 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI 使用实况</title>
-  <meta name="description" content="我日常用 AI 的用量和手记。">
+  <title>彭则栋的 AI 使用实况</title>
+  <meta name="description" content="彭则栋（Zedong Peng）日常用 AI 的用量、花费和手记。">
+  <meta name="author" content="Zedong Peng">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="彭则栋的 AI 使用实况">
+  <meta property="og:description" content="彭则栋（Zedong Peng）日常用 AI 的用量、花费和手记。">
+  <meta property="og:url" content="https://sytoken.org/ai-board/">
+  <meta property="og:image" content="https://sytoken.org/ai-board/avatar.jpg">
+  <link rel="author" href="https://zedongpeng.com">
+  <link rel="icon" href="avatar.jpg">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <a class="skip-link" href="#usage-overview">跳到用量</a>
-  <header><a class="brand" href="./">AI 使用实况</a><nav aria-label="主导航"><a href="#usage-overview">用量</a><a href="#usage-notes">手记</a><a href="#tools-experiments">实验</a><a class="github" href="https://github.com/zedong-peng/pelican-bicycle">GitHub ↗</a></nav></header>
+  <header><a class="brand" href="./">彭则栋<span>AI 使用实况</span></a><nav aria-label="主导航"><a href="#usage-overview">用量</a><a href="#usage-notes">手记</a><a href="#tools-experiments">实验</a><a class="home" href="https://zedongpeng.com" rel="me">主页 ↗</a></nav></header>
   <main>
+    <section class="intro" aria-labelledby="intro-name">
+      <img src="avatar.jpg" alt="" width="80" height="80">
+      <div>
+        <h1 id="intro-name">彭则栋<span lang="en">Zedong Peng</span></h1>
+        <p>上海交大计算机硕士在读，关注大模型开发与系统优化。这里记我每天用 AI 的用量、花费和手记。</p>
+        <p class="intro-links"><a href="https://zedongpeng.com" rel="me">zedongpeng.com ↗</a><a href="https://zedongpeng.com/blog/">博客 ↗</a><a href="https://github.com/zedong-peng" rel="me">GitHub ↗</a></p>
+      </div>
+    </section>
     <section id="usage-overview" aria-labelledby="usage-title">
       <div class="usage-section-head"><h2 id="usage-title">用量</h2><div class="range" role="group" aria-label="时间范围"><button type="button" data-range="60" aria-pressed="true">60 天</button><button type="button" data-range="365" aria-pressed="false">一年</button><button type="button" data-range="0" aria-pressed="false">全部</button></div></div>
       <div id="tokens" class="tokens is-loading">
@@ -163,7 +179,7 @@ API 等价额度 = 可购买的样本份数 × Pro 20x 原始样本标准价费�
       <p class="tool-links"><a href="https://ip.net.coffee/claude/" target="_blank" rel="noopener noreferrer">Claude IP 检测 ↗</a><span>第三方</span></p>
     </section>
   </main>
-  <footer><span>个人样本</span><div><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/collector">统计脚本 ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle">源码 ↗</a></div></footer>
+  <footer><span>© 2026 <a href="https://zedongpeng.com">彭则栋</a> · 个人样本</span><div><a href="https://github.com/zedong-peng/pelican-bicycle/tree/main/collector">统计脚本 ↗</a><a href="https://github.com/zedong-peng/pelican-bicycle">源码 ↗</a></div></footer>
   <dialog aria-labelledby="viewer-title"><div class="dialog-heading"><h2 id="viewer-title"></h2><button type="button" id="close-viewer">关闭</button></div><iframe title="作品放大预览" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></dialog>
 <script src="gallery.js"></script>
 <script src="cost.js"></script>
